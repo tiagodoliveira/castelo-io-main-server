@@ -1,87 +1,86 @@
 -- Create the User table
-CREATE TABLE "User" (
-    id VARCHAR(255) NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    CONSTRAINT pk_user PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS "User" (
+    user_id SERIAL NOT NULL,
+    user_name TEXT NOT NULL,
+    CONSTRAINT pk_user PRIMARY KEY (user_id)
 );
 
 -- Create the Gateway table
-CREATE TABLE "Gateway" (
-    id SERIAL NOT NULL,
-    "user" VARCHAR(255),
-    mac VARCHAR(17) NOT NULL UNIQUE,
-    ip VARCHAR(45),
-    name VARCHAR(25),
-    CONSTRAINT pk_gateway PRIMARY KEY (id),
-    CONSTRAINT fk_gateway_user FOREIGN KEY ("user") REFERENCES "User"(id)
+CREATE TABLE IF NOT EXISTS "Gateway" (
+    gateway_mac VARCHAR(17) NOT NULL UNIQUE,
+    user_id TEXT,
+    gateway_ip TEXT,
+    gateway_name TEXT,
+    CONSTRAINT pk_gateway PRIMARY KEY (gateway_mac),
+    CONSTRAINT fk_gateway_user FOREIGN KEY ("user_id") REFERENCES "User"(user_id)
 );
 
--- Create the Profile table
-CREATE TABLE "Profile" (
-    id INTEGER NOT NULL,
-    firmware VARCHAR(10) NOT NULL,
-    CONSTRAINT pk_profile PRIMARY KEY (id)
+-- Create the Model table
+CREATE TABLE IF NOT EXISTS "Model" (
+    model_id INTEGER NOT NULL,
+    latest_firmware_version TEXT NOT NULL,
+    CONSTRAINT pk_model PRIMARY KEY (model_id)
 );
 
 -- Create the EndDevice table
-CREATE TABLE "EndDevice" (
-    mac VARCHAR(17) NOT NULL UNIQUE,
-    ip VARCHAR(15) NOT NULL,
-    profile INTEGER NOT NULL,
-    name VARCHAR(20) NOT NULL,
-    debug BOOLEAN NOT NULL DEFAULT FALSE,
-    gateway INTEGER NOT NULL,
-    firmware VARCHAR(10) NOT NULL,
-    CONSTRAINT pk_enddevice PRIMARY KEY (mac),
-    CONSTRAINT fk_enddevice_gateway FOREIGN KEY (gateway) REFERENCES "Gateway"(id),
-    CONSTRAINT fk_enddevice_profile FOREIGN KEY (profile) REFERENCES "Profile"(id)
+CREATE TABLE IF NOT EXISTS "EndDevice" (
+    end_device_mac VARCHAR(17) NOT NULL UNIQUE,
+    end_device_ip TEXT NOT NULL,
+    model INTEGER NOT NULL,
+    end_device_name TEXT NOT NULL,
+    debug_mode BOOLEAN NOT NULL DEFAULT FALSE,
+    gateway_mac VARCHAR(17) NOT NULL,
+    firmware TEXT NOT NULL,
+    CONSTRAINT pk_enddevice PRIMARY KEY (end_device_mac),
+    CONSTRAINT fk_enddevice_gateway FOREIGN KEY (gateway_mac) REFERENCES "Gateway"(gateway_mac),
+    CONSTRAINT fk_enddevice_model FOREIGN KEY (model) REFERENCES "Model"(model_id)
 );
 
 -- Create the Mode table
-CREATE TABLE "Mode" (
-    mac VARCHAR(17) NOT NULL,
-    time TIMESTAMP(3) NOT NULL,
+CREATE TABLE IF NOT EXISTS "Mode" (
+    end_device_mac VARCHAR(17) NOT NULL,
+    time TIMESTAMP NOT NULL,
     value VARCHAR(10) NOT NULL,
-    CONSTRAINT pk_mode PRIMARY KEY (mac, time),
-    CONSTRAINT fk_mode_enddevice FOREIGN KEY (mac) REFERENCES "EndDevice"(mac)
+    CONSTRAINT pk_mode PRIMARY KEY (end_device_mac, time),
+    CONSTRAINT fk_mode_enddevice FOREIGN KEY (end_device_mac) REFERENCES "EndDevice"(end_device_mac)
 );
 
 -- Create the Switch table
-CREATE TABLE "Switch" (
-    mac VARCHAR(17) NOT NULL,
-    number SMALLINT NOT NULL,
-    name VARCHAR(30) NOT NULL,
-    CONSTRAINT pk_switch PRIMARY KEY (mac, number),
-    CONSTRAINT fk_switch_enddevice FOREIGN KEY (mac) REFERENCES "EndDevice"(mac)
+CREATE TABLE IF NOT EXISTS "Switch" (
+    end_device_mac VARCHAR(17) NOT NULL,
+    switch_number SMALLINT NOT NULL,
+    switch_name TEXT NOT NULL,
+    CONSTRAINT pk_switch PRIMARY KEY (end_device_mac, switch_number),
+    CONSTRAINT fk_switch_enddevice FOREIGN KEY (end_device_mac) REFERENCES "EndDevice"(end_device_mac)
 );
 
 -- Create the SwitchState table
-CREATE TABLE "SwitchState" (
-     mac VARCHAR(17) NOT NULL,
-     number SMALLINT NOT NULL,
-     time TIMESTAMP(3) NOT NULL,
-     value VARCHAR(10) NOT NULL,
-     CONSTRAINT pk_switch_state PRIMARY KEY (mac, number, time),
-     CONSTRAINT fk_switch FOREIGN KEY (mac, number) REFERENCES "Switch"(mac, number)
+CREATE TABLE IF NOT EXISTS "SwitchState" (
+    end_device_mac VARCHAR(17) NOT NULL,
+    switch_number SMALLINT NOT NULL,
+    time TIMESTAMP NOT NULL,
+    value BOOLEAN NOT NULL,
+    CONSTRAINT pk_switch_state PRIMARY KEY (end_device_mac, switch_number, time),
+    CONSTRAINT fk_switch FOREIGN KEY (end_device_mac, switch_number) REFERENCES "Switch"(end_device_mac, switch_number)
 );
 
 -- Create the Sensor table
-CREATE TABLE "Sensor" (
-      mac VARCHAR(17) NOT NULL,
-      number SMALLINT NOT NULL,
-      name VARCHAR(30) NOT NULL,
-      CONSTRAINT pk_sensor PRIMARY KEY (mac, number),
-      CONSTRAINT fk_sensor_enddevice FOREIGN KEY (mac) REFERENCES "EndDevice"(mac)
+CREATE TABLE IF NOT EXISTS "Sensor" (
+    end_device_mac VARCHAR(17) NOT NULL,
+    sensor_number SMALLINT NOT NULL,
+    sensor_name TEXT NOT NULL,
+    CONSTRAINT pk_sensor PRIMARY KEY (end_device_mac, sensor_number),
+    CONSTRAINT fk_sensor_enddevice FOREIGN KEY (end_device_mac) REFERENCES "EndDevice"(end_device_mac)
 );
 
 -- Create the SensorState table
-CREATE TABLE "SensorState" (
-       mac VARCHAR(17) NOT NULL,
-       number SMALLINT NOT NULL,
-       time TIMESTAMP(3) NOT NULL,
-       value VARCHAR(20) NOT NULL,
-       CONSTRAINT pk_sensor_state PRIMARY KEY (mac, number, time),
-       CONSTRAINT fk_sensor FOREIGN KEY (mac, number) REFERENCES "Sensor"(mac, number)
+CREATE TABLE IF NOT EXISTS "SensorState" (
+    end_device_mac VARCHAR(17) NOT NULL,
+    sensor_number SMALLINT NOT NULL,
+    time TIMESTAMP NOT NULL,
+    value TEXT NOT NULL,
+    CONSTRAINT pk_sensor_state PRIMARY KEY (end_device_mac, sensor_number, time),
+    CONSTRAINT fk_sensor FOREIGN KEY (end_device_mac, sensor_number) REFERENCES "Sensor"(mac, number)
 );
 
 -- Insert sample data into Gateway table
