@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=castelo-io-database'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_USER=castelo-io'
+    ports:
+      - '5432:5432'
