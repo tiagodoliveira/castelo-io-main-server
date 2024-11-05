@@ -1,0 +1,108 @@
+{
+  "User": [
+    {
+      "user_name": "Alice Smith"
+    },
+    {
+      "user_name": "Bob Johnson"
+    }
+  ],
+  "Gateway": [
+    {
+      "gateway_mac": "00:11:22:33:44:55",
+      "user_id": 1,
+      "gateway_ip": "192.168.1.10",
+      "gateway_name": "Gateway 1"
+    },
+    {
+      "gateway_mac": "66:77:88:99:AA:BB",
+      "user_id": 2,
+      "gateway_ip": "192.168.1.11",
+      "gateway_name": "Gateway 2"
+    }
+  ],
+  "Model": [
+    {
+      "model_id": 1,
+      "latest_firmware_version": "v1.2.3"
+    },
+    {
+      "model_id": 2,
+      "latest_firmware_version": "v2.3.4"
+    }
+  ],
+  "EndDevice": [
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "end_device_ip": "192.168.1.20",
+      "model_id": 1,
+      "end_device_name": "Device 1",
+      "debug_mode": false,
+      "gateway_mac": "00:11:22:33:44:55",
+      "firmware": "v1.2.3",
+      "working_mode": "Autonomous"
+    },
+    {
+      "end_device_mac": "FF:EE:DD:CC:BB:AA",
+      "end_device_ip": "192.168.1.21",
+      "model_id": 2,
+      "end_device_name": "Device 2",
+      "debug_mode": true,
+      "gateway_mac": "66:77:88:99:AA:BB",
+      "firmware": "v2.3.4",
+      "working_mode": "Manual"
+    }
+  ],
+  "Switch": [
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "switch_number": 1,
+      "switch_name": "Switch A"
+    },
+    {
+      "end_device_mac": "FF:EE:DD:CC:BB:AA",
+      "switch_number": 2,
+      "switch_name": "Switch B"
+    }
+  ],
+  "SwitchState": [
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "switch_number": 1,
+      "time": "2024-01-01T12:00:00",
+      "value": true
+    },
+    {
+      "end_device_mac": "FF:EE:DD:CC:BB:AA",
+      "switch_number": 2,
+      "time": "2024-01-02T13:00:00",
+      "value": false
+    }
+  ],
+  "Sensor": [
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "sensor_number": 1,
+      "sensor_name": "Temperature Sensor"
+    },
+    {
+      "end_device_mac": "FF:EE:DD:CC:BB:AA",
+      "sensor_number": 2,
+      "sensor_name": "Humidity Sensor"
+    }
+  ],
+  "SensorState": [
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "sensor_number": 1,
+      "time": "2024-01-01 12:30:00",
+      "value": "22.5°C"
+    },
+    {
+      "end_device_mac": "FF:EE:DD:CC:BB:AA",
+      "sensor_number": 2,
+      "time": "2024-01-02 13:30:00",
+      "value": "45%"
+    }
+  ]
+}
