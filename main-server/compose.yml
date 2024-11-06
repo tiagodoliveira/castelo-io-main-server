@@ -2,8 +2,17 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=castelo-io-database'
-      - 'POSTGRES_PASSWORD=password'
-      - 'POSTGRES_USER=castelo-io'
+      POSTGRES_DB: castelo-io-database
+      POSTGRES_USER: castelo-io
+      POSTGRES_PASSWORD: password
     ports:
       - '5432:5432'
+
+  influxdb:
+    image: 'influxdb:latest'
+    environment:
+      INFLUXDB_DB: sensor_database
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: password
+    ports:
+      - '8086:8086'

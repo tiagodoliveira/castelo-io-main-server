@@ -1,4 +1,4 @@
-package io.castelo.main_server;
+package io.castelo.main_server.database;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.sql.Types;
 
 @Service
-public class DataInitializer {
+public class PostgresDataInitializer {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -25,7 +25,7 @@ public class DataInitializer {
 
         insertUsers(rootNode.get("User"));
         insertGateways(rootNode.get("Gateway"));
-        insertModels(rootNode.get("Model"));
+        insertModels(rootNode.get("EndDeviceModel"));
         insertEndDevices(rootNode.get("EndDevice"));
         insertSwitches(rootNode.get("Switch"));
         insertSwitchStates(rootNode.get("SwitchState"));
@@ -61,7 +61,7 @@ public class DataInitializer {
             String latestFirmwareVersion = model.get("latest_firmware_version").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO \"Model\" (model_id, latest_firmware_version) VALUES (?, ?) " +
+                    "INSERT INTO \"EndDeviceModel\" (model_id, latest_firmware_version) VALUES (?, ?) " +
                             "ON CONFLICT (model_id) DO NOTHING",
                     modelId, latestFirmwareVersion
             );
@@ -105,13 +105,13 @@ public class DataInitializer {
         for (JsonNode switchState : switchStates) {
             String endDeviceMac = switchState.get("end_device_mac").asText();
             int switchNumber = switchState.get("switch_number").asInt();
-            String time = switchState.get("timestamp").asText();
-            boolean value = switchState.get("value").asBoolean();
+            String timestamp = switchState.get("timestamp").asText();
+            boolean switchValue = switchState.get("switch_value").asBoolean();
 
-            String sql = "INSERT INTO \"SwitchState\" (end_device_mac, switch_number, time, value) VALUES (?, ?, ?, ?) " +
-                    "ON CONFLICT (end_device_mac, switch_number, time) DO NOTHING";
+            String sql = "INSERT INTO \"SwitchState\" (end_device_mac, switch_number, timestamp, switch_value) VALUES (?, ?, ?, ?) " +
+                    "ON CONFLICT (end_device_mac, switch_number, timestamp) DO NOTHING";
 
-            Object[] params = {endDeviceMac, switchNumber, time, value};
+            Object[] params = {endDeviceMac, switchNumber, timestamp, switchValue};
             int[] argumentTypes = {java.sql.Types.VARCHAR, java.sql.Types.INTEGER, Types.TIMESTAMP, java.sql.Types.BOOLEAN};
 
             jdbcTemplate.update(sql, params, argumentTypes);
@@ -136,14 +136,16 @@ public class DataInitializer {
         for (JsonNode sensorState : sensorStates) {
             String endDeviceMac = sensorState.get("end_device_mac").asText();
             int sensorNumber = sensorState.get("sensor_number").asInt();
-            String time = sensorState.get("timestamp").asText();
-            String value = sensorState.get("value").asText();
+            String timestamp = sensorState.get("timestamp").asText();
+            String sensorValue = sensorState.get("sensor_value").asText();
 
-            jdbcTemplate.update(
-                    "INSERT INTO \"SensorState\" (end_device_mac, sensor_number, time, value) VALUES (?, ?, ?, ?) " +
-                            "ON CONFLICT (end_device_mac, sensor_number, time) DO NOTHING",
-                    endDeviceMac, sensorNumber, time, value
-            );
+            String sql = "INSERT INTO \"SensorState\" (end_device_mac, sensor_number, timestamp, sensor_value) VALUES (?, ?, ?, ?) " +
+                    "ON CONFLICT (end_device_mac, sensor_number, timestamp) DO NOTHING";
+
+            Object[] params = {endDeviceMac, sensorNumber, timestamp, sensorValue};
+            int[] argumentTypes = {java.sql.Types.VARCHAR, java.sql.Types.INTEGER, Types.TIMESTAMP, java.sql.Types.VARCHAR};
+
+            jdbcTemplate.update(sql, params, argumentTypes);
         }
     }
 }

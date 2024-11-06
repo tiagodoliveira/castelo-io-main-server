@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS "SwitchState" (
     switch_number SMALLINT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     switch_value BOOLEAN NOT NULL,
-    CONSTRAINT pk_switch_state PRIMARY KEY (end_device_mac, switch_number, time),
+    CONSTRAINT pk_switch_state PRIMARY KEY (end_device_mac, switch_number, timestamp),
     CONSTRAINT fk_switch FOREIGN KEY (end_device_mac, switch_number) REFERENCES "Switch"(end_device_mac, switch_number)
 );
 
@@ -81,6 +81,6 @@ CREATE TABLE IF NOT EXISTS "SensorState" (
     sensor_number SMALLINT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     sensor_value TEXT NOT NULL,
-    CONSTRAINT pk_sensor_state PRIMARY KEY (end_device_mac, sensor_number, time),
+    CONSTRAINT pk_sensor_state PRIMARY KEY (end_device_mac, sensor_number, timestamp),
     CONSTRAINT fk_sensor FOREIGN KEY (end_device_mac, sensor_number) REFERENCES "Sensor"(end_device_mac, sensor_number)
 );

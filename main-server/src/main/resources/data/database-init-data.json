@@ -21,7 +21,7 @@
       "gateway_name": "Gateway 2"
     }
   ],
-  "Model": [
+  "EndDeviceModel": [
     {
       "model_id": 1,
       "latest_firmware_version": "v1.2.3"
@@ -40,7 +40,7 @@
       "debug_mode": false,
       "gateway_mac": "00:11:22:33:44:55",
       "firmware": "v1.2.3",
-      "working_mode": "Autonomous"
+      "working_mode": "AUTONOMOUS"
     },
     {
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
@@ -50,7 +50,7 @@
       "debug_mode": true,
       "gateway_mac": "66:77:88:99:AA:BB",
       "firmware": "v2.3.4",
-      "working_mode": "Manual"
+      "working_mode": "MANUAL"
     }
   ],
   "Switch": [
@@ -69,14 +69,14 @@
     {
       "end_device_mac": "AA:BB:CC:DD:EE:FF",
       "switch_number": 1,
-      "time": "2024-01-01T12:00:00",
-      "value": true
+      "timestamp": "2024-01-01 12:00:00",
+      "switch_value": true
     },
     {
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
       "switch_number": 2,
-      "time": "2024-01-02T13:00:00",
-      "value": false
+      "timestamp": "2024-01-02 13:00:00",
+      "switch_value": false
     }
   ],
   "Sensor": [
@@ -95,14 +95,14 @@
     {
       "end_device_mac": "AA:BB:CC:DD:EE:FF",
       "sensor_number": 1,
-      "time": "2024-01-01 12:30:00",
-      "value": "22.5°C"
+      "timestamp": "2024-01-01 12:30:00",
+      "sensor_value": "22.5°C"
     },
     {
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
       "sensor_number": 2,
-      "time": "2024-01-02 13:30:00",
-      "value": "45%"
+      "timestamp": "2024-01-02 13:30:00",
+      "sensor_value": "45%"
     }
   ]
 }
