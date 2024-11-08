@@ -1,9 +1,10 @@
 package io.castelo.main_server.utils;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MACAddressValidator {
+
     private static final String MAC_ADDRESS_PATTERN_COLON = "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$";
     private static final String MAC_ADDRESS_PATTERN_HYPHEN = "^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$";
     private static final String MAC_ADDRESS_PATTERN_NODASH = "^[0-9A-Fa-f]{12}$";
@@ -17,15 +18,18 @@ public class MACAddressValidator {
         Matcher matcherHyphen = patternHyphen.matcher(macAddress);
         Matcher matcherNoDash = patternNoDash.matcher(macAddress);
 
-        if (matcherColon.matches()) {
-            return macAddress; // Correct format, no conversion needed
-        } else if (matcherHyphen.matches()) {
-            // Convert from hyphen format to colon format
-            return macAddress.replace('-', ':');
+        if (matcherColon.matches() || matcherHyphen.matches()) {
+            return macAddress.replaceAll("[-:]", "");
         } else if (matcherNoDash.matches()) {
-            // Convert from no delimiter format to colon format
-            return macAddress.replaceAll("(.{2})(?!$)", "$1:");
+            return macAddress;
         }
         throw new IllegalArgumentException("Invalid MAC Address format");
+    }
+
+    public static String formatMACAddressWithColon(String normalizedMACAddress) {
+        if (!normalizedMACAddress.matches(MAC_ADDRESS_PATTERN_NODASH)) {
+            throw new IllegalArgumentException("MAC Address must be in normalized format containing only alphanumeric characters");
+        }
+        return normalizedMACAddress.replaceAll("(.{2})(?!$)", "$1:");
     }
 }
