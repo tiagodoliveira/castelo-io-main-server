@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 
 -- Create the Gateway table
 CREATE TABLE IF NOT EXISTS "Gateway" (
-    gateway_mac VARCHAR(17) NOT NULL UNIQUE,
+    gateway_mac VARCHAR(12) NOT NULL UNIQUE,
     gateway_user_id INTEGER,
     gateway_ip TEXT,
     gateway_name TEXT,
@@ -34,12 +34,12 @@ CREATE TABLE IF NOT EXISTS "EndDeviceModel" (
 
 -- Create the EndDevice table
 CREATE TABLE IF NOT EXISTS "EndDevice" (
-   end_device_mac VARCHAR(17) NOT NULL UNIQUE,
+   end_device_mac VARCHAR(12) NOT NULL UNIQUE,
    end_device_ip TEXT NOT NULL,
    model_id INTEGER NOT NULL,
    end_device_name TEXT NOT NULL,
    debug_mode BOOLEAN NOT NULL DEFAULT FALSE,
-   gateway_mac VARCHAR(17) NOT NULL,
+   gateway_mac VARCHAR(12) NOT NULL,
    firmware TEXT NOT NULL,
    working_mode device_mode DEFAULT 'MANUAL',
    CONSTRAINT pk_enddevice PRIMARY KEY (end_device_mac),
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS "EndDevice" (
 
 -- Create the Switch table
 CREATE TABLE IF NOT EXISTS "Switch" (
-    end_device_mac VARCHAR(17) NOT NULL,
+    end_device_mac VARCHAR(12) NOT NULL,
     switch_number SMALLINT NOT NULL,
     switch_name TEXT NOT NULL,
     CONSTRAINT pk_switch PRIMARY KEY (end_device_mac, switch_number),
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS "Switch" (
 
 -- Create the Sensor table
 CREATE TABLE IF NOT EXISTS "Sensor" (
-    end_device_mac VARCHAR(17) NOT NULL,
+    end_device_mac VARCHAR(12) NOT NULL,
     sensor_number SMALLINT NOT NULL,
     sensor_name TEXT NOT NULL,
     CONSTRAINT pk_sensor PRIMARY KEY (end_device_mac, sensor_number),
