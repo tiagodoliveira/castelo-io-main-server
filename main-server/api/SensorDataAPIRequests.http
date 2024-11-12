@@ -1,0 +1,40 @@
+### Add Sensor Data
+POST http://localhost:8080/end-device/sensor-data/add-sensor-data
+Content-Type: application/json
+
+{
+  "endDeviceMac": "AA:BB:CC:DD:EE:FF",
+  "sensors": [
+    {
+      "sensorNumber": 1,
+      "sensorValues": [
+        {
+          "timestamp": "2024-11-11T11:10:00",
+          "value": "23.5"
+        },
+        {
+          "timestamp": "2024-11-11T11:11:00",
+          "value": "24.0"
+        }
+      ]
+    },
+    {
+      "sensorNumber": 2,
+      "sensorValues": [
+        {
+          "timestamp": "2024-11-11T11:10:00",
+          "value": "18.7"
+        },
+        {
+          "timestamp": "2024-11-11T11:11:00",
+          "value": "19.1"}
+      ]
+    }
+  ]
+}
+
+### Get Sensor Data by Sensor Number
+GET http://localhost:8080/end-device/sensor-data/AA:BB:CC:DD:EE:FF/sensor/1?start=2024-11-11T00:00:00&stop=2024-11-11T11:10:00
+
+### Get All Sensor Data
+GET http://localhost:8080/end-device/sensor-data/AA:BB:CC:DD:EE:FF

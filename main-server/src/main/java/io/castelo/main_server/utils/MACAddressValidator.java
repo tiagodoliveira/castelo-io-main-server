@@ -18,18 +18,15 @@ public class MACAddressValidator {
         Matcher matcherHyphen = patternHyphen.matcher(macAddress);
         Matcher matcherNoDash = patternNoDash.matcher(macAddress);
 
-        if (matcherColon.matches() || matcherHyphen.matches()) {
-            return macAddress.replaceAll("[-:]", "");
+        if (matcherColon.matches()) {
+            return macAddress; // Correct format, no conversion needed
+        } else if (matcherHyphen.matches()) {
+            // Convert from hyphen format to colon format
+            return macAddress.replace('-', ':');
         } else if (matcherNoDash.matches()) {
-            return macAddress;
+            // Convert from no delimiter format to colon format
+            return macAddress.replaceAll("(.{2})(?!$)", "$1:");
         }
         throw new IllegalArgumentException("Invalid MAC Address format");
-    }
-
-    public static String formatMACAddressWithColon(String normalizedMACAddress) {
-        if (!normalizedMACAddress.matches(MAC_ADDRESS_PATTERN_NODASH)) {
-            throw new IllegalArgumentException("MAC Address must be in normalized format containing only alphanumeric characters");
-        }
-        return normalizedMACAddress.replaceAll("(.{2})(?!$)", "$1:");
     }
 }

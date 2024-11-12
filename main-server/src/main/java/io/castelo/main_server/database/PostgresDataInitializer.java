@@ -28,9 +28,7 @@ public class PostgresDataInitializer {
         insertModels(rootNode.get("EndDeviceModel"));
         insertEndDevices(rootNode.get("EndDevice"));
         insertSwitches(rootNode.get("Switch"));
-        insertSwitchStates(rootNode.get("SwitchState"));
         insertSensors(rootNode.get("Sensor"));
-        insertSensorStates(rootNode.get("SensorState"));
     }
 
     private void insertUsers(JsonNode users) {
@@ -101,23 +99,6 @@ public class PostgresDataInitializer {
         }
     }
 
-    private void insertSwitchStates(JsonNode switchStates) {
-        for (JsonNode switchState : switchStates) {
-            String endDeviceMac = switchState.get("end_device_mac").asText();
-            int switchNumber = switchState.get("switch_number").asInt();
-            String timestamp = switchState.get("timestamp").asText();
-            boolean switchValue = switchState.get("switch_value").asBoolean();
-
-            String sql = "INSERT INTO \"SwitchState\" (end_device_mac, switch_number, timestamp, switch_value) VALUES (?, ?, ?, ?) " +
-                    "ON CONFLICT (end_device_mac, switch_number, timestamp) DO NOTHING";
-
-            Object[] params = {endDeviceMac, switchNumber, timestamp, switchValue};
-            int[] argumentTypes = {java.sql.Types.VARCHAR, java.sql.Types.INTEGER, Types.TIMESTAMP, java.sql.Types.BOOLEAN};
-
-            jdbcTemplate.update(sql, params, argumentTypes);
-        }
-    }
-
     private void insertSensors(JsonNode sensors) {
         for (JsonNode sensor : sensors) {
             String endDeviceMac = sensor.get("end_device_mac").asText();
@@ -129,23 +110,6 @@ public class PostgresDataInitializer {
                             "ON CONFLICT (end_device_mac, sensor_number) DO NOTHING",
                     endDeviceMac, sensorNumber, sensorName
             );
-        }
-    }
-
-    private void insertSensorStates(JsonNode sensorStates) {
-        for (JsonNode sensorState : sensorStates) {
-            String endDeviceMac = sensorState.get("end_device_mac").asText();
-            int sensorNumber = sensorState.get("sensor_number").asInt();
-            String timestamp = sensorState.get("timestamp").asText();
-            String sensorValue = sensorState.get("sensor_value").asText();
-
-            String sql = "INSERT INTO \"SensorState\" (end_device_mac, sensor_number, timestamp, sensor_value) VALUES (?, ?, ?, ?) " +
-                    "ON CONFLICT (end_device_mac, sensor_number, timestamp) DO NOTHING";
-
-            Object[] params = {endDeviceMac, sensorNumber, timestamp, sensorValue};
-            int[] argumentTypes = {java.sql.Types.VARCHAR, java.sql.Types.INTEGER, Types.TIMESTAMP, java.sql.Types.VARCHAR};
-
-            jdbcTemplate.update(sql, params, argumentTypes);
         }
     }
 }

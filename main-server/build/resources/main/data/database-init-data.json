@@ -65,20 +65,6 @@
       "switch_name": "Switch B"
     }
   ],
-  "SwitchState": [
-    {
-      "end_device_mac": "AA:BB:CC:DD:EE:FF",
-      "switch_number": 1,
-      "timestamp": "2024-01-01 12:00:00",
-      "switch_value": true
-    },
-    {
-      "end_device_mac": "FF:EE:DD:CC:BB:AA",
-      "switch_number": 2,
-      "timestamp": "2024-01-02 13:00:00",
-      "switch_value": false
-    }
-  ],
   "Sensor": [
     {
       "end_device_mac": "AA:BB:CC:DD:EE:FF",
@@ -89,20 +75,6 @@
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
       "sensor_number": 2,
       "sensor_name": "Humidity Sensor"
-    }
-  ],
-  "SensorState": [
-    {
-      "end_device_mac": "AA:BB:CC:DD:EE:FF",
-      "sensor_number": 1,
-      "timestamp": "2024-01-01 12:30:00",
-      "sensor_value": "22.5°C"
-    },
-    {
-      "end_device_mac": "FF:EE:DD:CC:BB:AA",
-      "sensor_number": 2,
-      "timestamp": "2024-01-02 13:30:00",
-      "sensor_value": "45%"
     }
   ]
 }
