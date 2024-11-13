@@ -3,6 +3,8 @@ package io.castelo.main_server.end_device_sensor_data;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,25 +18,31 @@ import static com.mongodb.client.model.Filters.eq;
 @Service
 public class EndDeviceDataService {
 
+    @Value("${spring.data.mongodb.collections.sensor_data}")
+    private String sensorDataCollection;
+
     private final SensorValueRepository sensorValueRepository;
     private final SwitchValueRepository switchValueRepository;
 
+    private final MongoTemplate mongoTemplate;
+
     @Autowired
-    public EndDeviceDataService(SensorValueRepository sensorValueRepository, SwitchValueRepository switchValueRepository) {
+    public EndDeviceDataService(SensorValueRepository sensorValueRepository, SwitchValueRepository switchValueRepository, MongoTemplate mongoTemplate) {
         this.sensorValueRepository = sensorValueRepository;
         this.switchValueRepository = switchValueRepository;
-    }
-
-    public List<SensorValueDBEntry> findAllSensorValues() {
-        return sensorValueRepository.findAll();
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<SensorValueDBEntry> findSensorValuesByEndDeviceMac(String endDeviceMac) {
-        return sensorValueRepository.findByEndDeviceMac(endDeviceMac);
+        return sensorValueRepository.findByMetaField_EndDeviceMac(endDeviceMac);
     }
 
     public List<SwitchValueDBEntry> findSwitchValuesByEndDeviceMac(String endDeviceMac) {
         return switchValueRepository.findByEndDeviceMac(endDeviceMac);
+    }
+
+    public SensorValueDBEntry getLatestEntry() {
+        return sensorValueRepository.findFirstByOrderByTimestampDesc();
     }
 
     public void saveSensorValues(List<SensorValueDBEntry> sensorValues) {
@@ -45,14 +53,20 @@ public class EndDeviceDataService {
         switchValueRepository.saveAll(switchValues);
     }
 
+    public void saveSensorValue(SensorValueRequest sensorValueRequest) {
+        mongoTemplate.save(SensorValueDBEntry.fromSensorValueRequest(sensorValueRequest), sensorDataCollection);
+    }
+
+    public void saveSwitchValue(SwitchValueDBEntry switchValue) {
+        switchValueRepository.save(switchValue);
+    }
+
     public void saveEndDeviceData(EndDeviceData endDeviceData) {
         // Process and save sensor values
         endDeviceData.sensors().forEach(sensorData ->
                 sensorData.sensorValues().forEach(sensorValue -> {
-                    SensorValueDBEntry entry = new SensorValueDBEntry(
-                            null,
-                            endDeviceData.endDeviceMac(),
-                            sensorData.sensorNumber(),
+                    SensorValueDBEntry entry = new SensorValueDBEntry(null,
+                            new MetaField(endDeviceData.endDeviceMac(), sensorData.sensorNumber()),
                             sensorValue.timestamp(),
                             sensorValue.value()
                     );
@@ -81,7 +95,7 @@ public class EndDeviceDataService {
 
         Map<Integer, List<SensorValue>> sensors = sensorValues.stream()
                 .collect(Collectors.groupingBy(
-                        SensorValueDBEntry::sensorNumber,
+                        sensorValue -> sensorValue.metaField().sensorNumber(),
                         Collectors.mapping(
                                 sensorValue -> new SensorValue(sensorValue.timestamp(), sensorValue.value()),
                                 Collectors.toList()

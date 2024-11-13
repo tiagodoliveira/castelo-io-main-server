@@ -29,4 +29,16 @@ public class EndDeviceDataController {
     public void createEndDeviceData(@RequestBody EndDeviceData endDeviceData) {
         endDeviceDataService.saveEndDeviceData(endDeviceData);
     }
+
+    @PostMapping("/add-sensor-value")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addSensorValue(@RequestBody SensorValueRequest sensorValueRequest) {
+        endDeviceDataService.saveSensorValue(sensorValueRequest);
+    }
+
+    @PostMapping("/add-switch-value")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addSwitchValue(@RequestBody SwitchValueDBEntry switchValueDBEntry) {
+        endDeviceDataService.saveSwitchValue(switchValueDBEntry);
+    }
 }

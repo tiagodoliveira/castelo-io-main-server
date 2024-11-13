@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "${spring.data.mongodb.collections.switch_data}")
+@Document(collection = "#{@environment.getProperty('spring.data.mongodb.collections.switch_data')}")
 public record SwitchValueDBEntry(
         @Id String id,
         String endDeviceMac,

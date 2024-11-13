@@ -38,3 +38,14 @@ GET http://localhost:8080/end-device/sensor-data/AA:BB:CC:DD:EE:FF/sensor/1?star
 
 ### Get All Sensor Data
 GET http://localhost:8080/end-device/sensor-data/AA:BB:CC:DD:EE:FF
+
+### Create Sensor Value
+POST http://localhost:8080/end-device/sensor-data/add-sensor-value
+Content-Type: application/json
+
+{
+  "endDeviceMac": "00:1A:22:33:44:55",
+  "sensorNumber": 1,
+  "timestamp": "2023-10-10T12:34:56.789",
+  "value": "25.7"
+}

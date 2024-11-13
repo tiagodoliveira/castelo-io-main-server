@@ -7,5 +7,9 @@ import java.util.List;
 
 @Repository
 public interface SensorValueRepository extends MongoRepository<SensorValueDBEntry, String> {
-    List<SensorValueDBEntry> findByEndDeviceMac(String endDeviceMac);
+    List<SensorValueDBEntry> findByMetaField_EndDeviceMacAndMetaField_SensorNumber(String endDeviceMac, int sensorNumber);
+
+    SensorValueDBEntry findFirstByOrderByTimestampDesc();
+
+    List<SensorValueDBEntry> findByMetaField_EndDeviceMac(String endDeviceMac);
 }
