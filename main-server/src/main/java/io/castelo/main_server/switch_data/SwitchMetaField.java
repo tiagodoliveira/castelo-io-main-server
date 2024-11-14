@@ -1,4 +1,4 @@
-package io.castelo.main_server.end_device_data.switch_data;
+package io.castelo.main_server.switch_data;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 

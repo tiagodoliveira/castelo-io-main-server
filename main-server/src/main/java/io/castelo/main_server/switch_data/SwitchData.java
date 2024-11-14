@@ -1,8 +1,8 @@
-package io.castelo.main_server.end_device_data.switch_data;
+package io.castelo.main_server.switch_data;
 
 import java.time.LocalDateTime;
 
-public record SwitchValueRequest(
+public record SwitchData(
         String endDeviceMac,
         int switchNumber,
         LocalDateTime timestamp,

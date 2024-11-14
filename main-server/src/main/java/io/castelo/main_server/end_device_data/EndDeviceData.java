@@ -1,7 +1,7 @@
 package io.castelo.main_server.end_device_data;
 
-import io.castelo.main_server.end_device_data.sensor_data.Sensor;
-import io.castelo.main_server.end_device_data.switch_data.Switch;
+import io.castelo.main_server.sensor_data.Sensor;
+import io.castelo.main_server.switch_data.Switch;
 import io.castelo.main_server.utils.MACAddressValidator;
 
 import java.util.List;
