@@ -25,8 +25,8 @@ hs_err_pid*
 replay_pid*
 
 HELP.md
-.gradle
-build/
+main-server/.gradle
+main-server/build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
