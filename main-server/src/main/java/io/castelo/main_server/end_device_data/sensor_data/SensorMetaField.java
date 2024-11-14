@@ -1,8 +1,8 @@
-package io.castelo.main_server.end_device_sensor_data;
+package io.castelo.main_server.end_device_data.sensor_data;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public record MetaField(
+public record SensorMetaField(
         @Field("endDeviceMac")
         String endDeviceMac,
         @Field("sensorNumber")

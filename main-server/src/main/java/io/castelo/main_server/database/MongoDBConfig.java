@@ -5,6 +5,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.TimeSeriesOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,30 +21,26 @@ public class MongoDBConfig {
     @Value("${spring.data.mongodb.uri}")
     private String mongoUri;
 
+    @Value("${spring.data.mongodb.host}")
+    private String mongoHost;
+
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
 
-    @Value("${spring.data.mongodb.username}")
-    private String username;
-
-    @Value("${spring.data.mongodb.password}")
-    private String password;
-
     @Bean
     MongoClient mongoClient() {
-        return MongoClients.create("mongodb://localhost:27017");
+        return MongoClients.create(mongoHost);
     }
+
+    private static final Logger log = LoggerFactory.getLogger(MongoDBConfig.class);
 
     @Bean
     public MongoTemplate mongoTemplate() {
-        String uri = "mongodb://root:password@localhost:27017/enddevice_data?authSource=admin";
 
-        // Create MongoClient with settings
-        MongoClient mongoClient = MongoClients.create(uri);
+        MongoClient mongoClient = MongoClients.create(mongoUri);
 
         MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoClient, databaseName));
 
-        // Creating timeseries collections if they don't exist
         MongoDatabase database = mongoTemplate.getDb();
 
         createTimeseriesCollectionIfNotExists(database, MongoDBProperties.SENSOR_DATA_COLLECTION);
@@ -55,9 +53,9 @@ public class MongoDBConfig {
         if (!database.listCollectionNames().into(new ArrayList<>()).contains(collectionName)) {
             database.createCollection(collectionName, new CreateCollectionOptions()
                     .timeSeriesOptions(new TimeSeriesOptions(MongoDBProperties.TIMESTAMP_FIELD).metaField(MongoDBProperties.META_FIELD)));
-            System.out.println("Timeseries collection created: " + collectionName);
+            log.info("Timeseries collection created: {}", collectionName);
         } else {
-            System.out.println("Timeseries collection already exists: " + collectionName);
+            log.info("Timeseries collection already exists: {}", collectionName);
         }
     }
 }

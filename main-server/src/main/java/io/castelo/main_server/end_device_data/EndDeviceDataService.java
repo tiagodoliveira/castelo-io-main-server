@@ -1,19 +1,15 @@
-package io.castelo.main_server.end_device_sensor_data;
+package io.castelo.main_server.end_device_data;
 
-import com.mongodb.client.MongoCollection;
-import org.bson.Document;
+import io.castelo.main_server.end_device_data.sensor_data.*;
+import io.castelo.main_server.end_device_data.switch_data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.mongodb.client.model.Filters.eq;
 
 @Service
 public class EndDeviceDataService {
@@ -34,11 +30,11 @@ public class EndDeviceDataService {
     }
 
     public List<SensorValueDBEntry> findSensorValuesByEndDeviceMac(String endDeviceMac) {
-        return sensorValueRepository.findByMetaField_EndDeviceMac(endDeviceMac);
+        return sensorValueRepository.findBySensorMetaField_EndDeviceMac(endDeviceMac);
     }
 
     public List<SwitchValueDBEntry> findSwitchValuesByEndDeviceMac(String endDeviceMac) {
-        return switchValueRepository.findByEndDeviceMac(endDeviceMac);
+        return switchValueRepository.findBySwitchMetaField_EndDeviceMac(endDeviceMac);
     }
 
     public SensorValueDBEntry getLatestEntry() {
@@ -66,7 +62,7 @@ public class EndDeviceDataService {
         endDeviceData.sensors().forEach(sensorData ->
                 sensorData.sensorValues().forEach(sensorValue -> {
                     SensorValueDBEntry entry = new SensorValueDBEntry(null,
-                            new MetaField(endDeviceData.endDeviceMac(), sensorData.sensorNumber()),
+                            new SensorMetaField(endDeviceData.endDeviceMac(), sensorData.sensorNumber()),
                             sensorValue.timestamp(),
                             sensorValue.value()
                     );
@@ -77,10 +73,8 @@ public class EndDeviceDataService {
         // Process and save switch values
         endDeviceData.switches().forEach(switchData ->
                 switchData.switchValues().forEach(switchValue -> {
-                    SwitchValueDBEntry entry = new SwitchValueDBEntry(
-                            null,
-                            endDeviceData.endDeviceMac(),
-                            switchData.switchNumber(),
+                    SwitchValueDBEntry entry = new SwitchValueDBEntry(null,
+                            new SwitchMetaField(endDeviceData.endDeviceMac(), switchData.switchNumber()),
                             switchValue.timestamp(),
                             switchValue.value()
                     );
@@ -95,7 +89,7 @@ public class EndDeviceDataService {
 
         Map<Integer, List<SensorValue>> sensors = sensorValues.stream()
                 .collect(Collectors.groupingBy(
-                        sensorValue -> sensorValue.metaField().sensorNumber(),
+                        sensorValue -> sensorValue.sensorMetaField().sensorNumber(),
                         Collectors.mapping(
                                 sensorValue -> new SensorValue(sensorValue.timestamp(), sensorValue.value()),
                                 Collectors.toList()
@@ -104,7 +98,7 @@ public class EndDeviceDataService {
 
         Map<Integer, List<SwitchValue>> switches = switchValues.stream()
                 .collect(Collectors.groupingBy(
-                        SwitchValueDBEntry::switchNumber,
+                        switchValue -> switchValue.switchMetaField().switchNumber(),
                         Collectors.mapping(
                                 switchValue -> new SwitchValue(switchValue.timestamp(), switchValue.value()),
                                 Collectors.toList()
