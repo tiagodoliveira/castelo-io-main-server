@@ -2,9 +2,11 @@ package io.castelo.main_server.database;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.TimeSeriesOptions;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +49,16 @@ public class MongoDBConfig {
         createTimeseriesCollectionIfNotExists(database, MongoDBProperties.SWITCH_DATA_COLLECTION);
 
         return mongoTemplate;
+    }
+
+    @Bean
+    public MongoCollection<Document> sensorDataCollection() {
+        return mongoTemplate().getCollection(MongoDBProperties.SENSOR_DATA_COLLECTION);
+    }
+
+    @Bean
+    public MongoCollection<Document> switchDataCollection() {
+        return mongoTemplate().getCollection(MongoDBProperties.SWITCH_DATA_COLLECTION);
     }
 
     private void createTimeseriesCollectionIfNotExists(MongoDatabase database, String collectionName) {

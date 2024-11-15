@@ -1,25 +1,27 @@
 package io.castelo.main_server.sensor_data;
 
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SensorDataService {
 
     @Value("${spring.data.mongodb.collections.sensor_data}")
-    private String sensorDataCollection;
+    private String sensorDataCollectionName;
 
     private final SensorDataRepository sensorDataRepository;
-    private final MongoTemplate mongoTemplate;
+    private final MongoCollection<Document> sensorDataCollection;
 
     @Autowired
-    public SensorDataService(SensorDataRepository sensorDataRepository, MongoTemplate mongoTemplate) {
+    public SensorDataService(SensorDataRepository sensorDataRepository, MongoCollection<Document> sensorDataCollection) {
         this.sensorDataRepository = sensorDataRepository;
-        this.mongoTemplate = mongoTemplate;
+        this.sensorDataCollection = sensorDataCollection;
     }
 
     public List<SensorData> findSensorValuesByEndDeviceMac(String endDeviceMac) {
@@ -27,8 +29,9 @@ public class SensorDataService {
         return transformDBEntriesInSensorData(sensorDataDBEntries);
     }
 
-    public SensorDataDBEntry getLatestEntry() {
-        return sensorDataRepository.findFirstByOrderByTimestampDesc();
+    public SensorData getLatestSensorValue(String endDeviceMac, int sensorNumber) {
+        Optional<SensorDataDBEntry> sensorDataDBEntry = sensorDataRepository.findFirstBySensorMetaField_EndDeviceMacAndSensorMetaField_SensorNumber(endDeviceMac, sensorNumber);
+        return sensorDataDBEntry.map(SensorDataDBEntry::toSensorData).orElse(null);
     }
 
     public void saveAllSensorData(List<SensorData> sensorData) {
@@ -36,7 +39,7 @@ public class SensorDataService {
     }
 
     public void saveSensorData(SensorData sensorData) {
-        mongoTemplate.save(SensorDataDBEntry.fromSensorData(sensorData), sensorDataCollection);
+        sensorDataRepository.save(SensorDataDBEntry.fromSensorData(sensorData));
     }
 
     private List<SensorDataDBEntry> transformSensorDataInDBEntries(List<SensorData> sensorValues) {

@@ -49,3 +49,22 @@ Content-Type: application/json
   "timestamp": "2023-10-10T12:34:56.789",
   "value": "25.7"
 }
+
+### Create Sensor Values
+POST http://localhost:8080/end-device/sensor-data/add-sensor-values
+Content-Type: application/json
+
+[
+  {
+    "endDeviceMac": "01:1A:22:33:44:55",
+    "sensorNumber": 1,
+    "timestamp": "2024-10-10T12:34:56.789",
+    "value": "25.7"
+  },
+  {
+    "endDeviceMac": "01:1A:22:33:44:56",
+    "sensorNumber": 2,
+    "timestamp": "2024-10-10T13:34:56.789",
+    "value": "26.1"
+  }
+]
