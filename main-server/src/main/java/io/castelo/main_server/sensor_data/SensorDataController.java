@@ -1,9 +1,11 @@
 package io.castelo.main_server.sensor_data;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -65,4 +67,17 @@ public class SensorDataController {
             @PathVariable String endDeviceMac, @PathVariable int sensorNumber) {
         return sensorDataService.findAllSensorDataByEndDeviceMacAndSensorNumber(endDeviceMac, sensorNumber);
     }
+
+    @GetMapping("/{endDeviceMac}/{sensorNumber}/range")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SensorData> getSensorDataWithinTimeRange(
+            @PathVariable String endDeviceMac,
+            @PathVariable int sensorNumber,
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        return sensorDataService.getSensorDataWithinTimeRange(endDeviceMac, sensorNumber, startDate, endDate);
+    }
+
+
 }

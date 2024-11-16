@@ -1,9 +1,11 @@
 package io.castelo.main_server.switch_data;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -64,5 +66,16 @@ public class SwitchDataController {
     public List<SwitchData> getAllSwitchDataByEndDeviceMacAndSwitchNumber(
             @PathVariable String endDeviceMac, @PathVariable int switchNumber) {
         return switchDataService.findAllSwitchDataByEndDeviceMacAndSwitchNumber(endDeviceMac, switchNumber);
+    }
+
+    @GetMapping("/{endDeviceMac}/{switchNumber}/range")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SwitchData> getSwitchDataWithinTimeRange(
+            @PathVariable String endDeviceMac,
+            @PathVariable int switchNumber,
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        return switchDataService.getSwitchDataWithinTimeRange(endDeviceMac, switchNumber, startDate, endDate);
     }
 }
