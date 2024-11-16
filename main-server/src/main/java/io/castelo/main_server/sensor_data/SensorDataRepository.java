@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SensorDataRepository extends MongoRepository<SensorDataDBEntry, String> {
-    List<SensorDataDBEntry> findBySensorMetaField_EndDeviceMacAndSensorMetaField_SensorNumber(String endDeviceMac, int sensorNumber);
-    Optional<SensorDataDBEntry> findFirstBySensorMetaField_EndDeviceMacAndSensorMetaField_SensorNumber(String endDeviceMac, int sensorNumber );
-    List<SensorDataDBEntry> findBySensorMetaField_EndDeviceMac(String endDeviceMac);
+public interface SensorDataRepository extends MongoRepository<SensorData, String> {
+    List<SensorData> findByMetaField_EndDeviceMacAndMetaField_SensorNumber(String endDeviceMac, int sensorNumber);
+    Optional<SensorData> findFirstByMetaField_EndDeviceMacAndMetaField_SensorNumber(String endDeviceMac, int sensorNumber );
+    List<SensorData> findByMetaField_EndDeviceMac(String endDeviceMac);
 }

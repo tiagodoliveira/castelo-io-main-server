@@ -20,18 +20,24 @@ public class SensorDataController {
     @PostMapping("/add-sensor-value")
     @ResponseStatus(HttpStatus.CREATED)
     public void addSensorValue(@RequestBody SensorData sensorData) {
-        sensorDataService.saveSensorData(sensorData);
-    }
-
-    @GetMapping("/{endDeviceMac}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<SensorData> getSensorValuesByEndDeviceMac(@PathVariable String endDeviceMac) {
-        return sensorDataService.findSensorValuesByEndDeviceMac(endDeviceMac);
+        sensorDataService.insertSensorData(sensorData);
     }
 
     @PostMapping("/add-sensor-values")
     @ResponseStatus(HttpStatus.CREATED)
     public void addSensorValues(@RequestBody List<SensorData> sensorDataList) {
-        sensorDataService.saveAllSensorData(sensorDataList);
+        sensorDataService.insertSensorData(sensorDataList);
+    }
+
+    @GetMapping("/{endDeviceMac}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SensorData> getSensorDataByEndDeviceMac(@PathVariable String endDeviceMac) {
+        return sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac);
+    }
+
+    @GetMapping("/{endDeviceMac}/{sensorNumber}/latest")
+    @ResponseStatus(HttpStatus.OK)
+    public SensorData getLatestSensorValue(@PathVariable String endDeviceMac, @PathVariable int sensorNumber) {
+        return sensorDataService.getLatestSensorValue(endDeviceMac, sensorNumber);
     }
 }

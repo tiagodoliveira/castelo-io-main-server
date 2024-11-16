@@ -1,13 +1,7 @@
 package io.castelo.main_server.end_device_data;
 
-import io.castelo.main_server.sensor_data.Sensor;
-import io.castelo.main_server.sensor_data.SensorData;
-import io.castelo.main_server.sensor_data.SensorDataService;
-import io.castelo.main_server.sensor_data.SensorValue;
-import io.castelo.main_server.switch_data.Switch;
-import io.castelo.main_server.switch_data.SwitchData;
-import io.castelo.main_server.switch_data.SwitchDataService;
-import io.castelo.main_server.switch_data.SwitchValue;
+import io.castelo.main_server.sensor_data.*;
+import io.castelo.main_server.switch_data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,39 +25,38 @@ public class EndDeviceDataService {
         if (!endDeviceData.sensors().isEmpty()) {
             List<SensorData> sensorData = endDeviceData.sensors().stream()
                     .flatMap(sensor -> sensor.sensorValues().stream()
-                            .map(sensorValue -> new SensorData(
-                                    endDeviceData.endDeviceMac(),
-                                    sensor.sensorNumber(),
+                            .map(sensorValue -> new SensorData(null,
+                                    new SensorMetaField(endDeviceData.endDeviceMac(), sensor.sensorNumber()),
                                     sensorValue.timestamp(),
                                     sensorValue.value()
                             ))
                     )
                     .collect(Collectors.toList());
-            sensorDataService.saveAllSensorData(sensorData);
+            sensorDataService.insertSensorData(sensorData);
         }
         // Process and save switch values
         if (!endDeviceData.switches().isEmpty()) {
             List<SwitchData> switchData = endDeviceData.switches().stream()
                     .flatMap(switchObj -> switchObj.switchValues().stream()
-                            .map(switchValue -> new SwitchData(
-                                    endDeviceData.endDeviceMac(),
-                                    switchObj.switchNumber(),
+                            .map(switchValue -> new SwitchData(null,
+                                    new SwitchMetaField(endDeviceData.endDeviceMac(),
+                                    switchObj.switchNumber()),
                                     switchValue.timestamp(),
                                     switchValue.value()
                             ))
                     )
                     .collect(Collectors.toList());
-            switchDataService.saveAllSwitchData(switchData);
+            switchDataService.insertSwitchData(switchData);
         }
     }
 
     public EndDeviceData findByEndDeviceMac(String endDeviceMac) {
-        List<SensorData> sensorValues = sensorDataService.findSensorValuesByEndDeviceMac(endDeviceMac);
-        List<SwitchData> switchValues = switchDataService.findSwitchValuesByEndDeviceMac(endDeviceMac);
+        List<SensorData> sensorValues = sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac);
+        List<SwitchData> switchValues = switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac);
 
         List<Sensor> sensorDataList = sensorValues.stream()
                 .collect(Collectors.groupingBy(
-                        SensorData::sensorNumber,
+                        sensorDataEntry -> sensorDataEntry.metaField().sensorNumber(),
                         Collectors.mapping(
                                 sensorValue -> new SensorValue(sensorValue.timestamp(), sensorValue.value()),
                                 Collectors.toList()
@@ -75,7 +68,7 @@ public class EndDeviceDataService {
 
         List<Switch> switchDataList = switchValues.stream()
                 .collect(Collectors.groupingBy(
-                        SwitchData::switchNumber,
+                        switchDataEntry -> switchDataEntry.metaField().switchNumber(),
                         Collectors.mapping(
                                 switchValue -> new SwitchValue(switchValue.timestamp(), switchValue.value()),
                                 Collectors.toList()

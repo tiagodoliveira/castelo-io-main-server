@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SwitchDataRepository extends MongoRepository<SwitchDataDBEntry, String> {
-    List<SwitchDataDBEntry> findBySwitchMetaField_EndDeviceMac(String endDeviceMac);
-    List<SwitchDataDBEntry> findBySwitchMetaField_EndDeviceMacAndSwitchMetaField_SwitchNumber(String endDeviceMac, int switchNumber);
-    Optional<SwitchDataDBEntry> findFirstBySwitchMetaField_EndDeviceMacAndSwitchMetaField_SwitchNumber(String endDeviceMac, int switchNumber);
+public interface SwitchDataRepository extends MongoRepository<SwitchData, String> {
+    List<SwitchData> findByMetaField_EndDeviceMac(String endDeviceMac);
+    List<SwitchData> findByMetaField_EndDeviceMacAndMetaField_SwitchNumber(String endDeviceMac, int switchNumber);
+    Optional<SwitchData> findFirstByMetaField_EndDeviceMacAndMetaField_SwitchNumber(String endDeviceMac, int switchNumber);
 }

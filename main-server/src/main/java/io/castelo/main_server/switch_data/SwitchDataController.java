@@ -19,19 +19,25 @@ public class SwitchDataController {
 
     @PostMapping("/add-switch-value")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addSwitchValue(@RequestBody SwitchData switchData) {
-        switchDataService.saveSwitchValue(switchData);
+    public void addSwitchData(@RequestBody SwitchData switchData) {
+        switchDataService.insertSwitchData(switchData);
+    }
+
+    @PostMapping("/add-switch-values")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addMultipleSwitchData(@RequestBody List<SwitchData> switchDataList) {
+        switchDataService.insertSwitchData(switchDataList);
     }
 
     @GetMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.OK)
     public List<SwitchData> getSwitchDataByEndDeviceMac(@PathVariable String endDeviceMac) {
-        return switchDataService.findSwitchValuesByEndDeviceMac(endDeviceMac);
+        return switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac);
     }
 
     @GetMapping("/{endDeviceMac}/{switchNumber}/latest")
     @ResponseStatus(HttpStatus.OK)
-    public SwitchData getLatestSwitchValue(@PathVariable String endDeviceMac, @PathVariable int switchNumber) {
-        return switchDataService.getLatestSwitchValue(endDeviceMac, switchNumber);
+    public SwitchData getLatestSwitchData(@PathVariable String endDeviceMac, @PathVariable int switchNumber) {
+        return switchDataService.getLatestSwitchDataByEndDeviceMacAndSwitchNumber(endDeviceMac, switchNumber);
     }
 }

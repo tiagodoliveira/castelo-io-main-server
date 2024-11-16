@@ -56,15 +56,19 @@ Content-Type: application/json
 
 [
   {
-    "endDeviceMac": "01:1A:22:33:44:55",
-    "sensorNumber": 1,
-    "timestamp": "2024-10-10T12:34:56.789",
-    "value": "25.7"
+    "metaField": {
+      "endDeviceMac": "AA:BB:CC:DD:EE:FF",
+      "sensorNumber": 3
+    },
+    "timestamp": "2024-11-13T16:30:00",
+    "value": "43"
   },
   {
-    "endDeviceMac": "01:1A:22:33:44:56",
-    "sensorNumber": 2,
-    "timestamp": "2024-10-10T13:34:56.789",
-    "value": "26.1"
+    "metaField": {
+      "endDeviceMac": "BB:BB:CC:DD:EE:FF",
+      "sensorNumber": 4
+    },
+    "timestamp": "2024-11-13T16:30:00",
+    "value": "24"
   }
 ]
