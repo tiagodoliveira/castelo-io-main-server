@@ -50,9 +50,9 @@ public class EndDeviceDataService {
         }
     }
 
-    public EndDeviceData findByEndDeviceMac(String endDeviceMac) {
-        List<SensorData> sensorValues = sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac);
-        List<SwitchData> switchValues = switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac);
+    public EndDeviceData findByEndDeviceMac(String endDeviceMac, int maxEntries) {
+        List<SensorData> sensorValues = sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac, maxEntries);
+        List<SwitchData> switchValues = switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac, maxEntries);
 
         List<Sensor> sensorDataList = sensorValues.stream()
                 .collect(Collectors.groupingBy(

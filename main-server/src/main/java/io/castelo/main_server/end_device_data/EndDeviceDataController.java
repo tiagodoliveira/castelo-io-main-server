@@ -17,8 +17,9 @@ public class EndDeviceDataController {
 
     @GetMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.OK)
-    public EndDeviceData getEndDeviceDataByMac(@PathVariable String endDeviceMac) {
-        return endDeviceDataService.findByEndDeviceMac(endDeviceMac);
+    public EndDeviceData getEndDeviceDataByMac(@PathVariable String endDeviceMac,
+                                               @RequestParam(required = false, defaultValue = "0", name = "maxEntries") int maxEntries) {
+        return endDeviceDataService.findByEndDeviceMac(endDeviceMac, maxEntries);
     }
 
     @PostMapping("/save-data")

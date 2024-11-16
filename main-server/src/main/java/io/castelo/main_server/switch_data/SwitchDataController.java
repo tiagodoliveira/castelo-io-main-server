@@ -29,15 +29,40 @@ public class SwitchDataController {
         switchDataService.insertSwitchData(switchDataList);
     }
 
+    @GetMapping("/{endDeviceMac}/get-all-switch-data")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SwitchData> getAllSwitchDataByEndDeviceMac(@PathVariable String endDeviceMac) {
+        return switchDataService.findAllSwitchDataByEndDeviceMac(endDeviceMac);
+    }
+
     @GetMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.OK)
-    public List<SwitchData> getSwitchDataByEndDeviceMac(@PathVariable String endDeviceMac) {
-        return switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac);
+    public List<SwitchData> getSwitchDataByEndDeviceMac(
+            @PathVariable String endDeviceMac,
+            @RequestParam(required = false, name = "maxEntries", defaultValue = "10") Integer maxEntries) {
+        return switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac, maxEntries);
     }
 
     @GetMapping("/{endDeviceMac}/{switchNumber}/latest")
     @ResponseStatus(HttpStatus.OK)
     public SwitchData getLatestSwitchData(@PathVariable String endDeviceMac, @PathVariable int switchNumber) {
         return switchDataService.getLatestSwitchDataByEndDeviceMacAndSwitchNumber(endDeviceMac, switchNumber);
+    }
+
+    @GetMapping("/{endDeviceMac}/{switchNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SwitchData> getSwitchDataByEndDeviceMacAndSwitchNumber(
+            @PathVariable String endDeviceMac,
+            @PathVariable int switchNumber,
+            @RequestParam(required = false, name = "maxEntries", defaultValue = "10") Integer maxEntries)
+    {
+        return switchDataService.findSwitchDataByEndDeviceMacAndSwitchNumber(endDeviceMac, switchNumber, maxEntries);
+    }
+
+    @GetMapping("/{endDeviceMac}/{switchNumber}/get-all-switch-data")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SwitchData> getAllSwitchDataByEndDeviceMacAndSwitchNumber(
+            @PathVariable String endDeviceMac, @PathVariable int switchNumber) {
+        return switchDataService.findAllSwitchDataByEndDeviceMacAndSwitchNumber(endDeviceMac, switchNumber);
     }
 }

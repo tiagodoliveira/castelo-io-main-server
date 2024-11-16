@@ -1,6 +1,7 @@
 package io.castelo.main_server.sensor_data;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +17,20 @@ public class SensorDataService {
         this.sensorDataRepository = sensorDataRepository;
     }
 
-    public List<SensorData> findSensorDataByEndDeviceMac(String endDeviceMac) {
-        return   sensorDataRepository.findByMetaField_EndDeviceMac(endDeviceMac);
+    public List<SensorData> findAllSensorDataByEndDeviceMac(String endDeviceMac) {
+        return sensorDataRepository.findByMetaField_EndDeviceMac(endDeviceMac);
+    }
+
+    public List<SensorData> findSensorDataByEndDeviceMac(String endDeviceMac, int maxEntries) {
+        return sensorDataRepository.findByMetaField_EndDeviceMac(endDeviceMac, PageRequest.of(0, maxEntries));
+    }
+
+    public List<SensorData> findSensorDataByEndDeviceMacAndSensorNumber(String endDeviceMac, int sensorNumber, int maxEntries) {
+        return sensorDataRepository.findByMetaField_EndDeviceMacAndMetaField_SensorNumber(endDeviceMac, sensorNumber, PageRequest.of(0, maxEntries));
+    }
+
+    public List<SensorData> findAllSensorDataByEndDeviceMacAndSensorNumber(String endDeviceMac, int sensorNumber) {
+        return sensorDataRepository.findByMetaField_EndDeviceMacAndMetaField_SensorNumber(endDeviceMac, sensorNumber);
     }
 
     public SensorData getLatestSensorValue(String endDeviceMac, int sensorNumber) {

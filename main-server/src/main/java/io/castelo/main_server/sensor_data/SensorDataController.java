@@ -29,15 +29,40 @@ public class SensorDataController {
         sensorDataService.insertSensorData(sensorDataList);
     }
 
+    @GetMapping("/{endDeviceMac}/get-all-sensor-data")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SensorData> getAllSensorDataByEndDeviceMac(@PathVariable String endDeviceMac) {
+        return sensorDataService.findAllSensorDataByEndDeviceMac(endDeviceMac);
+    }
+
     @GetMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.OK)
-    public List<SensorData> getSensorDataByEndDeviceMac(@PathVariable String endDeviceMac) {
-        return sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac);
+    public List<SensorData> getSensorDataByEndDeviceMac(
+            @PathVariable String endDeviceMac,
+            @RequestParam(required = false, name = "maxEntries" , defaultValue = "10") Integer maxEntries) {
+        return sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac, maxEntries);
     }
 
     @GetMapping("/{endDeviceMac}/{sensorNumber}/latest")
     @ResponseStatus(HttpStatus.OK)
     public SensorData getLatestSensorValue(@PathVariable String endDeviceMac, @PathVariable int sensorNumber) {
         return sensorDataService.getLatestSensorValue(endDeviceMac, sensorNumber);
+    }
+
+    @GetMapping("/{endDeviceMac}/{sensorNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SensorData> getSensorDataByEndDeviceMacAndSensorNumber(
+            @PathVariable String endDeviceMac,
+            @PathVariable int sensorNumber,
+            @RequestParam(required = false, name = "maxEntries", defaultValue = "10") Integer maxEntries)
+    {
+        return sensorDataService.findSensorDataByEndDeviceMacAndSensorNumber(endDeviceMac, sensorNumber, maxEntries);
+    }
+
+    @GetMapping("/{endDeviceMac}/{sensorNumber}/get-all-sensor-data")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SensorData> getAllSensorDataByEndDeviceMacAndSensorNumber(
+            @PathVariable String endDeviceMac, @PathVariable int sensorNumber) {
+        return sensorDataService.findAllSensorDataByEndDeviceMacAndSensorNumber(endDeviceMac, sensorNumber);
     }
 }
