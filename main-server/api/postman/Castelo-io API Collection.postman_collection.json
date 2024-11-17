@@ -7,6 +7,63 @@
 	},
 	"item": [
 		{
+			"name": "End Device Data",
+			"item": [
+				{
+					"name": "Get End Device Data By MAC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-device/{{endDeviceMac1}}?maxEntries={{maxEntries}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device",
+								"{{endDeviceMac1}}"
+							],
+							"query": [
+								{
+									"key": "maxEntries",
+									"value": "{{maxEntries}}",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create End Device Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"endDeviceMac\": \"{{endDeviceMac1}}\",\n  \"sensors\": [\n    {\n      \"sensorType\": \"Temperature\",\n      \"sensorValue\": 25.5\n    },\n    {\n      \"sensorType\": \"Humidity\",\n      \"sensorValue\": 60.0\n    }\n  ],\n  \"switches\": [\n    {\n      \"switchNumber\": 1,\n      \"switchState\": true\n    },\n    {\n      \"switchNumber\": 2,\n      \"switchState\": false\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/end-device/save-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device",
+								"save-data"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Switch Data",
 			"item": [
 				{
