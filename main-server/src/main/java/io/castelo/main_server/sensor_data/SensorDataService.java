@@ -42,7 +42,7 @@ public class SensorDataService {
         return sensorDataRepository.findByMetaField_EndDeviceMacAndMetaField_SensorNumberOrderByTimestampDesc(endDeviceMac, sensorNumber);
     }
 
-    public SensorData getLatestSensorValue(String endDeviceMac, int sensorNumber) {
+    public SensorData getLatestSensorDataByEndDeviceMacAndSensorNumber(String endDeviceMac, int sensorNumber) {
         Optional<SensorData> sensorData = sensorDataRepository.findFirstByMetaField_EndDeviceMacAndMetaField_SensorNumberOrderByTimestampDesc(endDeviceMac, sensorNumber);
         return sensorData.orElse(null);
     }

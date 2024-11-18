@@ -47,6 +47,8 @@ public class SwitchDataService {
         return switchDataDBEntry.orElse(null);
     }
 
+
+
     public List<SwitchData> getSwitchDataWithinTimeRange(String endDeviceMac, int switchNumber, LocalDateTime startDate, LocalDateTime endDate) {
         return switchDataRepository.findByMetaField_EndDeviceMacAndMetaField_SwitchNumberAndTimestampIsBetweenOrderByTimestampDesc(
                 endDeviceMac, switchNumber, startDate.minusNanos(1), endDate.plusNanos(1)); // plus and minus nanos ensures the dates are inclusive

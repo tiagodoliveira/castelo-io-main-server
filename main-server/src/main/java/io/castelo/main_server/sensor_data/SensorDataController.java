@@ -48,7 +48,7 @@ public class SensorDataController {
     @GetMapping("/{endDeviceMac}/{sensorNumber}/latest")
     @ResponseStatus(HttpStatus.OK)
     public SensorData getLatestSensorValue(@PathVariable String endDeviceMac, @PathVariable int sensorNumber) {
-        return sensorDataService.getLatestSensorValue(endDeviceMac, sensorNumber);
+        return sensorDataService.getLatestSensorDataByEndDeviceMacAndSensorNumber(endDeviceMac, sensorNumber);
     }
 
     @GetMapping("/{endDeviceMac}/{sensorNumber}")

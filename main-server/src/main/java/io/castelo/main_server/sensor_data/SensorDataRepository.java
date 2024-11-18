@@ -16,7 +16,4 @@ public interface SensorDataRepository extends MongoRepository<SensorData, String
     List<SensorData> findByMetaField_EndDeviceMacAndMetaField_SensorNumberOrderByTimestampDesc(String endDeviceMac, int sensorNumber, PageRequest pageRequest);
     List<SensorData> findByMetaField_EndDeviceMacAndMetaField_SensorNumberAndTimestampBetweenOrderByTimestampDesc(String endDeviceMac, int sensorNumber, LocalDateTime startDate, LocalDateTime endDate);
     Optional<SensorData> findFirstByMetaField_EndDeviceMacAndMetaField_SensorNumberOrderByTimestampDesc(String endDeviceMac, int sensorNumber );
-
-
-
 }

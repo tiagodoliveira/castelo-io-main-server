@@ -54,6 +54,31 @@ public class EndDeviceDataService {
         List<SensorData> sensorValues = sensorDataService.findSensorDataByEndDeviceMac(endDeviceMac, maxEntries);
         List<SwitchData> switchValues = switchDataService.findSwitchDataByEndDeviceMac(endDeviceMac, maxEntries);
 
+        return getEndDeviceData(endDeviceMac, sensorValues, switchValues);
+    }
+
+    public EndDeviceData findAllByEndDeviceMac(String endDeviceMac){
+        List<SensorData> sensorValues = sensorDataService.findAllSensorDataByEndDeviceMac(endDeviceMac);
+        List<SwitchData> switchValues = switchDataService.findAllSwitchDataByEndDeviceMac(endDeviceMac);
+
+        return getEndDeviceData(endDeviceMac, sensorValues, switchValues);
+    }
+
+    /*
+    private EndDeviceData getEndDeviceData(String endDeviceMac) {
+        TODO Access the Postgres database to find how many sensors and switchs the device has
+        List<Integer> sensorNumbers = new ArrayList<>();
+        List<Integer> switchNumbers = new ArrayList<>();
+
+        List<SensorData> sensorData = sensorNumbers.stream().collect(Collectors.groupingBy(
+                sensorNumber ->
+        ))
+        SensorData sensorData = sensorDataService.getLatestSensorDataByEndDeviceMacAndSensorNumber(endDeviceMac, sensorNumber);
+        SwitchData switchData = switchDataService.getLatestSwitchDataByEndDeviceMacAndSwitchNumber(endDeviceMac, switchNumber);
+
+    }*/
+
+    private EndDeviceData getEndDeviceData(String endDeviceMac, List<SensorData> sensorValues, List<SwitchData> switchValues) {
         List<Sensor> sensorDataList = sensorValues.stream()
                 .collect(Collectors.groupingBy(
                         sensorDataEntry -> sensorDataEntry.metaField().sensorNumber(),
