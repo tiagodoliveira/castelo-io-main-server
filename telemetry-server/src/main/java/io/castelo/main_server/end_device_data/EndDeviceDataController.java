@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/end-device")
+@RequestMapping("/end-device-telemetry")
 public class EndDeviceDataController {
 
     private final EndDeviceDataService endDeviceDataService;

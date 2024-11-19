@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "2424f921-4a93-4b6e-a78f-3f9444ab7884",
-		"name": "Castelo-io API Collection",
+		"name": "Castelo-io EndDevice Telemetry API Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "10640586"
 	},
@@ -21,7 +21,12 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"metaField\": {\n    \"endDeviceMac\": \"{{endDeviceMac1}}\",\n    \"switchNumber\": {{switchNumber1}}\n  },\n  \"timestamp\": \"2023-01-01T00:00:00\",\n  \"value\": true\n}"
+							"raw": "{\n    \"metaField\": {\n        \"endDeviceMac\": \"{{endDeviceMac1}}\",\n        \"switchNumber\": {{switchNumber5}}\n    },\n    \"timestamp\": \"2024-01-01T18:00:00\",\n    \"value\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{baseUrl}}/switch-data/add-switch-value",
@@ -48,7 +53,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T10:00:00\",\n    \"value\": true\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T12:00:00\",\n    \"value\": false\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber2}}\n    },\n    \"timestamp\": \"2023-01-02T00:00:00\",\n    \"value\": true\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac2}}\",\n      \"switchNumber\": {{switchNumber3}}\n    },\n    \"timestamp\": \"2023-01-03T00:00:00\",\n    \"value\": false\n  }\n]"
+							"raw": "[\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T10:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T12:00:00\",\n    \"value\": 0\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T13:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T14:00:00\",\n    \"value\": 0\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T15:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T16:00:00\",\n    \"value\": 0\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T17:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T18:00:00\",\n    \"value\": 0\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T19:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T20:00:00\",\n    \"value\": 0\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T21:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber1}}\n    },\n    \"timestamp\": \"2023-01-01T22:00:00\",\n    \"value\": 0\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac1}}\",\n      \"switchNumber\": {{switchNumber2}}\n    },\n    \"timestamp\": \"2023-01-02T00:00:00\",\n    \"value\": 1\n  },\n  {\n    \"metaField\": {\n      \"endDeviceMac\": \"{{endDeviceMac2}}\",\n      \"switchNumber\": {{switchNumber3}}\n    },\n    \"timestamp\": \"2023-01-03T00:00:00\",\n    \"value\": 0\n  }\n]"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/switch-data/add-switch-values",
@@ -393,6 +398,79 @@
 									"key": "endDate",
 									"value": "{{endDate}}"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "End Device Data",
+			"item": [
+				{
+					"name": "Get End Device Data By MAC Address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/{{endDeviceMac1}}?maxEntries={{maxEntries}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{endDeviceMac1}}"
+							],
+							"query": [
+								{
+									"key": "maxEntries",
+									"value": "{{maxEntries}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All End Device Data By MAC Address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-device/{{endDeviceMac1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device",
+								"{{endDeviceMac1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create End Device Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"endDeviceMac\": \"{{endDeviceMac3}}\",\n  \"sensors\": [\n    {\n      \"sensorNumber\": 1,\n      \"sensorValues\": [\n        {\n          \"timestamp\": \"2023-01-01T00:00:00\",\n          \"value\": \"25.5\"\n        },\n        {\n          \"timestamp\": \"2023-01-01T12:00:00\",\n          \"value\": \"26.3\"\n        }\n      ]\n    },\n    {\n      \"sensorNumber\": 2,\n      \"sensorValues\": [\n        {\n          \"timestamp\": \"2023-01-02T00:00:00\",\n          \"value\": \"60.0\"\n        },\n        {\n          \"timestamp\": \"2023-01-03T12:00:00\",\n          \"value\": \"58.0\"\n        }\n      ]\n    }\n  ],\n  \"switches\": [\n    {\n      \"switchNumber\": 1,\n      \"switchValues\": [\n        {\n          \"timestamp\": \"2023-01-01T00:00:00\",\n          \"value\": true\n        },\n        {\n          \"timestamp\": \"2023-01-01T12:00:00\",\n          \"value\": false\n        }\n      ]\n    },\n    {\n      \"switchNumber\": 2,\n      \"switchValues\": [\n        {\n          \"timestamp\": \"2023-01-02T00:00:00\",\n          \"value\": false\n        },\n        {\n          \"timestamp\": \"2023-01-03T12:00:00\",\n          \"value\": true\n        }\n      ]\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/end-device/save-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device",
+								"save-data"
 							]
 						}
 					},

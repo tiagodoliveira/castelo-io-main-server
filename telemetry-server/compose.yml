@@ -1,12 +1,4 @@
 services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-      POSTGRES_DB: castelo-io-database
-      POSTGRES_USER: castelo-io
-      POSTGRES_PASSWORD: password
-    ports:
-      - '5432:5432'
 
   mongodb:
     image: mongo:latest
@@ -21,10 +13,11 @@ services:
     image: mongo-express
     container_name: mongo_express
     ports:
-      - '8081:8081'
+      - '27018:27018'
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: password
       ME_CONFIG_MONGODB_SERVER: mongodb
+      PORT: 27018
 volumes:
   mongo: {}

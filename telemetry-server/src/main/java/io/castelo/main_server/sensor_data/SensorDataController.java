@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/end-device/sensor-data")
+@RequestMapping("/end-device-telemetry/sensor-data")
 public class SensorDataController {
 
     private final SensorDataService sensorDataService;

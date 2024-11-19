@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/end-device/switch-data")
+@RequestMapping("/end-device-telemetry/switch-data")
 public class SwitchDataController {
 
     private final SwitchDataService switchDataService;
