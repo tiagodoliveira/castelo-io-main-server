@@ -1,22 +1,24 @@
 {
   "User": [
     {
+      "user_id": "cfd3ce69-1f3d-43cc-87f1-a686373a25ca",
       "user_name": "Alice Smith"
     },
     {
+      "user_id": "3f43b3e8-6bd8-48e8-99e4-7e31d2d97982",
       "user_name": "Bob Johnson"
     }
   ],
   "Gateway": [
     {
       "gateway_mac": "00:11:22:33:44:55",
-      "user_id": 1,
+      "user_id": "cfd3ce69-1f3d-43cc-87f1-a686373a25ca",
       "gateway_ip": "192.168.1.10",
       "gateway_name": "Gateway 1"
     },
     {
       "gateway_mac": "66:77:88:99:AA:BB",
-      "user_id": 2,
+      "user_id": "3f43b3e8-6bd8-48e8-99e4-7e31d2d97982",
       "gateway_ip": "192.168.1.11",
       "gateway_name": "Gateway 2"
     }
