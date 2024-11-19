@@ -2,17 +2,22 @@ package io.castelo.main_server.database;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Types;
+import java.util.UUID;
 
 @Service
 public class PostgresDataInitializer {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostgresDataInitializer.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -20,35 +25,42 @@ public class PostgresDataInitializer {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @PostConstruct
+    @Transactional
     public void initializeData() throws IOException {
-        JsonNode rootNode = objectMapper.readTree(new File("src/main/resources/data/database-init-data.json"));
+        try {
+            JsonNode rootNode = objectMapper.readTree(new File("src/main/resources/data/database-init-data.json"));
 
-        insertUsers(rootNode.get("User"));
-        insertGateways(rootNode.get("Gateway"));
-        insertModels(rootNode.get("EndDeviceModel"));
-        insertEndDevices(rootNode.get("EndDevice"));
-        insertSwitches(rootNode.get("Switch"));
-        insertSensors(rootNode.get("Sensor"));
+            insertUsers(rootNode.get("User"));
+            insertGateways(rootNode.get("Gateway"));
+            insertModels(rootNode.get("EndDeviceModel"));
+            insertEndDevices(rootNode.get("EndDevice"));
+            insertSwitches(rootNode.get("Switch"));
+            insertSensors(rootNode.get("Sensor"));
+        } catch (Exception e) {
+            logger.error("Data initialization failed", e);
+            throw e;
+        }
     }
 
     private void insertUsers(JsonNode users) {
         for (JsonNode user : users) {
+            UUID userId = UUID.fromString(user.get("user_id").asText());
             String userName = user.get("user_name").asText();
-            jdbcTemplate.update("INSERT INTO \"User\" (user_name) VALUES (?) ", userName);
+            jdbcTemplate.update("INSERT INTO \"User\" (user_id, user_name) VALUES (?, ?) ON CONFLICT DO NOTHING", userId, userName);
         }
     }
 
     private void insertGateways(JsonNode gateways) {
         for (JsonNode gateway : gateways) {
             String gatewayMac = gateway.get("gateway_mac").asText();
-            Integer gatewayUserId = gateway.has("gateway_user_id") ? gateway.get("gateway_user_id").asInt() : null;
-            String gatewayIp = gateway.has("gateway_ip") ? gateway.get("gateway_ip").asText() : null;
+            UUID userId = UUID.fromString(gateway.get("user_id").asText());
+            String gatewayIp = gateway.get("gateway_ip").asText();
             String gatewayName = gateway.get("gateway_name").asText();
 
             jdbcTemplate.update(
                     "INSERT INTO \"Gateway\" (gateway_mac, gateway_user_id, gateway_ip, gateway_name) VALUES (?, ?, ?, ?) " +
                             "ON CONFLICT (gateway_mac) DO NOTHING",
-                    gatewayMac, gatewayUserId, gatewayIp, gatewayName
+                    gatewayMac, userId, gatewayIp, gatewayName
             );
         }
     }

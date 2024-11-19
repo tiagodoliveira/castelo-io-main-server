@@ -1,20 +1,25 @@
-package io.castelo.main_server.end_device_switch;
+package io.castelo.main_server.end_device_sensor;
 
 import io.castelo.main_server.utils.MACAddressValidator;
+import jakarta.persistence.Entity;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
-public record EndDeviceSwitch(
+@Entity
+@IdClass(SensorKey.class)
+@Table(name = "Sensor")
+public record Sensor(
         @Id
         String endDeviceMac,
-        @NotEmpty
-        int switchNumber,
+        @Id
+        Short sensorNumber,
         @NotBlank
-        String switchName
+        String sensorName
 
 ) {
-    public EndDeviceSwitch {
+    public Sensor {
         // Validate and normalize endDeviceMac
         if (endDeviceMac == null || endDeviceMac.isBlank()) {
             throw new IllegalArgumentException("End Device Mac must not be blank");
