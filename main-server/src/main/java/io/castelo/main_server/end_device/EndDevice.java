@@ -5,42 +5,122 @@ import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.utils.MACAddressValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import org.springframework.data.annotation.Id;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "EndDevice")
-public record EndDevice(
+@Table(name = "end_devices")
+public class EndDevice {
         @Id
-        String endDeviceMac,
         @NotBlank
-        String endDeviceIp,
+        @Column(name = "end_device_mac", length = 17)
+        private String endDeviceMac;
+
+        @NotBlank
+        @Column(name = "end_device_ip", nullable = false, columnDefinition = "inet")
+        private String endDeviceIp;
+
+        @NotNull
+        @ManyToOne
+        @JoinColumn(name = "model_id", nullable = false, referencedColumnName = "model_id")
+        private EndDeviceModel endDeviceModel;
+
+        @NotBlank
+        @Column(name = "end_device_name", nullable = false, columnDefinition = "text")
+        private String endDeviceName;
+
+        @Column(name = "debug_mode", nullable = false)
+        private boolean debugMode;
 
         @ManyToOne
-        @JoinColumn(name = "model_id", nullable = false)
-        EndDeviceModel endDeviceModel,
+        @JoinColumn(name = "gateway_mac", referencedColumnName = "gateway_mac")
+        private Gateway gateway;
 
         @NotBlank
-        String endDeviceName,
-        @NotEmpty
-        boolean debugMode,
+        @Column(name = "firmware", nullable = false, columnDefinition = "text")
+        private String firmware;
 
-        @ManyToOne
-        @JoinColumn(name = "gateway_mac", nullable = false)
-        Gateway gateway,
-
-        @NotBlank
-        String firmware,
-
-        @NotEmpty
+        @NotNull
         @Enumerated(EnumType.STRING)
-        DeviceMode deviceMode
-) {
-        public EndDevice {
-                // Validate and normalize endDeviceMac
-                if (endDeviceMac == null || endDeviceMac.isBlank()) {
-                        throw new IllegalArgumentException("End Device Mac must not be blank");
-                }
-                endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+        @Column(name = "working_mode", columnDefinition = "device_mode", nullable = false)
+        private DeviceMode working_mode;
+
+        public EndDevice() {}
+
+        public EndDevice(@NotBlank String endDeviceMac, @NotBlank String endDeviceIp, @NotNull EndDeviceModel endDeviceModel,
+                         @NotBlank String endDeviceName, boolean debugMode, Gateway gateway,
+                         @NotBlank String firmware, @NotNull DeviceMode deviceMode) {
+
+                this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+                this.endDeviceIp = endDeviceIp;
+                this.endDeviceModel = endDeviceModel;
+                this.endDeviceName = endDeviceName;
+                this.debugMode = debugMode;
+                this.gateway = gateway;
+                this.firmware = firmware;
+                this.working_mode = deviceMode;
+        }
+
+        public @NotBlank String getEndDeviceMac() {
+                return endDeviceMac;
+        }
+
+        public void setEndDeviceMac(@NotBlank String endDeviceMac) {
+                this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+        }
+
+        public @NotBlank String getEndDeviceIp() {
+                return endDeviceIp;
+        }
+
+        public void setEndDeviceIp(@NotBlank String endDeviceIp) {
+                this.endDeviceIp = endDeviceIp;
+        }
+
+        public @NotNull EndDeviceModel getEndDeviceModel() {
+                return endDeviceModel;
+        }
+
+        public void setEndDeviceModel(@NotNull EndDeviceModel endDeviceModel) {
+                this.endDeviceModel = endDeviceModel;
+        }
+
+        public @NotBlank String getEndDeviceName() {
+                return endDeviceName;
+        }
+
+        public void setEndDeviceName(@NotBlank String endDeviceName) {
+                this.endDeviceName = endDeviceName;
+        }
+
+        public boolean isDebugMode() {
+                return debugMode;
+        }
+
+        public void setDebugMode(boolean debugMode) {
+                this.debugMode = debugMode;
+        }
+
+        public Gateway getGateway() {
+                return gateway;
+        }
+
+        public void setGateway(Gateway gateway) {
+                this.gateway = gateway;
+        }
+
+        public @NotBlank String getFirmware() {
+                return firmware;
+        }
+
+        public void setFirmware(@NotBlank String firmware) {
+                this.firmware = firmware;
+        }
+
+        public @NotNull DeviceMode getWorkingMode() {
+                return working_mode;
+        }
+
+        public void setDeviceMode(@NotNull DeviceMode deviceMode) {
+                this.working_mode = deviceMode;
         }
 }

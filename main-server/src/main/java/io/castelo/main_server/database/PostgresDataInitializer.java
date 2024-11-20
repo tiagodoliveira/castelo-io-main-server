@@ -27,6 +27,7 @@ public class PostgresDataInitializer {
     @PostConstruct
     @Transactional
     public void initializeData() throws IOException {
+        logger.info("Initializing database data");
         try {
             JsonNode rootNode = objectMapper.readTree(new File("src/main/resources/data/database-init-data.json"));
 
@@ -46,7 +47,7 @@ public class PostgresDataInitializer {
         for (JsonNode user : users) {
             UUID userId = UUID.fromString(user.get("user_id").asText());
             String userName = user.get("user_name").asText();
-            jdbcTemplate.update("INSERT INTO \"User\" (user_id, user_name) VALUES (?, ?) ON CONFLICT DO NOTHING", userId, userName);
+            jdbcTemplate.update("INSERT INTO \"users\" (user_id, user_name) VALUES (?, ?) ON CONFLICT DO NOTHING", userId, userName);
         }
     }
 
@@ -58,7 +59,7 @@ public class PostgresDataInitializer {
             String gatewayName = gateway.get("gateway_name").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO \"Gateway\" (gateway_mac, gateway_user_id, gateway_ip, gateway_name) VALUES (?, ?, ?, ?) " +
+                    "INSERT INTO gateways (gateway_mac, gateway_user_id, gateway_ip, gateway_name) VALUES (?, ?, CAST(? AS inet), ?) " +
                             "ON CONFLICT (gateway_mac) DO NOTHING",
                     gatewayMac, userId, gatewayIp, gatewayName
             );
@@ -71,7 +72,7 @@ public class PostgresDataInitializer {
             String latestFirmwareVersion = model.get("latest_firmware_version").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO \"EndDeviceModel\" (model_id, latest_firmware_version) VALUES (?, ?) " +
+                    "INSERT INTO end_device_models (model_id, latest_firmware_version) VALUES (?, ?) " +
                             "ON CONFLICT (model_id) DO NOTHING",
                     modelId, latestFirmwareVersion
             );
@@ -90,8 +91,8 @@ public class PostgresDataInitializer {
             String workingMode = endDevice.get("working_mode").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO \"EndDevice\" (end_device_mac, end_device_ip, model_id, end_device_name, debug_mode, gateway_mac, firmware, working_mode) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (end_device_mac) DO NOTHING",
+                    "INSERT INTO end_devices (end_device_mac, end_device_ip, model_id, end_device_name, debug_mode, gateway_mac, firmware, working_mode) " +
+                            "VALUES (?, CAST(? AS inet), ?, ?, ?, ?, ?, ?) ON CONFLICT (end_device_mac) DO NOTHING",
                     endDeviceMac, endDeviceIp, modelId, endDeviceName, debugMode, gatewayMac, firmware, workingMode
             );
         }
@@ -104,7 +105,7 @@ public class PostgresDataInitializer {
             String switchName = switchNode.get("switch_name").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO \"Switch\" (end_device_mac, switch_number, switch_name) VALUES (?, ?, ?) " +
+                    "INSERT INTO switches (end_device_mac, switch_number, switch_name) VALUES (?, ?, ?) " +
                             "ON CONFLICT (end_device_mac, switch_number) DO NOTHING",
                     endDeviceMac, switchNumber, switchName
             );
@@ -118,7 +119,7 @@ public class PostgresDataInitializer {
             String sensorName = sensor.get("sensor_name").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO \"Sensor\" (end_device_mac, sensor_number, sensor_name) VALUES (?, ?, ?) " +
+                    "INSERT INTO sensors (end_device_mac, sensor_number, sensor_name) VALUES (?, ?, ?) " +
                             "ON CONFLICT (end_device_mac, sensor_number) DO NOTHING",
                     endDeviceMac, sensorNumber, sensorName
             );
