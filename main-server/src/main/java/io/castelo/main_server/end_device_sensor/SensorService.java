@@ -31,9 +31,8 @@ public class SensorService {
         return sensorRepository.save(sensor);
     }
 
-    public void deleteSensor(SensorKey id) {
-        Sensor sensor = sensorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with id: " + id));
-        sensorRepository.delete(sensor);
+    public void deleteAllSensors(String endDeviceMac) {
+        List<Sensor> sensors = sensorRepository.findAllByEndDeviceMac(endDeviceMac);
+        sensorRepository.deleteAll(sensors);
     }
 }

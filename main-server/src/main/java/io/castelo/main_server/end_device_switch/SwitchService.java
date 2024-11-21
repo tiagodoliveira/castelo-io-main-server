@@ -32,9 +32,8 @@ public class SwitchService {
         return switchRepository.save(sw);
     }
 
-    public void deleteSwitch(SwitchKey id) {
-        Switch sw = switchRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Switch not found with id: " + id));
-        switchRepository.delete(sw);
+    public void deleteAllSwitches(String endDeviceMac) {
+        List<Switch> switches = switchRepository.findAllByEndDeviceMac(endDeviceMac);
+        switchRepository.deleteAll(switches);
     }
 }
