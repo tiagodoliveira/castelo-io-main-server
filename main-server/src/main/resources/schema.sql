@@ -5,6 +5,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_type WHERE typname = ''device_mode'') THEN
         CREATE TYPE device_mode AS ENUM (''AUTONOMOUS'', ''MANUAL'');
         CREATE CAST (varchar AS device_mode) WITH INOUT AS IMPLICIT;
+        CREATE CAST (CHARACTER VARYING as inet) WITH INOUT AS IMPLICIT;
     END IF;
 END;' LANGUAGE 'plpgsql';
 

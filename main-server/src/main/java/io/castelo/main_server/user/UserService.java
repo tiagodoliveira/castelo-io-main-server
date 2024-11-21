@@ -31,7 +31,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(UUID userId, User userDetails) {
+    public User updateUserName(UUID userId, User userDetails) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         user.setUserName(userDetails.getUserName());
         return userRepository.save(user);
@@ -41,4 +41,10 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         userRepository.delete(user);
     }
+
+    public boolean existsByUserId(UUID userId) {
+        return userRepository.existsById(userId);
+    }
+
+
 }
