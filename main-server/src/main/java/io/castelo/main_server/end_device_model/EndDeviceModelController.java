@@ -1,5 +1,6 @@
 package io.castelo.main_server.end_device_model;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class EndDeviceModelController {
     }
 
     @PostMapping
-    public EndDeviceModel createModel(@RequestBody EndDeviceModel model) {
+    public EndDeviceModel createModel(@RequestBody @Valid EndDeviceModel model) {
         return endDeviceModelService.createModel(model);
     }
 

@@ -1,5 +1,7 @@
 package io.castelo.main_server.utils;
 
+import io.castelo.main_server.exception.InvalidMACAddressException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,6 @@ public class MACAddressValidator {
             // Convert from no delimiter format to colon format
             return macAddress.replaceAll("(.{2})(?!$)", "$1:");
         }
-        throw new IllegalArgumentException("Invalid MAC Address format");
+        throw new InvalidMACAddressException("The MAC Address " + macAddress + " is not valid");
     }
 }

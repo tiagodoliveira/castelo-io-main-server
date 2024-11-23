@@ -12,7 +12,8 @@ import jakarta.validation.constraints.NotNull;
 public class EndDeviceModel {
 
     @Id
-    @Column(name = "model_id")
+    @NotNull
+    @Column(name = "model_id", updatable = false, nullable = false)
     private Integer modelId;
 
     @NotBlank

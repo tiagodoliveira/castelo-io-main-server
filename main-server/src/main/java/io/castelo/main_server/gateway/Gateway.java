@@ -1,6 +1,7 @@
 package io.castelo.main_server.gateway;
 
 import io.castelo.main_server.user.User;
+import io.castelo.main_server.utils.IpAddressValidator;
 import io.castelo.main_server.utils.MACAddressValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,7 @@ public class Gateway {
         String gatewayName;
 
     public Gateway(@NotBlank String gatewayMac, @NotNull User user, @NotBlank String gatewayIp, @NotBlank String gatewayName) {
-        this.gatewayMac = MACAddressValidator.normalizeMACAddress(gatewayMac);
+        this.gatewayMac = gatewayMac;
         this.user = user;
         this.gatewayIp = gatewayIp;
         this.gatewayName = gatewayName;
@@ -51,6 +52,7 @@ public class Gateway {
     }
 
     public void setGatewayIp(@NotBlank String gatewayIp) {
+        IpAddressValidator.validateIpAddress(gatewayIp);
         this.gatewayIp = gatewayIp;
     }
 

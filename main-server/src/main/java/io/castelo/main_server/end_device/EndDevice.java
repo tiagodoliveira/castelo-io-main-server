@@ -28,7 +28,7 @@ public class EndDevice {
         @Column(name = "end_device_name", nullable = false, columnDefinition = "text")
         private String endDeviceName;
 
-        @Column(name = "debug_mode", nullable = false)
+        @Column(name = "debug_mode")
         private boolean debugMode;
 
         @ManyToOne
@@ -39,16 +39,15 @@ public class EndDevice {
         @Column(name = "firmware", nullable = false, columnDefinition = "text")
         private String firmware;
 
-        @NotNull
         @Enumerated(EnumType.STRING)
-        @Column(name = "working_mode", columnDefinition = "device_mode", nullable = false)
+        @Column(name = "working_mode", columnDefinition = "device_mode")
         private DeviceMode working_mode;
 
         public EndDevice() {}
 
         public EndDevice(@NotBlank String endDeviceMac, @NotBlank String endDeviceIp, @NotNull EndDeviceModel endDeviceModel,
                          @NotBlank String endDeviceName, boolean debugMode, Gateway gateway,
-                         @NotBlank String firmware, @NotNull DeviceMode deviceMode) {
+                         @NotBlank String firmware, DeviceMode deviceMode) {
 
                 this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
                 this.endDeviceIp = endDeviceIp;
@@ -116,11 +115,11 @@ public class EndDevice {
                 this.firmware = firmware;
         }
 
-        public @NotNull DeviceMode getWorkingMode() {
+        public DeviceMode getWorkingMode() {
                 return working_mode;
         }
 
-        public void setDeviceMode(@NotNull DeviceMode deviceMode) {
+        public void setDeviceMode(DeviceMode deviceMode) {
                 this.working_mode = deviceMode;
         }
 }

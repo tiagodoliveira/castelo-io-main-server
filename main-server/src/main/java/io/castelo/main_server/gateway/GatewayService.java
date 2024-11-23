@@ -2,6 +2,8 @@ package io.castelo.main_server.gateway;
 
 import io.castelo.main_server.end_device.EndDeviceService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
+import io.castelo.main_server.utils.IpAddressValidator;
+import io.castelo.main_server.utils.MACAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +31,23 @@ public class GatewayService {
     }
 
     public Gateway createGateway(Gateway gateway) {
+
+        IpAddressValidator.validateIpAddress(gateway.getGatewayIp());
+        MACAddressValidator.normalizeMACAddress(gateway.getGatewayMac());
+
         return gatewayRepository.save(gateway);
     }
 
     public Gateway updateGateway(String gatewayMac, Gateway gatewayDetails) {
         Gateway gateway = gatewayRepository.findById(gatewayMac)
                 .orElseThrow(() -> new ResourceNotFoundException("Gateway not found with mac: " + gatewayMac));
-        gateway.setGatewayName(gatewayDetails.getGatewayName());
+
+        IpAddressValidator.validateIpAddress(gatewayDetails.getGatewayIp());
         gateway.setGatewayIp(gatewayDetails.getGatewayIp());
+
+        if ( gatewayDetails.getGatewayName() != null)
+            gateway.setGatewayName(gatewayDetails.getGatewayName());
+
         return gatewayRepository.save(gateway);
     }
 

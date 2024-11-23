@@ -36,6 +36,7 @@ public class EndDeviceService {
         return endDeviceRepository.save(endDevice);
     }
 
+    @Transactional
     public EndDevice updateEndDevice(String endDeviceMac, EndDevice endDeviceDetails) {
         EndDevice endDevice = endDeviceRepository.findById(endDeviceMac)
                 .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + endDeviceMac));
@@ -61,8 +62,10 @@ public class EndDeviceService {
     @Transactional
     public void deleteAllGatewayConnectedEndDevices(String gatewayMac) {
         List<EndDevice> endDevices = endDeviceRepository.findAllByGateway_GatewayMac(gatewayMac);
+        endDevices.forEach(endDevice -> {
+            switchService.deleteAllSwitches(endDevice.getEndDeviceMac());
+            sensorService.deleteAllSensors(endDevice.getEndDeviceMac());
+        });
         endDeviceRepository.deleteAll(endDevices);
-        switchService.deleteAllSwitches(gatewayMac);
-        sensorService.deleteAllSensors(gatewayMac);
     }
 }
