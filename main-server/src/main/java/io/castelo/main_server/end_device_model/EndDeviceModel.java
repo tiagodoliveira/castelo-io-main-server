@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "end_device_models")
-public class EndDeviceModel {
+public class EndDeviceModel{
 
     @Id
     @NotNull

@@ -1,15 +1,20 @@
 package io.castelo.main_server.end_device;
 
 import io.castelo.main_server.end_device_model.EndDeviceModel;
+import io.castelo.main_server.end_device_sensor.Sensor;
+import io.castelo.main_server.end_device_switch.Switch;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.utils.MACAddressValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Entity
 @Table(name = "end_devices")
-public class EndDevice {
+public class EndDevice{
+
         @Id
         @NotBlank
         @Column(name = "end_device_mac", length = 17)
@@ -42,6 +47,14 @@ public class EndDevice {
         @Enumerated(EnumType.STRING)
         @Column(name = "working_mode", columnDefinition = "device_mode")
         private DeviceMode working_mode;
+
+        @OneToMany(fetch = FetchType.LAZY)
+        @JoinColumns({@JoinColumn(name = "end_device_mac", referencedColumnName = "end_device_mac")})
+        private List<Sensor> sensors;
+
+        @OneToMany(fetch = FetchType.LAZY)
+        @JoinColumns({@JoinColumn(name = "end_device_mac", referencedColumnName = "end_device_mac")})
+        private List<Switch> switches;
 
         public EndDevice() {}
 
@@ -119,7 +132,23 @@ public class EndDevice {
                 return working_mode;
         }
 
-        public void setDeviceMode(DeviceMode deviceMode) {
+        public void setWorkingMode(DeviceMode deviceMode) {
                 this.working_mode = deviceMode;
+        }
+
+        public List<Sensor> getSensors() {
+                return sensors;
+        }
+
+        public void setSensors(List<Sensor> sensors) {
+                this.sensors = sensors;
+        }
+
+        public List<Switch> getSwitches() {
+                return switches;
+        }
+
+        public void setSwitches(List<Switch> switches) {
+                this.switches = switches;
         }
 }

@@ -9,24 +9,24 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "gateways")
-public class Gateway {
+public class Gateway{
 
-        @Id
-        @Column(name = "gateway_mac", length = 17)
-        String gatewayMac;
+    @Id
+    @Column(name = "gateway_mac", length = 17)
+    String gatewayMac;
 
-        @NotNull
-        @ManyToOne
-        @JoinColumn(name = "gateway_user_id", nullable = false, referencedColumnName = "user_id")
-        User user;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "gateway_user_id", nullable = false, referencedColumnName = "user_id")
+    User user;
 
-        @NotBlank
-        @Column(name = "gateway_ip", columnDefinition = "inet")
-        String gatewayIp;
+    @NotBlank
+    @Column(name = "gateway_ip", columnDefinition = "inet")
+    String gatewayIp;
 
-        @NotBlank
-        @Column(name = "gateway_name", columnDefinition = "text")
-        String gatewayName;
+    @NotBlank
+    @Column(name = "gateway_name", columnDefinition = "text")
+    String gatewayName;
 
     public Gateway(@NotBlank String gatewayMac, @NotNull User user, @NotBlank String gatewayIp, @NotBlank String gatewayName) {
         this.gatewayMac = gatewayMac;

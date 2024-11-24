@@ -3,6 +3,8 @@ package io.castelo.main_server.end_device;
 import io.castelo.main_server.end_device_sensor.SensorService;
 import io.castelo.main_server.end_device_switch.SwitchService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
+import io.castelo.main_server.utils.IpAddressValidator;
+import io.castelo.main_server.utils.MACAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,27 +35,26 @@ public class EndDeviceService {
     }
 
     public EndDevice createEndDevice(EndDevice endDevice) {
+        IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
+        MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
+
+        if (endDevice.getWorkingMode() == null) {
+            endDevice.setWorkingMode(DeviceMode.MANUAL);
+        }
         return endDeviceRepository.save(endDevice);
     }
 
     @Transactional
-    public EndDevice updateEndDevice(String endDeviceMac, EndDevice endDeviceDetails) {
-        EndDevice endDevice = endDeviceRepository.findById(endDeviceMac)
-                .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + endDeviceMac));
-        endDevice.setEndDeviceIp(endDeviceDetails.getEndDeviceIp());
-        endDevice.setEndDeviceModel(endDeviceDetails.getEndDeviceModel());
-        endDevice.setEndDeviceName(endDeviceDetails.getEndDeviceName());
-        endDevice.setDebugMode(endDeviceDetails.isDebugMode());
-        endDevice.setGateway(endDeviceDetails.getGateway());
-        endDevice.setFirmware(endDeviceDetails.getFirmware());
-        endDevice.setDeviceMode(endDeviceDetails.getWorkingMode());
+    public EndDevice updateEndDevice(String endDeviceMac, EndDeviceDTO endDeviceDTO) {
+        EndDevice endDevice = getEndDevice(endDeviceMac);
+        EndDeviceMapper.INSTANCE.updateEndDeviceFromDto(endDeviceDTO, endDevice);
+
         return endDeviceRepository.save(endDevice);
     }
 
     @Transactional
     public void deleteEndDevice(String endDeviceMac) {
-        EndDevice endDevice = endDeviceRepository.findById(endDeviceMac)
-                .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + endDeviceMac));
+        EndDevice endDevice = getEndDevice(endDeviceMac);
         switchService.deleteAllSwitches(endDeviceMac);
         sensorService.deleteAllSensors(endDeviceMac);
         endDeviceRepository.delete(endDevice);

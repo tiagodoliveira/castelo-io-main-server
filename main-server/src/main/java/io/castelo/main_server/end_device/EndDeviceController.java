@@ -29,7 +29,7 @@ public class EndDeviceController {
     }
 
     @PutMapping("/{end_device_mac}")
-    public ResponseEntity<EndDevice> updateEndDevice(@PathVariable String end_device_mac, @RequestBody EndDevice endDeviceDetails) {
+    public ResponseEntity<EndDevice> updateEndDevice(@PathVariable String end_device_mac, @RequestBody EndDeviceDTO endDeviceDetails) {
         return ResponseEntity.ok(endDeviceService.updateEndDevice(end_device_mac, endDeviceDetails));
     }
 

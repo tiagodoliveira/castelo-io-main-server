@@ -31,7 +31,6 @@ public class GatewayService {
     }
 
     public Gateway createGateway(Gateway gateway) {
-
         IpAddressValidator.validateIpAddress(gateway.getGatewayIp());
         MACAddressValidator.normalizeMACAddress(gateway.getGatewayMac());
 

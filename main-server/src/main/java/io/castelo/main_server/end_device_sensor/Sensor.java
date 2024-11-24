@@ -10,17 +10,17 @@ import jakarta.validation.constraints.NotNull;
 @Table(name = "sensors")
 public class Sensor {
 
-        @Id
-        @Column(name = "end_device_mac", length = 17)
-        private String endDeviceMac;
+    @Id
+    @Column(name = "end_device_mac", length = 17)
+    private String endDeviceMac;
 
-        @Id
-        @Column(name = "sensor_number")
-        private Short sensorNumber;
+    @Id
+    @Column(name = "sensor_number")
+    private Short sensorNumber;
 
-        @NotBlank
-        @Column(name = "sensor_name", nullable = false, columnDefinition = "text")
-        private String sensorName;
+    @NotBlank
+    @Column(name = "sensor_name", nullable = false, columnDefinition = "text")
+    private String sensorName;
 
 
     public Sensor (@NotBlank String endDeviceMac, @NotNull Short sensorNumber, @NotBlank String sensorName){
