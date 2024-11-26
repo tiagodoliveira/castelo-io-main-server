@@ -1,6 +1,8 @@
 package io.castelo.main_server.end_device;
 
+import io.castelo.main_server.end_device_sensor.Sensor;
 import io.castelo.main_server.end_device_sensor.SensorService;
+import io.castelo.main_server.end_device_switch.Switch;
 import io.castelo.main_server.end_device_switch.SwitchService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import io.castelo.main_server.utils.IpAddressValidator;
@@ -34,6 +36,7 @@ public class EndDeviceService {
                 .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + endDeviceMac));
     }
 
+    @Transactional
     public EndDevice createEndDevice(EndDevice endDevice) {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
@@ -41,7 +44,15 @@ public class EndDeviceService {
         if (endDevice.getWorkingMode() == null) {
             endDevice.setWorkingMode(DeviceMode.MANUAL);
         }
-        return endDeviceRepository.save(endDevice);
+        endDevice = endDeviceRepository.save(endDevice);
+
+        List<Sensor> sensors = sensorService.createSensors(endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
+        List<Switch> switches = switchService.createSwitches(endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
+
+        endDevice.setSensors(sensors);
+        endDevice.setSwitches(switches);
+
+        return endDevice;
     }
 
     @Transactional
@@ -55,18 +66,6 @@ public class EndDeviceService {
     @Transactional
     public void deleteEndDevice(String endDeviceMac) {
         EndDevice endDevice = getEndDevice(endDeviceMac);
-        switchService.deleteAllSwitches(endDeviceMac);
-        sensorService.deleteAllSensors(endDeviceMac);
         endDeviceRepository.delete(endDevice);
-    }
-
-    @Transactional
-    public void deleteAllGatewayConnectedEndDevices(String gatewayMac) {
-        List<EndDevice> endDevices = endDeviceRepository.findAllByGateway_GatewayMac(gatewayMac);
-        endDevices.forEach(endDevice -> {
-            switchService.deleteAllSwitches(endDevice.getEndDeviceMac());
-            sensorService.deleteAllSensors(endDevice.getEndDeviceMac());
-        });
-        endDeviceRepository.deleteAll(endDevices);
     }
 }

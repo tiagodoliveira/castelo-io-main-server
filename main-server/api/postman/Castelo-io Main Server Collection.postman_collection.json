@@ -1,0 +1,864 @@
+{
+	"info": {
+		"_postman_id": "e51fee74-9d9f-40d3-901b-e8196bb460e8",
+		"name": "Castelo-io Main Server Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10640586"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"b3d27f9b-d21d-327c-164e-7fb6776f87b0\",\n    \"userName\": \"Sample User\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3f43b3e8-6bd8-48e8-99e4-7e31d2d97982"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"userId\": \"b3d27f9b-d21d-327c-164e-7fb6776f87b0\",\n   \"userName\": \"Pink Floyd\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "b3d27f9b-d21d-327c-164e-7fb6776f87b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "b3d27f9b-d21d-327c-164e-7fb6776f87b0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gateway",
+			"item": [
+				{
+					"name": "Create Gateway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"gatewayMac\": \"00:00:00:00:00:02\",\n    \"user\":{\n        \"userId\": \"3f43b3e8-6bd8-48e8-99e4-7e31d2d97982\"\n    },\n    \"gatewayIp\": \"192.168.1.155\",\n    \"gatewayName\": \"New Gateway\"\n    \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/gateways",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"gateways"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Gateways",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/gateways",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"gateways"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gateway by MAC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/gateways/:mac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"gateways",
+								":mac"
+							],
+							"variable": [
+								{
+									"key": "mac",
+									"value": "00:11:22:33:44:55"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Gateway",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"gatewayName\": \"Not Updated Gateway\",\n    \"gatewayIp\": \"192.168.1.22222\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/gateways/:mac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"gateways",
+								":mac"
+							],
+							"variable": [
+								{
+									"key": "mac",
+									"value": "66:77:88:99:AA:BB"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Gateway",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/gateways/:mac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"gateways",
+								":mac"
+							],
+							"variable": [
+								{
+									"key": "mac",
+									"value": "00:00:00:00:00:02"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EndDeviceModel",
+			"item": [
+				{
+					"name": "Create EndDeviceModel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"modelId\": 3,\n    \"latestFirmwareVersion\": \"1.0.1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/end-device-models",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device-models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-device-models",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device-models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Model by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-device-models/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device-models",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Model",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latestFirmwareVersion\": \"3.4.1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/end-device-models/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device-models",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Model",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-device-models/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-device-models",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SensorModel",
+			"item": [
+				{
+					"name": "Create SensorModel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"modelId\": 3,\n        \"sensorNumber\": 1,\n        \"sensorName\": \"Humidity\"\n    },\n    {\n        \"modelId\": 3,\n        \"sensorNumber\": 2,\n        \"sensorName\": \"Pressure\"\n    },\n    {\n        \"modelId\": 3,\n        \"sensorNumber\": 3,\n        \"sensorName\": \"Light\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sensor-models",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sensor-models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sensor-models",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sensor-models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Model by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sensor-models/:modelId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sensor-models",
+								":modelId"
+							],
+							"variable": [
+								{
+									"key": "modelId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SwitchModel",
+			"item": [
+				{
+					"name": "Create SwitchModel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"modelId\": 3,\n        \"switchNumber\": 1,\n        \"switchName\": \"Light\"\n    },\n    {\n        \"modelId\": 3,\n        \"switchNumber\": 2,\n        \"switchName\": \"Light\"\n    },\n    {\n        \"modelId\": 3,\n        \"switchNumber\": 3,\n        \"switchName\": \"Outlet\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/switch-models",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"switch-models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/switch-models",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"switch-models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Model by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/switch-models/:modelId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"switch-models",
+								":modelId"
+							],
+							"variable": [
+								{
+									"key": "modelId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EndDevice",
+			"item": [
+				{
+					"name": "Create EndDevice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"endDeviceMac\": \"10:00:00:00:00:03\",\n    \"endDeviceIp\": \"192.168.1.101\",\n    \"endDeviceModel\": {\n        \"modelId\": 1\n    },\n    \"user\":{\n        \"userId\": \"cfd3ce69-1f3d-43cc-87f1-a686373a25ca\"\n    },\n    \"endDeviceName\": \"Sample EndDevice\",\n    \"debugMode\": false,\n    \"gateway\": {\n        \"gatewayMac\": \"00:00:00:00:00:02\"\n    },\n    \"firmware\": \"1.1.0\",\n    \"workingMode\": \"AUTONOMOUS\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/end-devices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All EndDevices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-devices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get EndDevice by MAC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-devices/:mac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-devices",
+								":mac"
+							],
+							"variable": [
+								{
+									"key": "mac",
+									"value": "10:00:00:00:00:03"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update EndDevice",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"endDeviceName\": \"Updated Again EndDevice\",\n    \"endDeviceIp\": \"192.168.1.101\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/end-devices/:mac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-devices",
+								":mac"
+							],
+							"variable": [
+								{
+									"key": "mac",
+									"value": "10:00:00:00:00:03"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete EndDevice",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/end-devices/:mac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"end-devices",
+								":mac"
+							],
+							"variable": [
+								{
+									"key": "mac",
+									"value": "10:00:00:00:00:03"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Switch",
+			"item": [
+				{
+					"name": "Get All Switches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/switches",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"switches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Switch by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/switches/:endDeviceMac/:switchNumber",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"switches",
+								":endDeviceMac",
+								":switchNumber"
+							],
+							"variable": [
+								{
+									"key": "endDeviceMac",
+									"value": ""
+								},
+								{
+									"key": "switchNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Switch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"switchName\": \"Updated Switch\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/switches/:endDeviceMac/:switchNumber",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"switches",
+								":endDeviceMac",
+								":switchNumber"
+							],
+							"variable": [
+								{
+									"key": "endDeviceMac",
+									"value": ""
+								},
+								{
+									"key": "switchNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sensor",
+			"item": [
+				{
+					"name": "Get All Sensors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sensors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sensor by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sensors/:endDeviceMac/:sensorNumber",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sensors",
+								":endDeviceMac",
+								":sensorNumber"
+							],
+							"variable": [
+								{
+									"key": "endDeviceMac",
+									"value": ""
+								},
+								{
+									"key": "sensorNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Sensor",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sensorName\": \"Updated Sensor\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sensors/:endDeviceMac/:sensorNumber",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sensors",
+								":endDeviceMac",
+								":sensorNumber"
+							],
+							"variable": [
+								{
+									"key": "endDeviceMac",
+									"value": ""
+								},
+								{
+									"key": "sensorNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		}
+	]
+}

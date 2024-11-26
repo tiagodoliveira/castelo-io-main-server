@@ -25,11 +25,6 @@ public class SwitchController {
         return ResponseEntity.ok().body(sw);
     }
 
-    @PostMapping
-    public Switch createSwitch(@RequestBody Switch sw) {
-        return switchService.createSwitch(sw);
-    }
-
     @PutMapping("/{endDeviceMac}/{switchNumber}")
     public ResponseEntity<Switch> updateSwitchName(@PathVariable String endDeviceMac, @PathVariable Integer switchNumber, @RequestBody String switchName) {
         SwitchKey id = new SwitchKey(endDeviceMac, switchNumber.shortValue());

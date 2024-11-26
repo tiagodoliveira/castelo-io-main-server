@@ -1,6 +1,6 @@
 package io.castelo.main_server.end_device_sensor;
 
-import io.castelo.main_server.utils.MACAddressValidator;
+import io.castelo.main_server.end_device.EndDevice;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,8 +11,13 @@ import jakarta.validation.constraints.NotNull;
 public class Sensor {
 
     @Id
+    @NotBlank
     @Column(name = "end_device_mac", length = 17)
     private String endDeviceMac;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_device_mac", insertable = false, updatable = false)
+    private EndDevice endDevice;
 
     @Id
     @Column(name = "sensor_number")
@@ -24,7 +29,9 @@ public class Sensor {
 
 
     public Sensor (@NotBlank String endDeviceMac, @NotNull Short sensorNumber, @NotBlank String sensorName){
-        this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+        this.endDeviceMac = endDeviceMac;
+        this.sensorNumber = sensorNumber;
+        this.sensorName = sensorName;
     }
 
     public Sensor() {
@@ -36,7 +43,7 @@ public class Sensor {
     }
 
     public void setEndDeviceMac(String endDeviceMac) {
-        this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+        this.endDeviceMac = endDeviceMac;
     }
 
     public Short getSensorNumber() {

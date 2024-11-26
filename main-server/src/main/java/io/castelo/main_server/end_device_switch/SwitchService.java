@@ -1,6 +1,10 @@
 package io.castelo.main_server.end_device_switch;
 
 import io.castelo.main_server.exception.ResourceNotFoundException;
+import io.castelo.main_server.switch_model.SwitchModel;
+import io.castelo.main_server.switch_model.SwitchModelService;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +13,15 @@ import java.util.List;
 @Service
 public class SwitchService {
 
+
+    private final SwitchRepository switchRepository;
+    private final SwitchModelService switchModelService;
+
     @Autowired
-    private SwitchRepository switchRepository;
+    public SwitchService(SwitchRepository switchRepository, SwitchModelService switchModelService) {
+        this.switchRepository = switchRepository;
+        this.switchModelService = switchModelService;
+    }
 
     public List<Switch> getAllSwitches() {
         return switchRepository.findAll();
@@ -21,8 +32,10 @@ public class SwitchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Switch not found with id: " + id));
     }
 
-    public Switch createSwitch(Switch sw) {
-        return switchRepository.save(sw);
+    public List<Switch> createSwitches(@NotEmpty String endDeviceMac, @NotNull Integer modelId) {
+        List<SwitchModel> switchModels = switchModelService.getAllSwitchModelsByModelId(modelId);
+        List<Switch> switches = switchModels.stream().map(switchModel -> new Switch(endDeviceMac, switchModel.getSwitchNumber(), switchModel.getSwitchName())).toList();
+        return switchRepository.saveAll(switches);
     }
 
     public Switch updateSwitchName(SwitchKey id, String switchName) {
@@ -30,10 +43,5 @@ public class SwitchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Switch not found with id: " + id));
         sw.setSwitchName(switchName);
         return switchRepository.save(sw);
-    }
-
-    public void deleteAllSwitches(String endDeviceMac) {
-        List<Switch> switches = switchRepository.findAllByEndDeviceMac(endDeviceMac);
-        switchRepository.deleteAll(switches);
     }
 }

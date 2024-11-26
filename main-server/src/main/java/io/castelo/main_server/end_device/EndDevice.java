@@ -4,6 +4,7 @@ import io.castelo.main_server.end_device_model.EndDeviceModel;
 import io.castelo.main_server.end_device_sensor.Sensor;
 import io.castelo.main_server.end_device_switch.Switch;
 import io.castelo.main_server.gateway.Gateway;
+import io.castelo.main_server.user.User;
 import io.castelo.main_server.utils.MACAddressValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -37,6 +38,10 @@ public class EndDevice{
         private boolean debugMode;
 
         @ManyToOne
+        @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+        private User user;
+
+        @ManyToOne
         @JoinColumn(name = "gateway_mac", referencedColumnName = "gateway_mac")
         private Gateway gateway;
 
@@ -48,18 +53,17 @@ public class EndDevice{
         @Column(name = "working_mode", columnDefinition = "device_mode")
         private DeviceMode working_mode;
 
-        @OneToMany(fetch = FetchType.LAZY)
-        @JoinColumns({@JoinColumn(name = "end_device_mac", referencedColumnName = "end_device_mac")})
+        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<Sensor> sensors;
 
-        @OneToMany(fetch = FetchType.LAZY)
-        @JoinColumns({@JoinColumn(name = "end_device_mac", referencedColumnName = "end_device_mac")})
+        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<Switch> switches;
+
 
         public EndDevice() {}
 
         public EndDevice(@NotBlank String endDeviceMac, @NotBlank String endDeviceIp, @NotNull EndDeviceModel endDeviceModel,
-                         @NotBlank String endDeviceName, boolean debugMode, Gateway gateway,
+                         @NotBlank String endDeviceName, boolean debugMode, @NotNull User user, Gateway gateway,
                          @NotBlank String firmware, DeviceMode deviceMode) {
 
                 this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
@@ -67,6 +71,7 @@ public class EndDevice{
                 this.endDeviceModel = endDeviceModel;
                 this.endDeviceName = endDeviceName;
                 this.debugMode = debugMode;
+                this.user = user;
                 this.gateway = gateway;
                 this.firmware = firmware;
                 this.working_mode = deviceMode;
@@ -150,5 +155,13 @@ public class EndDevice{
 
         public void setSwitches(List<Switch> switches) {
                 this.switches = switches;
+        }
+
+        public User getUser() {
+                return user;
+        }
+
+        public void setUser(User user) {
+                this.user = user;
         }
 }

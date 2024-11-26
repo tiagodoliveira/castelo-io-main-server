@@ -24,11 +24,6 @@ public class SensorController {
         return ResponseEntity.ok().body(sensor);
     }
 
-    @PostMapping
-    public Sensor createSensor(@RequestBody Sensor sensor) {
-        return sensorService.createSensor(sensor);
-    }
-
     @PutMapping("/{endDeviceMac}/{sensorNumber}")
     public ResponseEntity<Sensor> updateSensor(@PathVariable String endDeviceMac, @PathVariable Integer sensorNumber, @RequestBody String sensorName) {
         SensorKey id = new SensorKey(endDeviceMac, sensorNumber.shortValue());

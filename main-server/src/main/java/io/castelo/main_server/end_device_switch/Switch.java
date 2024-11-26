@@ -1,8 +1,9 @@
 package io.castelo.main_server.end_device_switch;
 
-import io.castelo.main_server.utils.MACAddressValidator;
+import io.castelo.main_server.end_device.EndDevice;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -11,8 +12,13 @@ import jakarta.validation.constraints.NotNull;
 public class Switch{
 
     @Id
+    @NotBlank
     @Column(name = "end_device_mac", length = 17)
-    String endDeviceMac;
+    private String endDeviceMac;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_device_mac", insertable = false, updatable = false)
+    private EndDevice endDevice;
 
     @Id
     @Column(name = "switch_number")
@@ -22,8 +28,8 @@ public class Switch{
     @Column(name = "switch_name", nullable = false, columnDefinition = "text")
     String switchName;
 
-    public Switch (@NotBlank String endDeviceMac, @NotNull Short switchNumber, @NotBlank String switchName) {
-        this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+    public Switch (@NotEmpty String endDeviceMac, @NotNull Short switchNumber, @NotBlank String switchName) {
+        this.endDeviceMac = endDeviceMac;
         this.switchNumber = switchNumber;
         this.switchName = switchName;
     }
@@ -37,15 +43,11 @@ public class Switch{
     }
 
     public void setEndDeviceMac(String endDeviceMac) {
-        this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
+        this.endDeviceMac = endDeviceMac;
     }
 
     public Short getSwitchNumber() {
         return switchNumber;
-    }
-
-    public void setSwitchNumber(Short switchNumber) {
-        this.switchNumber = switchNumber;
     }
 
     public void setSwitchNumber(Integer switchNumber) {

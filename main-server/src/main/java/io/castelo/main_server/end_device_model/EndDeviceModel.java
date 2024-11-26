@@ -1,11 +1,12 @@
 package io.castelo.main_server.end_device_model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.castelo.main_server.sensor_model.SensorModel;
+import io.castelo.main_server.switch_model.SwitchModel;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 @Entity
 @Table(name = "end_device_models")
@@ -19,6 +20,12 @@ public class EndDeviceModel{
     @NotBlank
     @Column(name = "latest_firmware_version", nullable = false, columnDefinition = "text")
     private String latestFirmwareVersion;
+
+    @OneToMany(mappedBy = "endDeviceModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SensorModel> sensorModels;
+
+    @OneToMany(mappedBy = "endDeviceModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SwitchModel> switchModels;
 
     public EndDeviceModel(@NotNull Integer modelId, @NotBlank String latestFirmwareVersion) {
         this.modelId = modelId;
@@ -43,5 +50,21 @@ public class EndDeviceModel{
 
     public void setLatestFirmwareVersion(@NotBlank String latestFirmwareVersion) {
         this.latestFirmwareVersion = latestFirmwareVersion;
+    }
+
+    public List<SensorModel> getSensorModels() {
+        return sensorModels;
+    }
+
+    public void setSensorModels(List<SensorModel> sensorModels) {
+        this.sensorModels = sensorModels;
+    }
+
+    public List<SwitchModel> getSwitchModels() {
+        return switchModels;
+    }
+
+    public void setSwitchModels(List<SwitchModel> switchModels) {
+        this.switchModels = switchModels;
     }
 }
