@@ -394,10 +394,10 @@
 			]
 		},
 		{
-			"name": "SensorModel",
+			"name": "EndDeviceComponentModel",
 			"item": [
 				{
-					"name": "Create SensorModel",
+					"name": "Create EndDeviceComponentModel",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -408,7 +408,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    {\n        \"modelId\": 3,\n        \"sensorNumber\": 1,\n        \"sensorName\": \"Humidity\"\n    },\n    {\n        \"modelId\": 3,\n        \"sensorNumber\": 2,\n        \"sensorName\": \"Pressure\"\n    },\n    {\n        \"modelId\": 3,\n        \"sensorNumber\": 3,\n        \"sensorName\": \"Light\"\n    }\n]",
+							"raw": "[\n    {\n        \"modelId\": 3,\n        \"componentType\": \"ANALOG_SENSOR\",\n        \"componentNumber\": 1,\n        \"componentName\": \"Humidity\"\n    },\n    {\n        \"modelId\": 3,\n        \"componentType\": \"DIGITAL_SENSOR\",\n        \"componentNumber\": 2,\n        \"componentName\": \"Pressure\"\n    },\n    {\n        \"modelId\": 3,\n        \"componentType\": \"ANALOG_SWITCH\",\n        \"componentNumber\": 3,\n        \"componentName\": \"Light\"\n    }\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -416,12 +416,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/sensor-models",
+							"raw": "{{baseUrl}}/end-device-component-models",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"sensor-models"
+								"end-device-component-models"
 							]
 						}
 					},
@@ -433,12 +433,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/sensor-models",
+							"raw": "{{baseUrl}}/end-device-component-models",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"sensor-models"
+								"end-device-component-models"
 							]
 						}
 					},
@@ -450,95 +450,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/sensor-models/:modelId",
+							"raw": "{{baseUrl}}/end-device-component-models/:modelId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"sensor-models",
+								"end-device-component-models",
 								":modelId"
 							],
 							"variable": [
 								{
 									"key": "modelId",
-									"value": "2"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "SwitchModel",
-			"item": [
-				{
-					"name": "Create SwitchModel",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "[\n    {\n        \"modelId\": 3,\n        \"switchNumber\": 1,\n        \"switchName\": \"Light\"\n    },\n    {\n        \"modelId\": 3,\n        \"switchNumber\": 2,\n        \"switchName\": \"Light\"\n    },\n    {\n        \"modelId\": 3,\n        \"switchNumber\": 3,\n        \"switchName\": \"Outlet\"\n    }\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/switch-models",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"switch-models"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Models",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/switch-models",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"switch-models"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Model by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/switch-models/:modelId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"switch-models",
-								":modelId"
-							],
-							"variable": [
-								{
-									"key": "modelId",
-									"value": "1"
+									"value": "3"
 								}
 							]
 						}
@@ -677,48 +600,48 @@
 			]
 		},
 		{
-			"name": "Switch",
+			"name": "EndDeviceComponent",
 			"item": [
 				{
-					"name": "Get All Switches",
+					"name": "Get All EndDeviceComponents",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/switches",
+							"raw": "{{baseUrl}}/end-device-components",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"switches"
+								"end-device-components"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get Switch by ID",
+					"name": "Get EndDeviceComponent by ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/switches/:endDeviceMac/:switchNumber",
+							"raw": "{{baseUrl}}/end-device-components/:endDeviceMac/:componentNumber",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"switches",
+								"end-device-components",
 								":endDeviceMac",
-								":switchNumber"
+								":componentNumber"
 							],
 							"variable": [
 								{
 									"key": "endDeviceMac",
-									"value": ""
+									"value": "AA:BB:CC:DD:EE:FF"
 								},
 								{
-									"key": "switchNumber",
-									"value": ""
+									"key": "componentNumber",
+									"value": "1"
 								}
 							]
 						}
@@ -726,7 +649,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Switch",
+					"name": "Update EndDeviceComponent",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -737,115 +660,26 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"switchName\": \"Updated Switch\"\n}"
+							"raw": "{\n    \"componentName\": \"Updated Sensor\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/switches/:endDeviceMac/:switchNumber",
+							"raw": "{{baseUrl}}/end-device-components/:endDeviceMac/:componentNumber",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"switches",
+								"end-device-components",
 								":endDeviceMac",
-								":switchNumber"
+								":componentNumber"
 							],
 							"variable": [
 								{
 									"key": "endDeviceMac",
-									"value": ""
+									"value": "AA:BB:CC:DD:EE:FF"
 								},
 								{
-									"key": "switchNumber",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Sensor",
-			"item": [
-				{
-					"name": "Get All Sensors",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/sensors",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"sensors"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Sensor by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/sensors/:endDeviceMac/:sensorNumber",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"sensors",
-								":endDeviceMac",
-								":sensorNumber"
-							],
-							"variable": [
-								{
-									"key": "endDeviceMac",
-									"value": ""
-								},
-								{
-									"key": "sensorNumber",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Sensor",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"sensorName\": \"Updated Sensor\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/sensors/:endDeviceMac/:sensorNumber",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"sensors",
-								":endDeviceMac",
-								":sensorNumber"
-							],
-							"variable": [
-								{
-									"key": "endDeviceMac",
-									"value": ""
-								},
-								{
-									"key": "sensorNumber",
-									"value": ""
+									"key": "componentNumber",
+									"value": "1"
 								}
 							]
 						}
