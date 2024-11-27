@@ -2,10 +2,14 @@ DO
 '
 DECLARE
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_type WHERE typname = ''device_mode'') THEN
-        CREATE TYPE device_mode AS ENUM (''AUTONOMOUS'', ''MANUAL'');
-        CREATE CAST (varchar AS device_mode) WITH INOUT AS IMPLICIT;
+    IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_type WHERE typname = ''working_modes'') THEN
+        CREATE TYPE working_modes AS ENUM (''AUTONOMOUS'', ''MANUAL'');
+        CREATE CAST (varchar AS working_modes) WITH INOUT AS IMPLICIT;
         CREATE CAST (CHARACTER VARYING as inet) WITH INOUT AS IMPLICIT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_type WHERE typname = ''component_types'') THEN
+        CREATE TYPE component_types AS ENUM (''ANALOG_SENSOR'', ''DIGITAL_SENSOR'', ''ANALOG_SWITCH'', ''DIGITAL_SWITCH'');
+        CREATE CAST (varchar AS component_types) WITH INOUT AS IMPLICIT;
     END IF;
 END;' LANGUAGE 'plpgsql';
 
@@ -30,19 +34,12 @@ CREATE TABLE IF NOT EXISTS "end_device_models" (
 );
 
 -- Create the Sensor Model table
-CREATE TABLE IF NOT EXISTS "sensor_models" (
+CREATE TABLE IF NOT EXISTS "end_device_component_models" (
     model_id INTEGER NOT NULL REFERENCES "end_device_models"(model_id) ON DELETE CASCADE,
-    sensor_number SMALLINT NOT NULL,
-    sensor_name TEXT NOT NULL,
-    PRIMARY KEY (model_id, sensor_number)
-);
-
--- Create the Switch Model table
-CREATE TABLE IF NOT EXISTS "switch_models" (
-   model_id INTEGER NOT NULL REFERENCES "end_device_models"(model_id) ON DELETE CASCADE,
-   switch_number SMALLINT NOT NULL,
-   switch_name TEXT NOT NULL,
-   PRIMARY KEY (model_id, switch_number)
+    component_type component_types NOT NULL,
+    component_number SMALLINT NOT NULL,
+    component_name TEXT NOT NULL,
+    PRIMARY KEY (model_id, component_number)
 );
 
 -- Create the EndDevice table
@@ -54,22 +51,15 @@ CREATE TABLE IF NOT EXISTS "end_devices" (
     debug_mode BOOLEAN NOT NULL DEFAULT FALSE,
     gateway_mac VARCHAR(17) REFERENCES "gateways"(gateway_mac) ON DELETE CASCADE,
     firmware TEXT NOT NULL,
-    working_mode device_mode DEFAULT 'MANUAL',
+    working_mode working_modes DEFAULT 'MANUAL',
     user_id uuid NOT NULL REFERENCES "users"(user_id)
 );
 
--- Create the Switch table
-CREATE TABLE IF NOT EXISTS "switches" (
-    end_device_mac VARCHAR(17) NOT NULL REFERENCES "end_devices"(end_device_mac) ON DELETE CASCADE,
-    switch_number SMALLINT NOT NULL,
-    switch_name TEXT NOT NULL,
-    PRIMARY KEY (end_device_mac, switch_number)
-);
-
 -- Create the Sensor table
-CREATE TABLE IF NOT EXISTS "sensors" (
+CREATE TABLE IF NOT EXISTS "end_device_components" (
     end_device_mac VARCHAR(17) NOT NULL REFERENCES "end_devices"(end_device_mac) ON DELETE CASCADE,
-    sensor_number SMALLINT NOT NULL,
-    sensor_name TEXT NOT NULL,
-    PRIMARY KEY (end_device_mac, sensor_number)
+    component_type component_types NOT NULL,
+    component_number SMALLINT NOT NULL,
+    component_name TEXT NOT NULL,
+    PRIMARY KEY (end_device_mac, component_number)
 );

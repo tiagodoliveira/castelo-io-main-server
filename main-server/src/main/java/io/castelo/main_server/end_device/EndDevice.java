@@ -1,8 +1,7 @@
 package io.castelo.main_server.end_device;
 
+import io.castelo.main_server.end_device_component.EndDeviceComponent;
 import io.castelo.main_server.end_device_model.EndDeviceModel;
-import io.castelo.main_server.end_device_sensor.Sensor;
-import io.castelo.main_server.end_device_switch.Switch;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.user.User;
 import io.castelo.main_server.utils.MACAddressValidator;
@@ -50,21 +49,18 @@ public class EndDevice{
         private String firmware;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "working_mode", columnDefinition = "device_mode")
-        private DeviceMode working_mode;
+        @Column(name = "working_mode", columnDefinition = "working_modes")
+        private WorkingModes working_mode;
 
         @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true)
-        private List<Sensor> sensors;
-
-        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true)
-        private List<Switch> switches;
+        private List<EndDeviceComponent> endDeviceComponents;
 
 
         public EndDevice() {}
 
         public EndDevice(@NotBlank String endDeviceMac, @NotBlank String endDeviceIp, @NotNull EndDeviceModel endDeviceModel,
                          @NotBlank String endDeviceName, boolean debugMode, @NotNull User user, Gateway gateway,
-                         @NotBlank String firmware, DeviceMode deviceMode) {
+                         @NotBlank String firmware, WorkingModes workingModes) {
 
                 this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
                 this.endDeviceIp = endDeviceIp;
@@ -74,7 +70,7 @@ public class EndDevice{
                 this.user = user;
                 this.gateway = gateway;
                 this.firmware = firmware;
-                this.working_mode = deviceMode;
+                this.working_mode = workingModes;
         }
 
         public @NotBlank String getEndDeviceMac() {
@@ -133,28 +129,20 @@ public class EndDevice{
                 this.firmware = firmware;
         }
 
-        public DeviceMode getWorkingMode() {
+        public WorkingModes getWorkingMode() {
                 return working_mode;
         }
 
-        public void setWorkingMode(DeviceMode deviceMode) {
-                this.working_mode = deviceMode;
+        public void setWorkingMode(WorkingModes workingModes) {
+                this.working_mode = workingModes;
         }
 
-        public List<Sensor> getSensors() {
-                return sensors;
+        public List<EndDeviceComponent> getComponents() {
+                return endDeviceComponents;
         }
 
-        public void setSensors(List<Sensor> sensors) {
-                this.sensors = sensors;
-        }
-
-        public List<Switch> getSwitches() {
-                return switches;
-        }
-
-        public void setSwitches(List<Switch> switches) {
-                this.switches = switches;
+        public void setComponents(List<EndDeviceComponent> endDeviceComponents) {
+                this.endDeviceComponents = endDeviceComponents;
         }
 
         public User getUser() {

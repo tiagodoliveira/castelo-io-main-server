@@ -10,5 +10,5 @@ public record EndDeviceDTO(
         Boolean debugMode,
         Gateway gateway,
         String firmware,
-        DeviceMode workingMode
+        WorkingModes workingMode
 ) {}

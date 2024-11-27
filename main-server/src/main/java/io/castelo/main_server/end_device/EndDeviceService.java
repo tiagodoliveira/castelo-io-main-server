@@ -1,9 +1,7 @@
 package io.castelo.main_server.end_device;
 
-import io.castelo.main_server.end_device_sensor.Sensor;
-import io.castelo.main_server.end_device_sensor.SensorService;
-import io.castelo.main_server.end_device_switch.Switch;
-import io.castelo.main_server.end_device_switch.SwitchService;
+import io.castelo.main_server.end_device_component.EndDeviceComponent;
+import io.castelo.main_server.end_device_component.EndDeviceComponentService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import io.castelo.main_server.utils.IpAddressValidator;
 import io.castelo.main_server.utils.MACAddressValidator;
@@ -17,14 +15,12 @@ import java.util.List;
 public class EndDeviceService {
 
     private final EndDeviceRepository endDeviceRepository;
-    private final SwitchService switchService;
-    private final SensorService sensorService;
+    private final EndDeviceComponentService endDeviceComponentService;
 
     @Autowired
-    public EndDeviceService (EndDeviceRepository endDeviceRepository, SwitchService switchService, SensorService sensorService) {
+    public EndDeviceService (EndDeviceRepository endDeviceRepository, EndDeviceComponentService endDeviceComponentService) {
         this.endDeviceRepository = endDeviceRepository;
-        this.switchService = switchService;
-        this.sensorService = sensorService;
+        this.endDeviceComponentService = endDeviceComponentService;
     }
 
     public List<EndDevice> getAllEndDevices() {
@@ -42,15 +38,14 @@ public class EndDeviceService {
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
 
         if (endDevice.getWorkingMode() == null) {
-            endDevice.setWorkingMode(DeviceMode.MANUAL);
+            endDevice.setWorkingMode(WorkingModes.MANUAL);
         }
         endDevice = endDeviceRepository.save(endDevice);
 
-        List<Sensor> sensors = sensorService.createSensors(endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
-        List<Switch> switches = switchService.createSwitches(endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
+        List<EndDeviceComponent> endDeviceComponents = endDeviceComponentService.createComponents(endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
 
-        endDevice.setSensors(sensors);
-        endDevice.setSwitches(switches);
+        endDevice.setComponents(endDeviceComponents);
+
 
         return endDevice;
     }

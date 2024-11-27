@@ -33,48 +33,54 @@
       "latest_firmware_version": "v2.3.4"
     }
   ],
-  "SensorModel": [
+  "EndDeviceComponentModel": [
     {
       "model_id": 1,
-      "sensor_number": 1,
-      "sensor_name": "Temperature"
-    },
-    {
-      "model_id": 1,
-      "sensor_number": 2,
-      "sensor_name": "Humidity"
-    },
-    {
-      "model_id": 2,
-      "sensor_number": 1,
-      "sensor_name": "Temperature"
-    },
-    {
-      "model_id": 2,
-      "sensor_number": 2,
-      "sensor_name": "Humidity"
-    },
-    {
-      "model_id": 2,
-      "sensor_number": 3,
-      "sensor_name": "Pressure"
-    }
-  ],
-  "SwitchModel": [
-    {
-      "model_id": 1,
-      "switch_number": 1,
-      "switch_name": "Light"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 1,
+      "component_name": "Temperature"
     },
     {
       "model_id": 1,
-      "switch_number": 2,
-      "switch_name": "Water Valve"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 2,
+      "component_name": "Humidity"
+    },
+    {
+      "model_id": 1,
+      "component_type": "DIGITAL_SWITCH",
+      "component_number": 3,
+      "component_name": "Light"
+    },
+    {
+      "model_id": 1,
+      "component_type": "DIGITAL_SWITCH",
+      "component_number": 4,
+      "component_name": "Water Valve"
     },
     {
       "model_id": 2,
-      "switch_number": 1,
-      "switch_name": "Light"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 1,
+      "component_name": "Temperature"
+    },
+    {
+      "model_id": 2,
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 2,
+      "component_name": "Humidity"
+    },
+    {
+      "model_id": 2,
+      "component_type": "DIGITAL_SENSOR",
+      "component_number": 3,
+      "component_name": "Pressure"
+    },
+    {
+      "model_id": 2,
+      "component_type": "ANALOG_SWITCH",
+      "component_number": 4,
+      "component_name": "Light"
     }
   ],
   "EndDevice": [
@@ -101,48 +107,54 @@
       "working_mode": "MANUAL"
     }
   ],
-  "Switch": [
+  "EndDeviceComponent": [
     {
       "end_device_mac": "AA:BB:CC:DD:EE:FF",
-      "switch_number": 1,
-      "switch_name": "Switch A"
-    },
-    {
-      "end_device_mac": "AA:BB:CC:DD:EE:FF",
-      "switch_number": 2,
-      "switch_name": "Switch B"
-    },
-    {
-      "end_device_mac": "FF:EE:DD:CC:BB:AA",
-      "switch_number": 1,
-      "switch_name": "Switch B"
-    }
-  ],
-  "Sensor": [
-    {
-      "end_device_mac": "AA:BB:CC:DD:EE:FF",
-      "sensor_number": 1,
-      "sensor_name": "Temperature Sensor"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 1,
+      "component_name": "Component A Temperature"
     },
     {
       "end_device_mac": "AA:BB:CC:DD:EE:FF",
-      "sensor_number": 2,
-      "sensor_name": "Humidity Sensor"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 2,
+      "component_name": "Component B Humidity"
+    },
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "component_type": "DIGITAL_SWITCH",
+      "component_number": 3,
+      "component_name": "Light Component"
+    },
+    {
+      "end_device_mac": "AA:BB:CC:DD:EE:FF",
+      "component_type": "DIGITAL_SWITCH",
+      "component_number": 4,
+      "component_name": "Water Valve Component"
     },
     {
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
-      "sensor_number": 1,
-      "sensor_name": "Temperature Sensor"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 1,
+      "component_name": "Component B"
     },
     {
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
-      "sensor_number": 2,
-      "sensor_name": "Humidity Sensor"
+      "component_type": "ANALOG_SENSOR",
+      "component_number": 2,
+      "component_name": "Temperature Component"
     },
     {
       "end_device_mac": "FF:EE:DD:CC:BB:AA",
-      "sensor_number": 3,
-      "sensor_name": "Pressure Sensor"
+      "component_type": "DIGITAL_SENSOR",
+      "component_number": 3,
+      "component_name": "Pressure Component"
+    },
+    {
+      "end_device_mac": "FF:EE:DD:CC:BB:AA",
+      "component_type": "ANALOG_SWITCH",
+      "component_number": 4,
+      "component_name": "Light Component"
     }
   ]
 }

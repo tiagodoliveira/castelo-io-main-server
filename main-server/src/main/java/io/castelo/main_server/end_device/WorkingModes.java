@@ -1,6 +1,6 @@
 package io.castelo.main_server.end_device;
 
-public enum DeviceMode {
+public enum WorkingModes {
     AUTONOMOUS,
     MANUAL
 }

@@ -30,47 +30,45 @@ public class PostgresDataInitializer {
         logger.info("Initializing database data");
         try {
             JsonNode rootNode = objectMapper.readTree(new File("src/main/resources/data/database-init-data.json"));
-
+            insertEndDevicelModels(rootNode.get("EndDeviceModel"));
+            insertEndDeviceComponentModel(rootNode.get("EndDeviceComponentModel"));
             insertUsers(rootNode.get("User"));
             insertGateways(rootNode.get("Gateway"));
-            insertEndDevicelModels(rootNode.get("EndDeviceModel"));
-            insertSensorModel(rootNode.get("SensorModel"));
-            insertSwitchModel(rootNode.get("SwitchModel"));
             insertEndDevices(rootNode.get("EndDevice"));
-            insertSwitches(rootNode.get("Switch"));
-            insertSensors(rootNode.get("Sensor"));
+            insertEndDeviceComponent(rootNode.get("EndDeviceComponent"));
         } catch (Exception e) {
             logger.error("Data initialization failed", e);
             throw e;
         }
     }
 
-    private void insertSwitchModel(JsonNode switchModel) {
-        switchModel.forEach(switchNode -> {
-            int modelId = switchNode.get("model_id").asInt();
-            int switchNumber = switchNode.get("switch_number").asInt();
-            String switchName = switchNode.get("switch_name").asText();
+    private void insertEndDeviceComponentModel(JsonNode componentModel) {
+        componentModel.forEach(componentNode -> {
+            int modelId = componentNode.get("model_id").asInt();
+            String componentType = componentNode.get("component_type").asText();
+            int componentNumber = componentNode.get("component_number").asInt();
+            String componentName = componentNode.get("component_name").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO switch_models (model_id, switch_number, switch_name) " +
-                            "VALUES (?, ?, ?) " +
-                            "ON CONFLICT (model_id, switch_number) DO NOTHING",
-                    modelId, switchNumber, switchName);
+                    "INSERT INTO end_device_component_models (model_id, component_type, component_number, component_name) " +
+                            "VALUES (?, ?, ?, ?) " +
+                            "ON CONFLICT (model_id, component_number) DO NOTHING",
+                    modelId, componentType, componentNumber, componentName);
         });
     }
 
-    private void insertSensorModel(JsonNode sensorModel) {
-        sensorModel.forEach(sensorNode -> {
-            int modelId = sensorNode.get("model_id").asInt();
-            int sensorNumber = sensorNode.get("sensor_number").asInt();
-            String sensorName = sensorNode.get("sensor_name").asText();
+    private void insertEndDevicelModels(JsonNode models) {
+        for (JsonNode model : models) {
+            int modelId = model.get("model_id").asInt();
+            String latestFirmwareVersion = model.get("latest_firmware_version").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO sensor_models (model_id, sensor_number, sensor_name) " +
-                            "VALUES (?, ?, ?) " +
-                            "ON CONFLICT (model_id, sensor_number) DO NOTHING",
-                    modelId, sensorNumber, sensorName);
-        });
+                    "INSERT INTO end_device_models (model_id, latest_firmware_version) " +
+                            "VALUES (?, ?) " +
+                            "ON CONFLICT (model_id) DO NOTHING",
+                    modelId, latestFirmwareVersion
+            );
+        }
     }
 
     private void insertUsers(JsonNode users) {
@@ -100,20 +98,6 @@ public class PostgresDataInitializer {
         }
     }
 
-    private void insertEndDevicelModels(JsonNode models) {
-        for (JsonNode model : models) {
-            int modelId = model.get("model_id").asInt();
-            String latestFirmwareVersion = model.get("latest_firmware_version").asText();
-
-            jdbcTemplate.update(
-                    "INSERT INTO end_device_models (model_id, latest_firmware_version) " +
-                            "VALUES (?, ?) " +
-                            "ON CONFLICT (model_id) DO NOTHING",
-                    modelId, latestFirmwareVersion
-            );
-        }
-    }
-
     private void insertEndDevices(JsonNode endDevices) {
         for (JsonNode endDevice : endDevices) {
             String endDeviceMac = endDevice.get("end_device_mac").asText();
@@ -134,30 +118,17 @@ public class PostgresDataInitializer {
         }
     }
 
-    private void insertSwitches(JsonNode switches) {
-        for (JsonNode switchNode : switches) {
-            String endDeviceMac = switchNode.get("end_device_mac").asText();
-            int switchNumber = switchNode.get("switch_number").asInt();
-            String switchName = switchNode.get("switch_name").asText();
+    private void insertEndDeviceComponent(JsonNode endDeviceComponents) {
+        for (JsonNode endDeviceComponent : endDeviceComponents) {
+            String endDeviceMac = endDeviceComponent.get("end_device_mac").asText();
+            String componentType = endDeviceComponent.get("component_type").asText();
+            int componentNumber = endDeviceComponent.get("component_number").asInt();
+            String componentName = endDeviceComponent.get("component_name").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO switches (end_device_mac, switch_number, switch_name) VALUES (?, ?, ?) " +
-                            "ON CONFLICT (end_device_mac, switch_number) DO NOTHING",
-                    endDeviceMac, switchNumber, switchName
-            );
-        }
-    }
-
-    private void insertSensors(JsonNode sensors) {
-        for (JsonNode sensor : sensors) {
-            String endDeviceMac = sensor.get("end_device_mac").asText();
-            int sensorNumber = sensor.get("sensor_number").asInt();
-            String sensorName = sensor.get("sensor_name").asText();
-
-            jdbcTemplate.update(
-                    "INSERT INTO sensors (end_device_mac, sensor_number, sensor_name) VALUES (?, ?, ?) " +
-                            "ON CONFLICT (end_device_mac, sensor_number) DO NOTHING",
-                    endDeviceMac, sensorNumber, sensorName
+                    "INSERT INTO end_device_components (end_device_mac, component_type, component_number, component_name) VALUES (?, ?, ?, ?) " +
+                            "ON CONFLICT (end_device_mac, component_number) DO NOTHING",
+                    endDeviceMac, componentType, componentNumber, componentName
             );
         }
     }
