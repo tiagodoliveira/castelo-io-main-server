@@ -28,11 +28,8 @@ public class MongoDBConfig {
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
 
-    @Value("${spring.data.mongodb.collections.sensor_data}")
-    private String sensorDataCollection;
-
-    @Value("${spring.data.mongodb.collections.switch_data}")
-    private String switchDataCollection;
+    @Value("${spring.data.mongodb.collections.component_data}")
+    private String componentDataCollection;
 
     @Value("${spring.data.mongodb.meta_field}")
     private String metaField;
@@ -40,13 +37,11 @@ public class MongoDBConfig {
     @Value("${spring.data.mongodb.timestamp_field}")
     private String timestampField;
 
-    public static String SENSOR_DATA_COLLECTION;
-    public static String SWITCH_DATA_COLLECTION;
+    public static String COMPONENT_DATA_COLLECTION;
 
     @PostConstruct
     private void init() {
-        SENSOR_DATA_COLLECTION = this.sensorDataCollection;
-        SWITCH_DATA_COLLECTION = this.switchDataCollection;
+        COMPONENT_DATA_COLLECTION = this.componentDataCollection;
     }
 
     @Bean
@@ -65,28 +60,22 @@ public class MongoDBConfig {
 
         MongoDatabase database = mongoTemplate.getDb();
 
-        createTimeseriesCollectionIfNotExists(database, sensorDataCollection);
-        createTimeseriesCollectionIfNotExists(database, switchDataCollection);
+        createTimeseriesCollectionIfNotExists(database, componentDataCollection);
 
         return mongoTemplate;
     }
 
     /**
-     * Provides access to the sensor data collection name for use in SpEL expressions.
+     * Provides access to the component data collection name for use in SpEL expressions.
      *
      * This method is specifically designed to be used within Spring annotations
-     * such as @Document(collection = "#{T(io.castelo.main_server.database.MongoDBProperties).getSensorDataCollection()}").
+     * such as @Document(collection = "#{T(io.castelo.main_server.database.MongoDBProperties).getComponentDataCollection()}").
      *
-     * @return the sensor data collection name
+     * @return the component data collection name
      */
     @SuppressWarnings("unused")
-    public static String getSensorDataCollection() {
-        return SENSOR_DATA_COLLECTION;
-    }
-
-    @SuppressWarnings("unused")
-    public static String getSwitchDataCollection() {
-        return SWITCH_DATA_COLLECTION;
+    public static String getComponentDataCollection() {
+        return COMPONENT_DATA_COLLECTION;
     }
 
     private void createTimeseriesCollectionIfNotExists(MongoDatabase database, String collectionName) {
