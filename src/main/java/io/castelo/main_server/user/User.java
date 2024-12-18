@@ -27,8 +27,12 @@ public class User {
             this.userName = userName;
         }
 
-        public User() {
+        public User(@NotNull String userId, @NotBlank String userName) {
+            this.userId = UUID.fromString(userId);
+            this.userName = userName;
+        }
 
+        public User() {
         }
 
         public UUID getUserId() {

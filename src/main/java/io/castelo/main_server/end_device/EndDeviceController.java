@@ -23,10 +23,10 @@ public class EndDeviceController {
         return endDeviceService.getAllEndDevices();
     }
 
-    @GetMapping("/{end_device_mac}")
+    @GetMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.OK)
-    public EndDevice getEndDevice(@PathVariable String end_device_mac) {
-        return endDeviceService.getEndDevice(end_device_mac);
+    public EndDevice getEndDevice(@PathVariable String endDeviceMac) {
+        return endDeviceService.getEndDevice(endDeviceMac);
     }
 
     @PostMapping
@@ -35,15 +35,15 @@ public class EndDeviceController {
         return endDeviceService.createEndDevice(endDevice);
     }
 
-    @PutMapping("/{end_device_mac}")
+    @PutMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.OK)
-    public EndDevice updateEndDevice(@PathVariable String end_device_mac, @RequestBody EndDeviceDTO endDeviceDetails) {
-        return endDeviceService.updateEndDevice(end_device_mac, endDeviceDetails);
+    public EndDevice updateEndDevice(@PathVariable String endDeviceMac, @RequestBody EndDeviceDTO endDeviceDetails) {
+        return endDeviceService.updateEndDevice(endDeviceMac, endDeviceDetails);
     }
 
-    @DeleteMapping("/{end_device_mac}")
+    @DeleteMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteEndDevice(@PathVariable String end_device_mac) {
-        endDeviceService.deleteEndDevice(end_device_mac);
+    public void deleteEndDevice(@PathVariable String endDeviceMac) {
+        endDeviceService.deleteEndDevice(endDeviceMac);
     }
 }

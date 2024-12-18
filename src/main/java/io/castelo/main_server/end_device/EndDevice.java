@@ -152,4 +152,21 @@ public class EndDevice{
         public void setUser(User user) {
                 this.user = user;
         }
+
+
+        @Override
+        public String toString() {
+                return "EndDevice{" +
+                        "endDeviceMac='" + endDeviceMac + '\'' +
+                        ", endDeviceIp='" + endDeviceIp + '\'' +
+                        ", endDeviceModel=" + (endDeviceModel != null ? endDeviceModel.getModelId() : null) +
+                        ", endDeviceName='" + endDeviceName + '\'' +
+                        ", debugMode=" + debugMode +
+                        ", user=" + (user != null ? user.getUserId() : null) +
+                        ", gateway=" + (gateway != null ? gateway.getGatewayMac() : null) +
+                        ", firmware='" + firmware + '\'' +
+                        ", working_mode=" + working_mode +
+                        ", endDeviceComponents=" + (endDeviceComponents != null ? endDeviceComponents.size() : 0) +
+                        '}';
+        }
 }
