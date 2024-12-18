@@ -27,8 +27,8 @@ public class EndDeviceComponentModelService {
         return endDeviceComponentModels;
     }
 
-    public void createComponents(List<EndDeviceComponentModel> endDeviceComponentModel) {
-        endDeviceComponentModelRepository.saveAll(endDeviceComponentModel);
+    public List<EndDeviceComponentModel> createComponents(List<EndDeviceComponentModel> endDeviceComponentModel) {
+        return endDeviceComponentModelRepository.saveAll(endDeviceComponentModel);
     }
 
     public List<EndDeviceComponentModel> getAllComponentModelsByModelId(Integer modelId) {

@@ -1,6 +1,7 @@
 package io.castelo.main_server.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +11,12 @@ import java.util.List;
 @RequestMapping("/gateways")
 public class GatewayController {
 
+    private final GatewayService gatewayService;
+
     @Autowired
-    private GatewayService gatewayService;
+    public GatewayController(GatewayService gatewayService) {
+        this.gatewayService = gatewayService;
+    }
 
     @GetMapping
     public List<Gateway> getAllGateways() {
@@ -19,24 +24,26 @@ public class GatewayController {
     }
 
     @GetMapping("/{gateway_mac}")
-    public ResponseEntity<Gateway> getGateway(@PathVariable String gateway_mac) {
-        Gateway gateway = gatewayService.getGateway(gateway_mac);
-        return ResponseEntity.ok().body(gateway);
+    @ResponseStatus(HttpStatus.OK)
+    public Gateway getGateway(@PathVariable String gateway_mac) {
+        return gatewayService.getGateway(gateway_mac);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Gateway createGateway(@RequestBody Gateway gateway) {
         return gatewayService.createGateway(gateway);
     }
 
     @PutMapping("/{gateway_mac}")
-    public ResponseEntity<Gateway> updateGateway(@PathVariable String gateway_mac, @RequestBody Gateway gatewayDetails) {
-        return ResponseEntity.ok(gatewayService.updateGateway(gateway_mac, gatewayDetails));
+    @ResponseStatus(HttpStatus.OK)
+    public Gateway updateGateway(@PathVariable String gateway_mac, @RequestBody Gateway gatewayDetails) {
+        return gatewayService.updateGateway(gateway_mac, gatewayDetails);
     }
 
     @DeleteMapping("/{gateway_mac}")
-    public ResponseEntity<Void> deleteGateway(@PathVariable String gateway_mac) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGateway(@PathVariable String gateway_mac) {
         gatewayService.deleteGateway(gateway_mac);
-        return ResponseEntity.noContent().build();
     }
 }

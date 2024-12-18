@@ -2,6 +2,7 @@ package io.castelo.main_server.end_device_model;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +11,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/end-device-models")
 public class EndDeviceModelController {
+
+    private final EndDeviceModelService endDeviceModelService;
+
     @Autowired
-    private EndDeviceModelService endDeviceModelService;
+    public EndDeviceModelController(EndDeviceModelService endDeviceModelService) {
+        this.endDeviceModelService = endDeviceModelService;
+    }
 
     @GetMapping
     public List<EndDeviceModel> getAllModels() {
@@ -19,24 +25,26 @@ public class EndDeviceModelController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EndDeviceModel> getModel(@PathVariable Integer id) {
-        EndDeviceModel model = endDeviceModelService.getModel(id);
-        return ResponseEntity.ok().body(model);
+    @ResponseStatus(HttpStatus.OK)
+    public EndDeviceModel getModel(@PathVariable Integer id) {
+        return endDeviceModelService.getModel(id);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EndDeviceModel createModel(@RequestBody @Valid EndDeviceModel model) {
         return endDeviceModelService.createModel(model);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EndDeviceModel> updateModel(@PathVariable Integer id, @RequestBody EndDeviceModel modelDetails) {
-        return ResponseEntity.ok(endDeviceModelService.updateModel(id, modelDetails));
+    @ResponseStatus(HttpStatus.OK)
+    public EndDeviceModel updateModel(@PathVariable Integer id, @RequestBody EndDeviceModel modelDetails) {
+        return endDeviceModelService.updateModel(id, modelDetails);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteModel(@PathVariable Integer id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteModel(@PathVariable Integer id) {
         endDeviceModelService.deleteModel(id);
-        return ResponseEntity.noContent().build();
     }
 }

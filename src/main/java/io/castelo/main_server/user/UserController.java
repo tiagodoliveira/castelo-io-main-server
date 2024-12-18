@@ -2,6 +2,7 @@ package io.castelo.main_server.user;
 
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -20,24 +26,26 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable UUID id) {
-        User user = userService.getUser(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        return ResponseEntity.ok().body(user);
+    @ResponseStatus(HttpStatus.OK)
+    public User getUser(@PathVariable UUID id) {
+        return userService.getUser(id);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUserName(@PathVariable UUID id, @RequestBody User userDetails) {
-        return ResponseEntity.ok(userService.updateUserName(id, userDetails));
+    @ResponseStatus(HttpStatus.OK)
+    public User updateUserName(@PathVariable UUID id, @RequestBody User userDetails) {
+        return userService.updateUserName(id, userDetails);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
     }
 }

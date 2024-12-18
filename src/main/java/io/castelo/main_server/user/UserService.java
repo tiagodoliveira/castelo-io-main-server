@@ -23,8 +23,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUser(UUID userId) {
-        return userRepository.findById(userId);
+    public User getUser(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 
     public User createUser(User user) {

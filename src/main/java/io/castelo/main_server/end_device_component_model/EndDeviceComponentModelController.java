@@ -10,8 +10,12 @@ import java.util.List;
 @RequestMapping("/end-device-component-models")
 public class EndDeviceComponentModelController {
 
+    private final EndDeviceComponentModelService endDeviceComponentModelService;
+
     @Autowired
-    private EndDeviceComponentModelService endDeviceComponentModelService;
+    public EndDeviceComponentModelController(EndDeviceComponentModelService endDeviceComponentModelService) {
+        this.endDeviceComponentModelService = endDeviceComponentModelService;
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -27,7 +31,7 @@ public class EndDeviceComponentModelController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createComponentModels(@RequestBody List<EndDeviceComponentModel> endDeviceComponentModel) {
-        endDeviceComponentModelService.createComponents(endDeviceComponentModel);
+    public List<EndDeviceComponentModel> createComponentModels(@RequestBody List<EndDeviceComponentModel> endDeviceComponentModel) {
+        return endDeviceComponentModelService.createComponents(endDeviceComponentModel);
     }
 }
