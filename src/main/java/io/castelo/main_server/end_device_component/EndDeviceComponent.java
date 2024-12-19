@@ -78,4 +78,15 @@ public class EndDeviceComponent {
     public void setComponentType(@NotNull ComponentTypes componentType) {
         this.componentType = componentType;
     }
+
+    @Override
+    public String toString() {
+        return "EndDeviceComponent{" +
+                "endDeviceMac='" + endDeviceMac + '\'' +
+                ", endDevice=" + endDevice +
+                ", componentNumber=" + componentNumber +
+                ", componentName='" + componentName + '\'' +
+                ", componentType=" + componentType +
+                '}';
+    }
 }

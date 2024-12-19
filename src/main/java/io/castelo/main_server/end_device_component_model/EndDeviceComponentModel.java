@@ -86,4 +86,15 @@ public class EndDeviceComponentModel {
     public void setComponentType(@NotNull ComponentTypes componentType) {
         this.componentType = componentType;
     }
+
+    @Override
+    public String toString() {
+        return "EndDeviceComponentModel{" +
+                "modelId=" + modelId +
+                ", componentType=" + componentType +
+                ", componentNumber=" + componentNumber +
+                ", componentName='" + componentName + '\'' +
+                ", endDeviceModel=" + endDeviceModel +
+                '}';
+    }
 }

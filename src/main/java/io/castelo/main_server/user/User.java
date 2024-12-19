@@ -51,4 +51,11 @@ public class User {
             this.userName = userName;
         }
 
+        @Override
+        public String toString() {
+            return "User{" +
+                    "userId=" + userId +
+                    ", userName='" + userName + '\'' +
+                    '}';
+        }
 }

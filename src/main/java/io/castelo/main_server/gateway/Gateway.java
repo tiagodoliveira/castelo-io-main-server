@@ -71,4 +71,14 @@ public class Gateway{
     public void setGatewayName(@NotBlank String gatewayName) {
         this.gatewayName = gatewayName;
     }
+
+    @Override
+    public String toString() {
+        return "Gateway{" +
+                "gatewayMac='" + gatewayMac + '\'' +
+                ", user=" + user +
+                ", gatewayIp='" + gatewayIp + '\'' +
+                ", gatewayName='" + gatewayName + '\'' +
+                '}';
+    }
 }

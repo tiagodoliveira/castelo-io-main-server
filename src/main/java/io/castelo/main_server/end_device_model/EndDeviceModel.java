@@ -57,4 +57,13 @@ public class EndDeviceModel{
     public void setEndDeviceComponentModels(List<EndDeviceComponentModel> endDeviceComponentModels) {
         this.endDeviceComponentModels = endDeviceComponentModels;
     }
+
+    @Override
+    public String toString() {
+        return "EndDeviceModel{" +
+                "modelId=" + modelId +
+                ", latestFirmwareVersion='" + latestFirmwareVersion + '\'' +
+                ", endDeviceComponentModels=" + endDeviceComponentModels +
+                '}';
+    }
 }
