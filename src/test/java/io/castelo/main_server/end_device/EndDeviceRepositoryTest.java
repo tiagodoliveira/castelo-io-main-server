@@ -14,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -79,14 +78,12 @@ class EndDeviceRepositoryTest {
 
     @Test
     void connectionEstablished() {
-        // Check if Testcontainers PostgreSQL is up and running
         assertThat(postgres.isCreated()).isTrue();
         assertThat(postgres.isRunning()).isTrue();
     }
 
     @Test
     void shouldReturnEndDeviceByMac() {
-        // Test finding EndDevice by ID
         EndDevice endDevice = endDeviceRepository.findById("00:1A:2B:3C:4D:5E").orElseThrow();
         assertThat(endDevice).isNotNull();
         assertThat(endDevice.getEndDeviceName()).isEqualTo("TestDevice");
@@ -94,7 +91,6 @@ class EndDeviceRepositoryTest {
 
     @Test
     void shouldSaveEndDevice() {
-        // Test saving a new EndDevice
         EndDevice newDevice = new EndDevice(
                 "00:1A:2B:3C:4D:62",
                 "192.168.1.3",
