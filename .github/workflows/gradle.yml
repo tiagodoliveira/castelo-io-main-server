@@ -61,6 +61,9 @@ jobs:
       with:
         java-version: "23"
         distribution: "temurin"
+        
+    - name: Make Gradle Wrapper executable
+      run: chmod +x ./gradlew
 
     # Generates and submits a dependency graph
     - name: Generate and submit dependency graph
