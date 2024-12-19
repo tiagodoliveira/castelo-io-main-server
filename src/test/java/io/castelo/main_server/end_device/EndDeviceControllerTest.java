@@ -140,15 +140,14 @@ class EndDeviceControllerTest {
     void updateEndDevice() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        
+
         EndDeviceDTO updatedEndDeviceData = new EndDeviceDTO(
-                "192.168.0.199", // Updated IP Address
-                new EndDeviceModel(1, "v1.2.4"), // Updated Model
-                "Updated Device Name", // Updated Name
-                true, // Updated Debug Mode
-                new Gateway(VALID_GATEWAY_MAC, null, "192.168.1.1", "UpdatedGatewayName"), // Updated Gateway
-                "1.2.3", // Updated Firmware
-                WorkingModes.MANUAL // Updated Working Mode
+                "192.168.0.199",
+                "Updated Device Name",
+                true,
+                new Gateway(VALID_GATEWAY_MAC, null, "192.168.1.1", "UpdatedGatewayName"),
+                "1.2.3",
+                WorkingModes.MANUAL
         );
 
         HttpEntity<EndDeviceDTO> request = new HttpEntity<>(updatedEndDeviceData, headers);
@@ -158,8 +157,6 @@ class EndDeviceControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(response.getBody().getEndDeviceIp(), "192.168.0.199");
-        assertEquals(response.getBody().getEndDeviceModel().getModelId(), Integer.valueOf(1));
-        assertEquals(response.getBody().getEndDeviceModel().getLatestFirmwareVersion(), "v1.2.4");
         assertEquals(response.getBody().getEndDeviceName(), "Updated Device Name");
         assertTrue(response.getBody().isDebugMode());
         assertEquals(response.getBody().getFirmware(), "1.2.3");
