@@ -41,8 +41,9 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public boolean existsByUserId(UUID userId) {
-        return userRepository.existsById(userId);
+    public void verifyIfUserExists(UUID userId) {
+        if(!userRepository.existsById(userId))
+            throw new ResourceNotFoundException("User not found with id: " + userId);
     }
 
 

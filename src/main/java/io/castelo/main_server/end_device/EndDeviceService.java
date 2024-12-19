@@ -3,6 +3,8 @@ package io.castelo.main_server.end_device;
 import io.castelo.main_server.end_device_component.EndDeviceComponent;
 import io.castelo.main_server.end_device_component.EndDeviceComponentService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
+import io.castelo.main_server.gateway.GatewayService;
+import io.castelo.main_server.user.UserService;
 import io.castelo.main_server.utils.IpAddressValidator;
 import io.castelo.main_server.utils.MACAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,18 @@ public class EndDeviceService {
 
     private final EndDeviceRepository endDeviceRepository;
     private final EndDeviceComponentService endDeviceComponentService;
+    private final UserService userService;
+    private final GatewayService gatewayService;
 
     @Autowired
-    public EndDeviceService (EndDeviceRepository endDeviceRepository, EndDeviceComponentService endDeviceComponentService) {
+    public EndDeviceService (EndDeviceRepository endDeviceRepository,
+                             EndDeviceComponentService endDeviceComponentService,
+                             UserService userService,
+                             GatewayService gatewayService) {
         this.endDeviceRepository = endDeviceRepository;
         this.endDeviceComponentService = endDeviceComponentService;
+        this.userService = userService;
+        this.gatewayService = gatewayService;
     }
 
     public List<EndDevice> getAllEndDevices() {
@@ -37,15 +46,18 @@ public class EndDeviceService {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
 
+        userService.verifyIfUserExists(endDevice.getUser().getUserId());
+        gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
+
         if (endDevice.getWorkingMode() == null) {
             endDevice.setWorkingMode(WorkingModes.MANUAL);
         }
         endDevice = endDeviceRepository.save(endDevice);
 
-        List<EndDeviceComponent> endDeviceComponents = endDeviceComponentService.createComponents(endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
+        List<EndDeviceComponent> endDeviceComponents = endDeviceComponentService.createComponents(
+                endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
 
         endDevice.setComponents(endDeviceComponents);
-
 
         return endDevice;
     }

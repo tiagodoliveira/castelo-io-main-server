@@ -52,4 +52,9 @@ public class GatewayService {
                 .orElseThrow(() -> new ResourceNotFoundException("Gateway not found with mac: " + gatewayMac));
         gatewayRepository.delete(gateway);
     }
+
+    public void verifyIfGatewayExists(String gatewayMac) {
+        if(!gatewayRepository.existsById(gatewayMac))
+            throw new ResourceNotFoundException("Gateway not found with mac: " + gatewayMac);
+    }
 }
