@@ -111,6 +111,6 @@ class EndDeviceRepositoryTest {
 
     @Test
     void shouldFindAllEndDevices() {
-        assertThat(endDeviceRepository.findAll().size()).isEqualTo(1);
+        assertThat(endDeviceRepository.findAll().size()).isEqualTo(2);
     }
 }
