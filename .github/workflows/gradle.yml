@@ -12,6 +12,16 @@ jobs:
     permissions:
       contents: read
 
+    services:
+      postgres:
+        image: 'postgres:latest'
+        env:
+          POSTGRES_DB: castelo-io-database
+          POSTGRES_USER: castelo-io
+          POSTGRES_PASSWORD: password
+        ports:
+          - '5432:5432'
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -41,6 +51,10 @@ jobs:
 
     # Test the application (will use Gradle's `test` task)
     - name: Run Tests
+      env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
+          SPRING_DATASOURCE_USERNAME: castelo-io
+          SPRING_DATASOURCE_PASSWORD: password
       run: ./gradlew test --no-daemon --info
 
   dependency-submission:
