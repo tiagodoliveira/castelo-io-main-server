@@ -67,6 +67,12 @@ public class EndDeviceService {
         EndDevice endDevice = getEndDevice(endDeviceMac);
         EndDeviceMapper.INSTANCE.updateEndDeviceFromDto(endDeviceDTO, endDevice);
 
+        IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
+        MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
+
+        userService.verifyIfUserExists(endDevice.getUser().getUserId());
+        gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
+
         return endDeviceRepository.save(endDevice);
     }
 
