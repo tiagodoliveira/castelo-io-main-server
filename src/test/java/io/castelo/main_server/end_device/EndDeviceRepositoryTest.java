@@ -3,6 +3,7 @@ package io.castelo.main_server.end_device;
 import io.castelo.main_server.end_device_model.EndDeviceModel;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.user.User;
+import io.castelo.main_server.user.UserRoles;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class EndDeviceRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User(UUID.randomUUID(), "TestUser");
+        testUser = new User(UUID.randomUUID(), "testuser@example.com", "password", "Test User", UserRoles.USER, true, true);
         entityManager.persist(testUser);
 
         testGateway = new Gateway("00:A0:C9:14:C8:00", testUser, "192.168.1.1", "TestGateway");
@@ -84,9 +85,9 @@ class EndDeviceRepositoryTest {
 
     @Test
     void shouldReturnEndDeviceByMac() {
-        EndDevice endDevice = endDeviceRepository.findById("00:1A:2B:3C:4D:5E").orElseThrow();
-        assertThat(endDevice).isNotNull();
-        assertThat(endDevice.getEndDeviceName()).isEqualTo("TestDevice");
+        EndDevice foundEndDevice = endDeviceRepository.findById("00:1A:2B:3C:4D:5E").orElseThrow();
+        assertThat(foundEndDevice).isNotNull();
+        assertThat(foundEndDevice.getEndDeviceName()).isEqualTo("TestDevice");
     }
 
     @Test

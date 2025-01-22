@@ -74,11 +74,15 @@ public class PostgresDataInitializer {
     private void insertUsers(JsonNode users) {
         for (JsonNode user : users) {
             UUID userId = UUID.fromString(user.get("user_id").asText());
-            String userName = user.get("user_name").asText();
+            String email = user.get("email").asText();
+            String password = user.get("password").asText();
+            String displayName = user.get("display_name").asText();
+            String role = user.get("role").asText();
+
             jdbcTemplate.update(
-                    "INSERT INTO users (user_id, user_name) " +
-                    "VALUES (?, ?) " +
-                    "ON CONFLICT DO NOTHING", userId, userName);
+                    "INSERT INTO users (user_id, email, password, display_name, role) " +
+                    "VALUES (?, ?, ?, ?, ?) " +
+                    "ON CONFLICT DO NOTHING", userId, email, password, displayName, role);
         }
     }
 

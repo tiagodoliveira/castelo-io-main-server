@@ -1,61 +1,127 @@
 package io.castelo.main_server.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails{
 
-        @Id
-        @NotNull
-        @Column(name = "user_id")
-        private UUID userId;
+    @Id
+    @NotNull
+    @Column(name = "user_id", nullable = false, columnDefinition = "uuid")
+    private UUID userId;
 
-        @NotBlank
-        @Column(name = "user_name", nullable = false, columnDefinition = "text")
-        String userName;
+    @NotBlank
+    @Column(name = "email" , nullable = false, columnDefinition = "text", unique = true)
+    private String email;
 
-        public User(@NotNull UUID userId, @NotBlank String userName) {
-            this.userId = userId;
-            this.userName = userName;
-        }
+    @NotBlank
+    @Column(name = "password", nullable = false, columnDefinition = "text")
+    private String password;
 
-        public User(@NotNull String userId, @NotBlank String userName) {
-            this.userId = UUID.fromString(userId);
-            this.userName = userName;
-        }
+    @NotBlank
+    @Column(name = "display_name", nullable = false, columnDefinition = "text")
+    private String displayName;
 
-        public User() {
-        }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, columnDefinition = "text")
+    private UserRoles role;
 
-        public UUID getUserId() {
-            return userId;
-        }
+    @Column(name = "is_credentials_non_expired", nullable = false, columnDefinition = "boolean")
+    private boolean isCredentialsNonExpired;
 
-        public void setUserId(@NotNull UUID userId) {
-            this.userId = userId;
-        }
+    @Column(name = "is_user_enabled", nullable = false, columnDefinition = "boolean")
+    private boolean isUserEnabled;
 
-        public @NotBlank String getUserName() {
-            return userName;
-        }
+    public User(@NotNull UUID userId, @NotBlank String email, @NotBlank String password, String displayName, UserRoles role, boolean isCredentialsNonExpired, boolean isUserEnabled) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.role = role;
+        this.isCredentialsNonExpired = isCredentialsNonExpired;
+        this.isUserEnabled = isUserEnabled;
+    }
 
-        public void setUserName(@NotBlank String userName) {
-            this.userName = userName;
-        }
+    public User(@NotNull String userId, @NotBlank String email, @NotBlank String password, String displayName, UserRoles role, boolean isCredentialsNonExpired, boolean isUserEnabled) {
+        this(UUID.fromString(userId), email, password, displayName, role, isCredentialsNonExpired, isUserEnabled);
+    }
 
-        @Override
-        public String toString() {
-            return "User{" +
-                    "userId=" + userId +
-                    ", userName='" + userName + '\'' +
-                    '}';
-        }
+    public User() {
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void normalizeEmail() {
+        this.email = email.toLowerCase();
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(@NotNull UUID userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.toLowerCase();
+    }
+
+    public @NotBlank String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@NotBlank String password) {
+        this.password = password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+    }
+
+    public void setRole(UserRoles role) {
+        this.role = role;
+    }
+
+    public void setDisplayName(@NotBlank String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isCredentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isUserEnabled;
+    }
+
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", displayName='" + displayName + '\'' +
+                '}';
+    }
 }

@@ -2,6 +2,8 @@ package io.castelo.main_server.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,13 +39,20 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User updateUserName(@PathVariable UUID id, @RequestBody User userDetails) {
-        return userService.updateUserName(id, userDetails);
+    public User updateUserDisplayName(@PathVariable UUID id, @RequestBody User userDetails) {
+        return userService.updateUserDisplayName(id, userDetails);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
     }
+
+    @GetMapping("/logout")
+    public void logout() {
+        SecurityContextHolder.clearContext();
+    }
+
 }

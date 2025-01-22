@@ -3,6 +3,7 @@ package io.castelo.main_server.end_device;
 import io.castelo.main_server.end_device_model.EndDeviceModel;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.user.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +38,34 @@ class EndDeviceControllerTest {
     private static final String VALID_END_DEVICE_MAC = "AA:BB:CC:DD:EE:FF";
     private static final String INVALID_END_DEVICE_MAC = "AA:BB:CC:DD:AA:AA";
 
+    private HttpHeaders headers;
+    private User invalidUser;
+    private Gateway invalidGateway;
+    private EndDevice newEndDevice;
+
+    @BeforeEach
+    void setUp() {
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        User validUser = new User(VALID_USER_ID, null, null, null, null, true, true);
+        invalidUser = new User(INVALID_USER_ID, null, null, null, null, true, true);
+
+        Gateway validGateway = new Gateway(VALID_GATEWAY_MAC, validUser, "1234", "Gateway");
+        invalidGateway = new Gateway(INVALID_GATEWAY_MAC, validUser, "1234", "Gateway");
+
+        newEndDevice = new EndDevice(
+                "AA:BB:CC:DD:EE:FA",
+                "192.168.0.1",
+                new EndDeviceModel(1, "v1.2.3"),
+                "New Device",
+                false,
+                validUser,
+                validGateway,
+                "1.0.0",
+                WorkingModes.MANUAL
+        );
+    }
 
     @Test
     void getAllEndDevices() {
@@ -66,22 +95,6 @@ class EndDeviceControllerTest {
 
     @Test
     void shouldCreateValidEndDevice() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Gateway validGateway = new Gateway(VALID_GATEWAY_MAC, new User(VALID_USER_ID, null), "1234", "Gateway");
-
-        EndDevice newEndDevice = new EndDevice(
-                "AA:BB:CC:DD:EE:FA",
-                "192.168.0.1",
-                new EndDeviceModel(1, "v1.2.3"),
-                "New Device",
-                false,
-                new User(VALID_USER_ID, null),
-                validGateway,
-                "1.0.0",
-                WorkingModes.MANUAL
-        );
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
         ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
@@ -92,20 +105,7 @@ class EndDeviceControllerTest {
 
     @Test
     void shouldReturnNotFoundIfInvalidUser() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        EndDevice newEndDevice = new EndDevice(
-                "AA:BB:CC:DD:EE:FA",
-                "192.168.0.1",
-                new EndDeviceModel(1, "v1.2.3"),
-                "New Device",
-                false,
-                new User(INVALID_USER_ID, null), // Random generated UUID
-                null,
-                "1.0.0",
-                WorkingModes.MANUAL
-        );
+        newEndDevice.setUser(invalidUser);
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
         ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
@@ -114,22 +114,7 @@ class EndDeviceControllerTest {
 
     @Test
     void shouldReturnNotFoundIfInvalidGateway() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Gateway invalidGateway = new Gateway(INVALID_GATEWAY_MAC, new User(VALID_USER_ID, null), "1234", "Gateway");
-
-        EndDevice newEndDevice = new EndDevice(
-                "AA:BB:CC:DD:EE:FA",
-                "192.168.0.1",
-                new EndDeviceModel(1, "v1.2.3"),
-                "New Device",
-                false,
-                new User(VALID_USER_ID, null),
-                invalidGateway,
-                "1.0.0",
-                WorkingModes.MANUAL
-        );
+        newEndDevice.setGateway(invalidGateway);
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
         ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
@@ -138,9 +123,6 @@ class EndDeviceControllerTest {
 
     @Test
     void updateEndDevice() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         EndDeviceDTO updatedEndDeviceData = new EndDeviceDTO(
                 "192.168.0.199",
                 "Updated Device Name",
@@ -153,7 +135,7 @@ class EndDeviceControllerTest {
         HttpEntity<EndDeviceDTO> request = new HttpEntity<>(updatedEndDeviceData, headers);
 
         ResponseEntity<EndDevice> response = restTemplate.exchange("/end-devices/" + VALID_END_DEVICE_MAC, HttpMethod.PUT, request, EndDevice.class);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(response.getBody().getEndDeviceIp(), "192.168.0.199");

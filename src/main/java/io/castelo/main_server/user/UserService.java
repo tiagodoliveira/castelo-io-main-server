@@ -1,7 +1,11 @@
 package io.castelo.main_server.user;
 
+import io.castelo.main_server.exception.EmailAlreadyRegisteredException;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,7 +13,7 @@ import java.util.UUID;
 
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -27,12 +31,16 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        userRepository.findByEmail(user.getUsername()).ifPresent(_ -> {
+            throw new EmailAlreadyRegisteredException(user.getUsername());
+        });
+        user.setUserId(UUID.randomUUID());
         return userRepository.save(user);
     }
 
-    public User updateUserName(UUID userId, User userDetails) {
+    public User updateUserDisplayName(UUID userId, User userDetails) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        user.setUserName(userDetails.getUserName());
+        user.setDisplayName(userDetails.getDisplayName());
         return userRepository.save(user);
     }
 
@@ -46,5 +54,9 @@ public class UserService {
             throw new ResourceNotFoundException("User not found with id: " + userId);
     }
 
-
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(()
+                -> new UsernameNotFoundException("User not found with email: " + email));
+    }
 }

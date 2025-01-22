@@ -16,7 +16,12 @@ END;' LANGUAGE 'plpgsql';
 -- Create the User table
 CREATE TABLE IF NOT EXISTS "users" (
     user_id uuid NOT NULL PRIMARY KEY,
-    user_name TEXT NOT NULL
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    display_name TEXT,
+    role TEXT NOT NULL DEFAULT 'USER',
+    is_credentials_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
+    is_user_enabled BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Create the Gateway table
