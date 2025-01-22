@@ -3,14 +3,16 @@
     {
       "user_id": "cfd3ce69-1f3d-43cc-87f1-a686373a25ca",
       "email": "alice@gmail.com",
-      "password": "password2",
+      "password": "$2a$12$mTf2aDQK7svrPuh.QVLYyerQKZp9h8d60yrxzb4//xp7OEH45bf0C",
+      "unencrypted_password": "password2",
       "display_name": "Alice Smith",
       "role": "ADMIN"
     },
     {
       "user_id": "3f43b3e8-6bd8-48e8-99e4-7e31d2d97982",
       "email": "bob.johnson@gmail.com",
-      "password": "password3",
+      "password": "$2a$12$6W0GQ339RJ0j5eD.qnXAzeBgnKrZTDZsh0LEbzB8YFhkUHop37TFu",
+      "unencrypted_password": "password3",
       "display_name": "Bob Johnson",
       "role": "USER"
     }

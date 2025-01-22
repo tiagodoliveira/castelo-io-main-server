@@ -1,5 +1,6 @@
 package io.castelo.main_server.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -91,7 +92,11 @@ public class User implements UserDetails{
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == null) {
+            return Collections.emptyList();
+        }
         return Collections.singleton(new SimpleGrantedAuthority(role.name()));
     }
 
