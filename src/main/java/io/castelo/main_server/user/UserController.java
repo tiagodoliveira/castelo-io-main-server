@@ -31,12 +31,6 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User updateUserDisplayName(@PathVariable UUID id, @RequestBody User userDetails) {
@@ -48,6 +42,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User user) {
+        return userService.login(user);
     }
 
     @GetMapping("/logout")
