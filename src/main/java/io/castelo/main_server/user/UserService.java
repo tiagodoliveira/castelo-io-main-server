@@ -3,15 +3,10 @@ package io.castelo.main_server.user;
 import io.castelo.main_server.auth.JWTService;
 import io.castelo.main_server.exception.EmailAlreadyRegisteredException;
 import io.castelo.main_server.exception.ResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +15,12 @@ import java.util.UUID;
 
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
-
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, JWTService jwtService) {
@@ -67,13 +60,6 @@ public class UserService implements UserDetailsService {
     public void verifyIfUserExists(UUID userId) {
         if(!userRepository.existsById(userId))
             throw new ResourceNotFoundException("User not found with id: " + userId);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("Authenticating user: {}", email);
-        return userRepository.findByEmail(email).orElseThrow(()
-                -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
     public String login(User user) {
