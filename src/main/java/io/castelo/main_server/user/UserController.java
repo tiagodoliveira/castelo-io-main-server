@@ -1,9 +1,9 @@
 package io.castelo.main_server.user;
 
+import io.castelo.main_server.auth.AuthTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,10 +31,10 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public User updateUserDisplayName(@PathVariable UUID id, @RequestBody User userDetails) {
-        return userService.updateUserDisplayName(id, userDetails);
+    public User updateUserDisplayName(@RequestBody User userDetails) {
+        return userService.updateUserDisplayName(userDetails);
     }
 
     @DeleteMapping("/{id}")
@@ -51,13 +51,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    @ResponseStatus(HttpStatus.OK)
+    public AuthTokenResponse login(@RequestBody User user) {
         return userService.login(user);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout() {
-        SecurityContextHolder.clearContext();
+        userService.logout();
     }
 
 }

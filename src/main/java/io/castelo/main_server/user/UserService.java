@@ -1,12 +1,15 @@
 package io.castelo.main_server.user;
 
+import io.castelo.main_server.auth.AuthTokenResponse;
 import io.castelo.main_server.auth.JWTService;
 import io.castelo.main_server.exception.EmailAlreadyRegisteredException;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @PreAuthorize("authentication.authorities.contains('ADMIN')")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -46,12 +50,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUserDisplayName(UUID userId, User userDetails) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    @PreAuthorize("#userDetails.username == authentication.name")
+    public User updateUserDisplayName(User userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userDetails.getUsername()));
+
         user.setDisplayName(userDetails.getDisplayName());
         return userRepository.save(user);
     }
 
+    @PreAuthorize("authentication.authorities.contains('ADMIN')")
     public void deleteUser(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         userRepository.delete(user);
@@ -62,7 +69,7 @@ public class UserService {
             throw new ResourceNotFoundException("User not found with id: " + userId);
     }
 
-    public String login(User user) {
+    public AuthTokenResponse login(User user) {
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
@@ -70,7 +77,11 @@ public class UserService {
         if(authentication.isAuthenticated()) {
             return jwtService.generateToken(authentication);
         } else {
-            return "User not authenticated";
+            return null;
         }
+    }
+
+    public void logout() {
+        SecurityContextHolder.clearContext();
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.function.Function;
@@ -31,17 +30,17 @@ public class JWTService {
         }
     }
 
-    public String generateToken(Authentication authentication) {
+    public AuthTokenResponse generateToken(Authentication authentication) {
 
         Map<String, Object> claims = new HashMap<>();
 
-        Calendar cal = Calendar.getInstance();
-        Date issuedAt = cal.getTime();
+        Calendar calendar = Calendar.getInstance();
+        Date issuedAt = calendar.getTime();
 
-        cal.add(Calendar.MONTH, 3);
-        Date expiration = cal.getTime();
+        calendar.add(Calendar.MONTH, 3);
+        Date expiration = calendar.getTime();
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(authentication.getName())
@@ -50,6 +49,8 @@ public class JWTService {
                 .and()
                 .signWith(getKey())
                 .compact();
+
+        return new AuthTokenResponse(token, expiration);
     }
 
     private SecretKey getKey(){

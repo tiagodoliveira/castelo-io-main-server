@@ -62,8 +62,11 @@ public class User implements UserDetails{
 
     @PrePersist
     @PreUpdate
-    private void normalizeEmail() {
+    private void normalizeEmailAndSetDefaultRole() {
         this.email = email.toLowerCase();
+        if (this.role == null) {
+            setRole(UserRoles.USER);
+        }
     }
 
     public UUID getUserId() {
@@ -120,6 +123,14 @@ public class User implements UserDetails{
     @Override
     public boolean isEnabled() {
         return isUserEnabled;
+    }
+
+    public void setCredentialsNonExpired(boolean isCredentialsNonExpired) {
+        this.isCredentialsNonExpired = isCredentialsNonExpired;
+    }
+
+    public void setUserEnabled(boolean isUserEnabled) {
+        this.isUserEnabled = isUserEnabled;
     }
 
     public String toString() {
