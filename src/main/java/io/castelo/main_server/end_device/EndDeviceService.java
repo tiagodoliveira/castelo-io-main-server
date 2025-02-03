@@ -46,7 +46,7 @@ public class EndDeviceService {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
 
-        userService.verifyIfUserExists(endDevice.getUser().getUserId());
+        userService.verifyIfUserExists(endDevice.getUser().getUsername());
         gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
 
         if (endDevice.getWorkingMode() == null) {
@@ -70,7 +70,7 @@ public class EndDeviceService {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
 
-        userService.verifyIfUserExists(endDevice.getUser().getUserId());
+        userService.verifyIfUserExists(endDevice.getUser().getUsername());
         gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
 
         return endDeviceRepository.save(endDevice);

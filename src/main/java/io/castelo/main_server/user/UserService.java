@@ -4,6 +4,7 @@ import io.castelo.main_server.auth.AuthTokenResponse;
 import io.castelo.main_server.auth.JWTService;
 import io.castelo.main_server.exception.EmailAlreadyRegisteredException;
 import io.castelo.main_server.exception.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,9 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -64,9 +68,8 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void verifyIfUserExists(UUID userId) {
-        if(!userRepository.existsById(userId))
-            throw new ResourceNotFoundException("User not found with id: " + userId);
+    public Optional<User> verifyIfUserExists(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public AuthTokenResponse login(User user) {
@@ -81,7 +84,8 @@ public class UserService {
         }
     }
 
-    public void logout() {
+    public void logout(HttpServletRequest request) {
         SecurityContextHolder.clearContext();
+        request.getSession().invalidate();
     }
 }
