@@ -1,4 +1,4 @@
-package io.castelo.main_server.utils;
+package io.castelo.main_server.data_validators;
 
 import io.castelo.main_server.exception.InvalidMACAddressException;
 

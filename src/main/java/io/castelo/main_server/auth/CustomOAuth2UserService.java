@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -47,17 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         if (email != null) {
-            userService.verifyIfUserExists(email).orElseGet(() -> {
-                User newUser = new User();
-                newUser.setUserId(UUID.randomUUID());
-                newUser.setEmail(email);
-                newUser.setPassword(bCryptPasswordEncoder.encode(UUID.randomUUID().toString())); // Set a random password
-                newUser.setDisplayName(oAuth2User.getName());
-                newUser.setRole(UserRoles.USER);
-                newUser.setCredentialsNonExpired(true);
-                newUser.setUserEnabled(true);
-                return userService.createUser(newUser);
-            });
+            userService.getUserByEmail(email).orElseGet(() -> userService.createUser(email, oAuth2User.getName()));
         }
 
         return oAuth2User;

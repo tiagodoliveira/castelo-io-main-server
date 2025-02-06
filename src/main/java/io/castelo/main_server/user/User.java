@@ -82,7 +82,7 @@ public class User implements UserDetails{
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setUsername(String email) {
         this.email = email == null ? null : email.toLowerCase();
     }
 

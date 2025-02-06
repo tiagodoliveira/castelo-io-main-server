@@ -4,7 +4,7 @@ import io.castelo.main_server.end_device_component.EndDeviceComponent;
 import io.castelo.main_server.end_device_model.EndDeviceModel;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.user.User;
-import io.castelo.main_server.utils.MACAddressValidator;
+import io.castelo.main_server.data_validators.MACAddressValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

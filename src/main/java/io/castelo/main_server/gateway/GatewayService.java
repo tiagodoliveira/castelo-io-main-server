@@ -1,8 +1,8 @@
 package io.castelo.main_server.gateway;
 
 import io.castelo.main_server.exception.ResourceNotFoundException;
-import io.castelo.main_server.utils.IpAddressValidator;
-import io.castelo.main_server.utils.MACAddressValidator;
+import io.castelo.main_server.data_validators.IpAddressValidator;
+import io.castelo.main_server.data_validators.MACAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

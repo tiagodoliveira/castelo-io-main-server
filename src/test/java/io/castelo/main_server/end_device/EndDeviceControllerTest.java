@@ -52,6 +52,7 @@ class EndDeviceControllerTest {
     private User invalidUser;
     private User validUser;
     private Gateway invalidGateway;
+    private Gateway validGateway;
     private EndDevice newEndDevice;
 
     @BeforeEach
@@ -65,9 +66,10 @@ class EndDeviceControllerTest {
         validUser = new User(UUID.fromString(VALID_USER_ID), USERNAME, encodedPassword, "Test User", UserRoles.USER, true, true);
         entityManager.persist(validUser);
 
-        invalidUser = new User(UUID.fromString(INVALID_USER_ID), "null", "null", "null", UserRoles.USER, true, true);
+        invalidUser = new User(UUID.fromString(INVALID_USER_ID), "invalidUser", "invalidPassword", "invalidUser", UserRoles.USER, true, true);
 
-        Gateway validGateway = new Gateway(VALID_GATEWAY_MAC, validUser, "1234", "Gateway");
+        validGateway = new Gateway(VALID_GATEWAY_MAC, validUser, "1234", "Gateway");
+        entityManager.persist(validGateway);
         invalidGateway = new Gateway(INVALID_GATEWAY_MAC, validUser, "1234", "Gateway");
 
         newEndDevice = new EndDevice(
@@ -121,18 +123,20 @@ class EndDeviceControllerTest {
     void shouldCreateValidEndDevice() {
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
-        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD).exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
+        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD)
+                .exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
         assertEquals(HttpStatus.CREATED, endDeviceResponseEntity.getStatusCode());
         assertNotNull(endDeviceResponseEntity.getBody());
         assertEquals(Objects.requireNonNull(endDeviceResponseEntity.getBody()).getEndDeviceName(), "New Device");
     }
 
     @Test
-    void shouldReturnNotFoundIfInvalidUser() {
+    void shouldReturnNotFoundIfInvalidUserOnCreatingEndDevice() {
         newEndDevice.setUser(invalidUser);
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
-        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD).exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
+        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD)
+                .exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
         assertEquals(HttpStatus.NOT_FOUND, endDeviceResponseEntity.getStatusCode());
     }
 
@@ -141,7 +145,8 @@ class EndDeviceControllerTest {
         newEndDevice.setGateway(invalidGateway);
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
-        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD).exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
+        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD)
+                .exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
         assertEquals(HttpStatus.NOT_FOUND, endDeviceResponseEntity.getStatusCode());
     }
 
@@ -151,7 +156,7 @@ class EndDeviceControllerTest {
                 "192.168.0.199",
                 "Updated Device Name",
                 true,
-                new Gateway(VALID_GATEWAY_MAC, null, "192.168.1.1", "UpdatedGatewayName"),
+                new Gateway(VALID_GATEWAY_MAC, validUser, "192.168.1.1", "UpdatedGatewayName"),
                 "1.2.3",
                 WorkingModes.MANUAL
         );

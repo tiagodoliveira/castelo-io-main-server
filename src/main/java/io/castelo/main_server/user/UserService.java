@@ -12,8 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,8 +66,12 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public Optional<User> verifyIfUserExists(String email) {
+    public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public void validateUser(String username) {
+        userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + username));
     }
 
     public AuthTokenResponse login(User user) {
@@ -87,5 +89,17 @@ public class UserService {
     public void logout(HttpServletRequest request) {
         SecurityContextHolder.clearContext();
         request.getSession().invalidate();
+    }
+
+    public User createUser(String email, String displayName) {
+        User newUser = new User();
+        newUser.setUserId(UUID.randomUUID());
+        newUser.setUsername(email);
+        newUser.setPassword(bCryptPasswordEncoder.encode(UUID.randomUUID().toString()));
+        newUser.setDisplayName(displayName);
+        newUser.setRole(UserRoles.USER);
+        newUser.setCredentialsNonExpired(true);
+        newUser.setUserEnabled(true);
+        return userRepository.save(newUser);
     }
 }

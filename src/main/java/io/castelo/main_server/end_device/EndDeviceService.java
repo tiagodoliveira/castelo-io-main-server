@@ -5,8 +5,8 @@ import io.castelo.main_server.end_device_component.EndDeviceComponentService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import io.castelo.main_server.gateway.GatewayService;
 import io.castelo.main_server.user.UserService;
-import io.castelo.main_server.utils.IpAddressValidator;
-import io.castelo.main_server.utils.MACAddressValidator;
+import io.castelo.main_server.data_validators.IpAddressValidator;
+import io.castelo.main_server.data_validators.MACAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,7 @@ public class EndDeviceService {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
 
-        userService.verifyIfUserExists(endDevice.getUser().getUsername());
+        userService.validateUser(endDevice.getUser().getUsername());
         gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
 
         if (endDevice.getWorkingMode() == null) {
@@ -70,7 +70,7 @@ public class EndDeviceService {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
 
-        userService.verifyIfUserExists(endDevice.getUser().getUsername());
+        userService.validateUser(endDevice.getUser().getUsername());
         gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
 
         return endDeviceRepository.save(endDevice);
