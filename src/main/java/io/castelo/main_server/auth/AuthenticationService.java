@@ -1,5 +1,7 @@
 package io.castelo.main_server.auth;
 
+import io.castelo.main_server.auth.jwt.AuthTokenResponse;
+import io.castelo.main_server.auth.jwt.JWTService;
 import io.castelo.main_server.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

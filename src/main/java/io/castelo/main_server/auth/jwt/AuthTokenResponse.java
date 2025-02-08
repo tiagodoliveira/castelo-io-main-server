@@ -1,4 +1,4 @@
-package io.castelo.main_server.auth;
+package io.castelo.main_server.auth.jwt;
 
 import java.util.Date;
 

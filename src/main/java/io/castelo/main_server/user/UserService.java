@@ -1,6 +1,6 @@
 package io.castelo.main_server.user;
 
-import io.castelo.main_server.auth.AuthTokenResponse;
+import io.castelo.main_server.auth.jwt.AuthTokenResponse;
 import io.castelo.main_server.auth.AuthenticationService;
 import io.castelo.main_server.exception.EmailAlreadyRegisteredException;
 import io.castelo.main_server.exception.ResourceNotFoundException;

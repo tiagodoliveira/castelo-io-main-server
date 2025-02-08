@@ -1,4 +1,4 @@
-package io.castelo.main_server.auth;
+package io.castelo.main_server.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    private String secretKey = "";
+    private final String secretKey;
 
     public JWTService() {
         try {

@@ -1,6 +1,6 @@
 package io.castelo.main_server.user;
 
-import io.castelo.main_server.auth.AuthTokenResponse;
+import io.castelo.main_server.auth.jwt.AuthTokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

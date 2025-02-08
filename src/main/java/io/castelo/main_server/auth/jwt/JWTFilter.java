@@ -1,13 +1,11 @@
-package io.castelo.main_server.auth;
+package io.castelo.main_server.auth.jwt;
 
 
 import io.castelo.main_server.user.CurrentUserDetailsService;
-import io.castelo.main_server.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.NonNull;
