@@ -1,15 +1,12 @@
 package io.castelo.main_server.user;
 
 import io.castelo.main_server.auth.AuthTokenResponse;
-import io.castelo.main_server.auth.JWTService;
+import io.castelo.main_server.auth.AuthenticationService;
 import io.castelo.main_server.exception.EmailAlreadyRegisteredException;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,14 +20,12 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JWTService jwtService;
+    private final AuthenticationService authenticationService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     @Autowired
-    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, JWTService jwtService) {
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
+    public UserService(UserRepository userRepository, AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
         this.userRepository = userRepository;
     }
 
@@ -75,15 +70,7 @@ public class UserService {
     }
 
     public AuthTokenResponse login(User user) {
-        Authentication authentication =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-
-        if(authentication.isAuthenticated()) {
-            return jwtService.generateToken(authentication);
-        } else {
-            return null;
-        }
+        return authenticationService.login(user);
     }
 
     public void logout(HttpServletRequest request) {
