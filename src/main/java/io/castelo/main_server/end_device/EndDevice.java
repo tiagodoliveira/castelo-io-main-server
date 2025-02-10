@@ -1,10 +1,10 @@
 package io.castelo.main_server.end_device;
 
+import io.castelo.main_server.data_validators.MACAddressValidator;
 import io.castelo.main_server.end_device_component.EndDeviceComponent;
 import io.castelo.main_server.end_device_model.EndDeviceModel;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.user.User;
-import io.castelo.main_server.data_validators.MACAddressValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -52,7 +52,7 @@ public class EndDevice{
         @Column(name = "working_mode", columnDefinition = "working_modes")
         private WorkingModes working_mode;
 
-        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
         private List<EndDeviceComponent> endDeviceComponents;
 
 

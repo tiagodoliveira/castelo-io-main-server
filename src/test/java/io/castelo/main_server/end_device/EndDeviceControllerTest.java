@@ -1,19 +1,22 @@
 package io.castelo.main_server.end_device;
 
+import io.castelo.main_server.auth.jwt.AuthTokenResponse;
 import io.castelo.main_server.end_device_model.EndDeviceModel;
 import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.user.User;
 import io.castelo.main_server.user.UserRoles;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -21,11 +24,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@AutoConfigureMockMvc
 class EndDeviceControllerTest {
 
     @Container
@@ -48,12 +50,13 @@ class EndDeviceControllerTest {
     private static final String PASSWORD = "password2";
     private static String encodedPassword; // Encoded password for "password2"
 
-    private HttpHeaders headers;
-    private User invalidUser;
-    private User validUser;
-    private Gateway invalidGateway;
-    private Gateway validGateway;
-    private EndDevice newEndDevice;
+    private static HttpHeaders headers;
+    private static User invalidUser;
+    private static User validUser;
+    private static Gateway invalidGateway;
+    private static Gateway validGateway;
+    private static EndDevice newEndDevice;
+
 
     @BeforeEach
     void setUp() {
@@ -63,13 +66,14 @@ class EndDeviceControllerTest {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
         encodedPassword = passwordEncoder.encode(PASSWORD);
 
-        validUser = new User(UUID.fromString(VALID_USER_ID), USERNAME, encodedPassword, "Test User", UserRoles.USER, true, true);
+        validUser = new User(UUID.fromString(VALID_USER_ID), USERNAME, encodedPassword, "Test User", UserRoles.ADMIN, true, true);
         entityManager.persist(validUser);
 
         invalidUser = new User(UUID.fromString(INVALID_USER_ID), "invalidUser", "invalidPassword", "invalidUser", UserRoles.USER, true, true);
 
         validGateway = new Gateway(VALID_GATEWAY_MAC, validUser, "1234", "Gateway");
         entityManager.persist(validGateway);
+
         invalidGateway = new Gateway(INVALID_GATEWAY_MAC, validUser, "1234", "Gateway");
 
         newEndDevice = new EndDevice(
@@ -85,49 +89,63 @@ class EndDeviceControllerTest {
         );
 
         entityManager.persist(newEndDevice);
+
+        ResponseEntity<AuthTokenResponse> response = restTemplate.withBasicAuth(USERNAME, PASSWORD).postForEntity("/login", null, AuthTokenResponse.class);
+        String accessToken = Objects.requireNonNull(response.getBody()).accessToken();
+        headers.setBearerAuth(accessToken);
     }
 
     @Test
     void testPasswordEncoding() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        assertTrue(encoder.matches("password2", encodedPassword));
+        Assertions.assertTrue(encoder.matches(PASSWORD, encodedPassword));
     }
 
     @Test
     void getAllEndDevices() {
-        ResponseEntity<EndDevice[]> response = restTemplate.withBasicAuth(USERNAME, PASSWORD).getForEntity("/end-devices", EndDevice[].class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        EndDevice[] endDevices = response.getBody();
-        assertNotNull(endDevices);
-        assertEquals(2, endDevices.length);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<EndDevice[]> response = restTemplate.exchange("/end-devices", HttpMethod.GET, request, EndDevice[].class);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(3, response.getBody().length);
     }
 
     @Test
     void whenGettingEndDeviceThatExistsShouldReturnEndDevice() {
-        ResponseEntity<EndDevice> response = restTemplate.withBasicAuth(USERNAME, PASSWORD).getForEntity("/end-devices/" + VALID_END_DEVICE_MAC, EndDevice.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<EndDevice> response = restTemplate.exchange("/end-devices/" + VALID_END_DEVICE_MAC, HttpMethod.GET, request, EndDevice.class);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
         EndDevice endDevice = response.getBody();
-        assertNotNull(endDevice);
-        assertEquals("Device 1", endDevice.getEndDeviceName()); // Assuming data loaded from JSON
+        Assertions.assertNotNull(endDevice);
+        Assertions.assertEquals("Device 1", endDevice.getEndDeviceName()); // Assuming data loaded from JSON
     }
 
     @Test
     void whenGettingEndDeviceThatDoesNotExistShouldReturnNotFound() {
         ResponseEntity<EndDevice> response = restTemplate.withBasicAuth(USERNAME, PASSWORD).getForEntity("/end-devices/" + INVALID_END_DEVICE_MAC, EndDevice.class);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     void shouldCreateValidEndDevice() {
-        HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
+        EndDevice endDevice = new EndDevice(
+                "AA:BB:CC:DD:EE:F1",
+                "192.168.0.1",
+                new EndDeviceModel(1, "v1.2.3"),
+                "New Device",
+                false,
+                validUser,
+                validGateway,
+                "1.0.0",
+                WorkingModes.MANUAL
+        );
+        HttpEntity<EndDevice> request = new HttpEntity<>(endDevice, headers);
 
-        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD)
-                .exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
-        assertEquals(HttpStatus.CREATED, endDeviceResponseEntity.getStatusCode());
-        assertNotNull(endDeviceResponseEntity.getBody());
-        assertEquals(Objects.requireNonNull(endDeviceResponseEntity.getBody()).getEndDeviceName(), "New Device");
+        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
+        Assertions.assertEquals(HttpStatus.CREATED, endDeviceResponseEntity.getStatusCode());
+        Assertions.assertNotNull(endDeviceResponseEntity.getBody());
+        Assertions.assertEquals(Objects.requireNonNull(endDeviceResponseEntity.getBody()).getEndDeviceName(), "New Device");
     }
 
     @Test
@@ -135,9 +153,8 @@ class EndDeviceControllerTest {
         newEndDevice.setUser(invalidUser);
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
-        ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD)
-                .exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
-        assertEquals(HttpStatus.NOT_FOUND, endDeviceResponseEntity.getStatusCode());
+        ResponseEntity<Void> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, Void.class);
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, endDeviceResponseEntity.getStatusCode());
     }
 
     @Test
@@ -147,39 +164,40 @@ class EndDeviceControllerTest {
 
         ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.withBasicAuth(USERNAME, PASSWORD)
                 .exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
-        assertEquals(HttpStatus.NOT_FOUND, endDeviceResponseEntity.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, endDeviceResponseEntity.getStatusCode());
     }
 
     @Test
     void updateEndDevice() {
-        EndDeviceDTO updatedEndDeviceData = new EndDeviceDTO(
-                "192.168.0.199",
-                "Updated Device Name",
-                true,
-                new Gateway(VALID_GATEWAY_MAC, validUser, "192.168.1.1", "UpdatedGatewayName"),
-                "1.2.3",
-                WorkingModes.MANUAL
-        );
 
-        HttpEntity<EndDeviceDTO> request = new HttpEntity<>(updatedEndDeviceData, headers);
+        newEndDevice.setEndDeviceName("Updated Device Name");
+        newEndDevice.setEndDeviceIp("192.168.0.199");
+        newEndDevice.setDebugMode(true);
+        newEndDevice.setFirmware("1.2.3");
+        newEndDevice.setWorkingMode(WorkingModes.MANUAL);
 
-        ResponseEntity<EndDevice> response = restTemplate.withBasicAuth(USERNAME, PASSWORD).exchange("/end-devices/" + VALID_END_DEVICE_MAC, HttpMethod.PUT, request, EndDevice.class);
+        HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(response.getBody().getEndDeviceIp(), "192.168.0.199");
-        assertEquals(response.getBody().getEndDeviceName(), "Updated Device Name");
-        assertTrue(response.getBody().isDebugMode());
-        assertEquals(response.getBody().getFirmware(), "1.2.3");
-        assertEquals(response.getBody().getWorkingMode(), WorkingModes.MANUAL);
+        ResponseEntity<EndDevice> response = restTemplate.exchange("/end-devices", HttpMethod.PUT, request, EndDevice.class);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(response.getBody().getEndDeviceIp(), "192.168.0.199");
+        Assertions.assertEquals(response.getBody().getEndDeviceName(), "Updated Device Name");
+        Assertions.assertTrue(response.getBody().isDebugMode());
+        Assertions.assertEquals(response.getBody().getFirmware(), "1.2.3");
+        Assertions.assertEquals(response.getBody().getWorkingMode(), WorkingModes.MANUAL);
     }
 
     @Test
     void deleteEndDevice() {
-        ResponseEntity<Void> response = restTemplate.withBasicAuth(USERNAME, PASSWORD).exchange("/end-devices/" + VALID_END_DEVICE_MAC, HttpMethod.DELETE, null, Void.class);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
+        ResponseEntity<Void> response = restTemplate.exchange("/end-devices", HttpMethod.DELETE, request, Void.class);
+        Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-        ResponseEntity<EndDevice> getResponse = restTemplate.withBasicAuth(USERNAME, PASSWORD).getForEntity("/end-devices/" + VALID_END_DEVICE_MAC, EndDevice.class);
-        assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
+        HttpEntity<Void> requestVerify = new HttpEntity<>(headers);
+        ResponseEntity<EndDevice> getResponse = restTemplate.exchange("/end-devices/" + newEndDevice.getEndDeviceMac(), HttpMethod.GET, requestVerify, EndDevice.class);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
     }
+
 }

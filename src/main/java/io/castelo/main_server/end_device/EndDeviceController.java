@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/end-devices")
 public class EndDeviceController {
@@ -35,15 +36,15 @@ public class EndDeviceController {
         return endDeviceService.createEndDevice(endDevice);
     }
 
-    @PutMapping("/{endDeviceMac}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public EndDevice updateEndDevice(@PathVariable String endDeviceMac, @RequestBody EndDeviceDTO endDeviceDetails) {
-        return endDeviceService.updateEndDevice(endDeviceMac, endDeviceDetails);
+    public EndDevice updateEndDevice(@RequestBody EndDevice endDevice) {
+        return endDeviceService.updateEndDevice(endDevice);
     }
 
-    @DeleteMapping("/{endDeviceMac}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteEndDevice(@PathVariable String endDeviceMac) {
-        endDeviceService.deleteEndDevice(endDeviceMac);
+    public void deleteEndDevice(@RequestBody EndDevice endDevice) {
+        endDeviceService.deleteEndDevice(endDevice);
     }
 }

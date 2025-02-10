@@ -3,7 +3,8 @@ package io.castelo.main_server.client.github;
 import io.castelo.main_server.client.FeignConfig;
 import io.castelo.main_server.client.github.response.GitHubEmailResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 

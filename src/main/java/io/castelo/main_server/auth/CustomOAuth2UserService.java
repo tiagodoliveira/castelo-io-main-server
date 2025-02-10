@@ -34,9 +34,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         if (email != null) {
-            userService.getUserByEmail(email).orElseGet(() -> userService.createUser(email, oAuth2User.getName()));
+            ensureUserExists(email, oAuth2User.getName());
         }
 
         return oAuth2User;
     }
+
+    private void ensureUserExists(String email, String displayName) {
+        userService.getUserByEmail(email).orElseGet(() -> userService.createUser(email, displayName));
+    }
+
 }

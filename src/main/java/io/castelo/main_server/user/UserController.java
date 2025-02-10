@@ -1,7 +1,5 @@
 package io.castelo.main_server.user;
 
-import io.castelo.main_server.auth.jwt.AuthTokenResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,17 +48,4 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
-
-    @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
-    public AuthTokenResponse login(@RequestBody User user) {
-        return userService.login(user);
-    }
-
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(HttpServletRequest request) {
-        userService.logout(request);
-    }
-
 }

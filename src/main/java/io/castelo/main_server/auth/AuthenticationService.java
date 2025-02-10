@@ -2,28 +2,25 @@ package io.castelo.main_server.auth;
 
 import io.castelo.main_server.auth.jwt.AuthTokenResponse;
 import io.castelo.main_server.auth.jwt.JWTService;
-import io.castelo.main_server.user.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
 
     private final JWTService jwtService;
-    private final AuthenticationManager authenticationManager;
 
 
     @Autowired
-    public AuthenticationService(AuthenticationManager authenticationManager, JWTService jwtService) {
-        this.authenticationManager = authenticationManager;
+    public AuthenticationService(JWTService jwtService) {
         this.jwtService = jwtService;
     }
 
-    public AuthTokenResponse login(User user) {
-        Authentication authentication = authenticate(user);
+    public AuthTokenResponse login() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.isAuthenticated()) {
             return generateToken(authentication);
         } else {
@@ -31,13 +28,12 @@ public class AuthenticationService {
         }
     }
 
-    private Authentication authenticate(User user) {
-        return authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-    }
-
     private AuthTokenResponse generateToken(Authentication authentication) {
         return jwtService.generateToken(authentication);
     }
 
+    public void logout(HttpServletRequest request) {
+        SecurityContextHolder.clearContext();
+        request.getSession().invalidate();
+    }
 }

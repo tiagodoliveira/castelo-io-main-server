@@ -1,8 +1,8 @@
 package io.castelo.main_server.gateway;
 
-import io.castelo.main_server.user.User;
 import io.castelo.main_server.data_validators.IpAddressValidator;
 import io.castelo.main_server.data_validators.MACAddressValidator;
+import io.castelo.main_server.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
