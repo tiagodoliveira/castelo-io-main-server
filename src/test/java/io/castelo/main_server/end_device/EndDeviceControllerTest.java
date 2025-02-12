@@ -85,7 +85,7 @@ class EndDeviceControllerTest {
                 validUser,
                 validGateway,
                 "1.0.0",
-                WorkingModes.MANUAL
+                WorkingModes.AUTONOMOUS
         );
 
         entityManager.persist(newEndDevice);
@@ -169,15 +169,13 @@ class EndDeviceControllerTest {
 
     @Test
     void updateEndDevice() {
-
         newEndDevice.setEndDeviceName("Updated Device Name");
         newEndDevice.setEndDeviceIp("192.168.0.199");
         newEndDevice.setDebugMode(true);
-        newEndDevice.setFirmware("1.2.3");
+        newEndDevice.setFirmware("1.3.0");
         newEndDevice.setWorkingMode(WorkingModes.MANUAL);
 
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
-
         ResponseEntity<EndDevice> response = restTemplate.exchange("/end-devices", HttpMethod.PUT, request, EndDevice.class);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -185,7 +183,7 @@ class EndDeviceControllerTest {
         Assertions.assertEquals(response.getBody().getEndDeviceIp(), "192.168.0.199");
         Assertions.assertEquals(response.getBody().getEndDeviceName(), "Updated Device Name");
         Assertions.assertTrue(response.getBody().isDebugMode());
-        Assertions.assertEquals(response.getBody().getFirmware(), "1.2.3");
+        Assertions.assertEquals(response.getBody().getFirmware(), "1.3.0");
         Assertions.assertEquals(response.getBody().getWorkingMode(), WorkingModes.MANUAL);
     }
 

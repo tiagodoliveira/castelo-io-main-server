@@ -21,10 +21,6 @@ public class EndDeviceComponentService {
         this.endDeviceComponentModelService = endDeviceComponentModelService;
     }
 
-    public List<EndDeviceComponent> getAllComponents() {
-        return endDeviceComponentRepository.findAll();
-    }
-
     public EndDeviceComponent getComponent(EndDeviceComponentKey id) {
         return endDeviceComponentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Component not found with id: " + id));
