@@ -10,7 +10,7 @@
 			"name": "User",
 			"item": [
 				{
-					"name": "Create User",
+					"name": "Register User",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -21,15 +21,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": \"b3d27f9b-d21d-327c-164e-7fb6776f87b0\",\n    \"userName\": \"Sample User\"\n}"
+							"raw": "{\n    \"userId\": \"b3d27f9b-d21d-327c-164e-7fb6776f87b0\",\n    \"email\": \"example@yahoo.com\",\n    \"password\": \"password\",\n    \"displayName\": \"John Santos\",\n    \"isUserEnabled\": true,\n    \"isCredentialsNonExpired\": true\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users",
+							"raw": "{{baseUrl}}/users/register",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"users"
+								"users",
+								"register"
 							]
 						}
 					},
@@ -38,6 +39,16 @@
 				{
 					"name": "Get All Users",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -55,6 +66,16 @@
 				{
 					"name": "Get User by ID",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -79,6 +100,16 @@
 				{
 					"name": "Update User",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -88,22 +119,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"userId\": \"b3d27f9b-d21d-327c-164e-7fb6776f87b0\",\n   \"userName\": \"Pink Floyd\"\n}"
+							"raw": "{\n   \"email\": \"bob.johnso@gmail.com\",\n   \"displayName\": \"Pink Floyd\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/:id",
+							"raw": "{{baseUrl}}/users",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b3d27f9b-d21d-327c-164e-7fb6776f87b0"
-								}
+								"users"
 							]
 						}
 					},
@@ -112,6 +136,16 @@
 				{
 					"name": "Delete User",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -126,8 +160,162 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "b3d27f9b-d21d-327c-164e-7fb6776f87b0"
+									"value": "cfd3ce69-1f3d-43cc-87f1-a686373a25ca"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body to get the token",
+									"var jsonData = pm.response.json();",
+									"var accessToken = jsonData.accessToken;",
+									"var expiresIn = jsonData.expiresIn;",
+									"",
+									"// Save the token to an environment variable",
+									"pm.environment.set(\"accessToken\", accessToken);",
+									"pm.environment.set(\"expiresIn\", expiresIn);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password2",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "alice@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body to get the token",
+									"var jsonData = pm.response.json();",
+									"var accessToken = jsonData.accessToken;",
+									"var expiresIn = jsonData.expiresIn;",
+									"",
+									"// Save the token to an environment variable",
+									"pm.environment.set(\"accessToken\", accessToken);",
+									"pm.environment.set(\"expiresIn\", expiresIn);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"3f43b3e8-6bd8-48e8-99e4-7e31d2d97982\",\n    \"email\": \"bob.johnson@gmail.com\",\n    \"password\": \"password3\",\n    \"displayName\": \"Bob Johnson\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
 							]
 						}
 					},
@@ -141,6 +329,16 @@
 				{
 					"name": "Create Gateway",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -167,6 +365,16 @@
 				{
 					"name": "Get All Gateways",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -184,6 +392,16 @@
 				{
 					"name": "Get Gateway by MAC",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -208,6 +426,16 @@
 				{
 					"name": "Update Gateway",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -241,6 +469,16 @@
 				{
 					"name": "Delete Gateway",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -270,6 +508,16 @@
 				{
 					"name": "Create EndDeviceModel",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -296,6 +544,16 @@
 				{
 					"name": "Get All Models",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -313,6 +571,16 @@
 				{
 					"name": "Get Model by ID",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -337,6 +605,16 @@
 				{
 					"name": "Update Model",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -370,6 +648,16 @@
 				{
 					"name": "Delete Model",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -399,6 +687,16 @@
 				{
 					"name": "Create EndDeviceComponentModel",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -430,6 +728,16 @@
 				{
 					"name": "Get All Models",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -447,6 +755,16 @@
 				{
 					"name": "Get Model by ID",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -476,6 +794,16 @@
 				{
 					"name": "Create EndDevice",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -485,7 +813,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"endDeviceMac\": \"10:00:00:00:00:03\",\n    \"endDeviceIp\": \"192.168.1.101\",\n    \"endDeviceModel\": {\n        \"modelId\": 1\n    },\n    \"user\":{\n        \"userId\": \"cfd3ce69-1f3d-43cc-87f1-a686373a25ca\"\n    },\n    \"endDeviceName\": \"Sample EndDevice\",\n    \"debugMode\": false,\n    \"gateway\": {\n        \"gatewayMac\": \"00:00:00:00:00:02\"\n    },\n    \"firmware\": \"1.1.0\",\n    \"workingMode\": \"AUTONOMOUS\"\n}"
+							"raw": "{\n    \"endDeviceMac\": \"10:00:00:00:00:04\",\n    \"endDeviceIp\": \"192.168.1.101\",\n    \"endDeviceModel\": {\n        \"modelId\": 8\n    },\n    \"user\":{\n        \"userId\": \"cfd3ce69-1f3d-43cc-87f1-a686373a25ca\"\n    },\n    \"endDeviceName\": \"Sample EndDevice\",\n    \"debugMode\": false,\n    \"gateway\": {\n        \"gatewayMac\": \"00:00:00:00:00:02\"\n    },\n    \"firmware\": \"1.1.0\",\n    \"workingMode\": \"AUTONOMOUS\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/end-devices",
@@ -502,6 +830,16 @@
 				{
 					"name": "Get All EndDevices",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -519,6 +857,16 @@
 				{
 					"name": "Get EndDevice by MAC",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -533,7 +881,7 @@
 							"variable": [
 								{
 									"key": "mac",
-									"value": "10:00:00:00:00:03"
+									"value": "FF:EE:DD:CC:BB:AA"
 								}
 							]
 						}
@@ -543,6 +891,16 @@
 				{
 					"name": "Update EndDevice",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -552,22 +910,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"endDeviceName\": \"Updated Again EndDevice\",\n    \"endDeviceIp\": \"192.168.1.101\"\n}"
+							"raw": "{\n    \"endDeviceMac\": \"AA:BB:CC:DD:EE:FF\",\n    \"endDeviceIp\": \"192.168.1.101\",\n    \"endDeviceModel\": {\n        \"modelId\": 2\n    },\n    \"user\":{\n        \"userId\": \"cfd3ce69-1f3d-43cc-87f1-a686373a25ca\"\n    },\n    \"endDeviceName\": \"Updated EndDevice\",\n    \"debugMode\": false,\n    \"gateway\": {\n        \"gatewayMac\": \"00:11:22:33:44:55\"\n    },\n    \"firmware\": \"1.1.0\",\n    \"workingMode\": \"AUTONOMOUS\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/end-devices/:mac",
+							"raw": "{{baseUrl}}/end-devices",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"end-devices",
-								":mac"
-							],
-							"variable": [
-								{
-									"key": "mac",
-									"value": "10:00:00:00:00:03"
-								}
+								"end-devices"
 							]
 						}
 					},
@@ -576,6 +927,16 @@
 				{
 					"name": "Delete EndDevice",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -605,6 +966,16 @@
 				{
 					"name": "Get All EndDeviceComponents",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -622,6 +993,16 @@
 				{
 					"name": "Get EndDeviceComponent by ID",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -651,6 +1032,16 @@
 				{
 					"name": "Update EndDeviceComponent",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
