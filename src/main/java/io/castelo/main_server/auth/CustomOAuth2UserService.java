@@ -28,7 +28,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email;
 
         if ("github".equalsIgnoreCase(userRequest.getClientRegistration().getRegistrationId())) {
-            email = gitHubService.fetchEmailFromGitHub(userRequest.getAccessToken().getTokenValue());
+            email = gitHubService.fetchEmailFromGitHub("token " + userRequest.getAccessToken().getTokenValue());
         } else {
             email = oAuth2User.getAttribute("email");
         }

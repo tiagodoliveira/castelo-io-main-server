@@ -15,7 +15,7 @@ public class GitHubService {
     }
 
     public String fetchEmailFromGitHub(String accessToken) {
-        List<GitHubEmailResponse> emails = gitHubClient.getEmails("token " + accessToken);
+        List<GitHubEmailResponse> emails = gitHubClient.getEmails(accessToken);
 
         if (emails != null && !emails.isEmpty()) {
             return emails.stream()
