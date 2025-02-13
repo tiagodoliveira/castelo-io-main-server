@@ -3,7 +3,6 @@ package io.castelo.main_server.auth;
 import io.castelo.main_server.client.github.GitHubService;
 import io.castelo.main_server.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -16,7 +15,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final GitHubService gitHubService;
 
     @Autowired
-    public CustomOAuth2UserService(@Lazy UserService userService, GitHubService gitHubService) {
+    public CustomOAuth2UserService(UserService userService, GitHubService gitHubService) {
         this.userService = userService;
         this.gitHubService = gitHubService;
     }
