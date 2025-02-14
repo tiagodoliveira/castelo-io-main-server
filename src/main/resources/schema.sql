@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS "end_device_component_models" (
 -- Create the EndDevice table
 CREATE TABLE IF NOT EXISTS "end_devices" (
     end_device_mac VARCHAR(17) PRIMARY KEY,
-    end_device_ip inet NOT NULL,
+    end_device_ip inet,
     model_id INTEGER NOT NULL REFERENCES "end_device_models"(model_id),
     end_device_name TEXT NOT NULL,
     debug_mode BOOLEAN NOT NULL DEFAULT FALSE,

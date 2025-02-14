@@ -20,8 +20,7 @@ public class EndDevice{
         @Column(name = "end_device_mac", length = 17)
         private String endDeviceMac;
 
-        @NotBlank
-        @Column(name = "end_device_ip", nullable = false, columnDefinition = "inet")
+        @Column(name = "end_device_ip", columnDefinition = "inet")
         private String endDeviceIp;
 
         @NotNull
@@ -58,7 +57,7 @@ public class EndDevice{
 
         public EndDevice() {}
 
-        public EndDevice(@NotBlank String endDeviceMac, @NotBlank String endDeviceIp, @NotNull EndDeviceModel endDeviceModel,
+        public EndDevice(@NotBlank String endDeviceMac, String endDeviceIp, @NotNull EndDeviceModel endDeviceModel,
                          @NotBlank String endDeviceName, boolean debugMode, @NotNull User user, Gateway gateway,
                          @NotBlank String firmware, WorkingModes workingModes) {
 
@@ -81,11 +80,11 @@ public class EndDevice{
                 this.endDeviceMac = MACAddressValidator.normalizeMACAddress(endDeviceMac);
         }
 
-        public @NotBlank String getEndDeviceIp() {
+        public String getEndDeviceIp() {
                 return endDeviceIp;
         }
 
-        public void setEndDeviceIp(@NotBlank String endDeviceIp) {
+        public void setEndDeviceIp(String endDeviceIp) {
                 this.endDeviceIp = endDeviceIp;
         }
 
