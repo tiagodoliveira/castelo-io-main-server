@@ -35,7 +35,6 @@ public class EndDeviceComponent {
     private ComponentTypes componentType;
 
 
-
     public EndDeviceComponent(@NotBlank String endDeviceMac, @NotNull Short componentNumber, @NotBlank String componentName, @NotNull ComponentTypes componentType){
         this.endDeviceMac = endDeviceMac;
         this.componentNumber = componentNumber;

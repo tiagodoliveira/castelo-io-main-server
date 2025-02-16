@@ -1,5 +1,6 @@
 package io.castelo.main_server.end_device_component;
 
+import io.castelo.main_server.end_device.EndDevice;
 import io.castelo.main_server.end_device_component_model.EndDeviceComponentModel;
 import io.castelo.main_server.end_device_component_model.EndDeviceComponentModelService;
 import io.castelo.main_server.exception.ResourceNotFoundException;
@@ -26,10 +27,12 @@ public class EndDeviceComponentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Component not found with id: " + id));
     }
 
-    public List<EndDeviceComponent> createComponents(String endDeviceMac, Integer modelId) {
-        List<EndDeviceComponentModel> endDeviceComponentModels = endDeviceComponentModelService.getAllComponentModelsByModelId(modelId);
+    public List<EndDeviceComponent> createComponents(EndDevice endDevice) {
+        List<EndDeviceComponentModel> endDeviceComponentModels = endDeviceComponentModelService
+                .getAllComponentModelsByModelId(endDevice.getEndDeviceModel().getModelId());
+
         List<EndDeviceComponent> endDeviceComponents = endDeviceComponentModels.stream().map(componentModel ->
-                new EndDeviceComponent(endDeviceMac,
+                new EndDeviceComponent(endDevice.getEndDeviceMac(),
                         componentModel.getComponentNumber(),
                         componentModel.getComponentName(),
                         componentModel.getComponentType())).toList();

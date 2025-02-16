@@ -42,31 +42,27 @@ public class EndDeviceService {
     }
 
     @Transactional
-    @PreAuthorize("#endDevice.getUser().getUsername() == authentication.name")
+    @PreAuthorize("#endDevice.getUser().userId == authentication.principal.userId")
     public EndDevice createEndDevice(EndDevice endDevice) {
-        IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
-        MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
-
-        gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
+        validateEndDevice(endDevice);
 
         if (endDevice.getWorkingMode() == null) {
-            endDevice.setWorkingMode(WorkingModes.MANUAL);
+            endDevice.setWorkingMode(WorkingModes.AUTONOMOUS);
         }
+
         endDevice = endDeviceRepository.save(endDevice);
 
-        List<EndDeviceComponent> endDeviceComponents = endDeviceComponentService.createComponents(
-                endDevice.getEndDeviceMac(), endDevice.getEndDeviceModel().getModelId());
+        List<EndDeviceComponent> endDeviceComponents = endDeviceComponentService.createComponents(endDevice);
 
-        endDevice.setComponents(endDeviceComponents);
+        endDevice.getComponents().clear();
+        endDevice.getComponents().addAll(endDeviceComponents);
 
         return endDevice;
     }
 
     @Transactional
     public EndDevice updateEndDevice(EndDevice endDevice) {
-        IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
-        MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac());
-
+        validateEndDevice(endDevice);
         return endDeviceRepository.save(endDevice);
     }
 
@@ -74,5 +70,21 @@ public class EndDeviceService {
     @PreAuthorize("#endDevice.getUser().getUsername() == authentication.name or hasAuthority('ADMIN')")
     public void deleteEndDevice(EndDevice endDevice) {
         endDeviceRepository.delete(endDevice);
+    }
+
+    @Transactional
+    public void pairWithGateway(String endDeviceMac, String gatewayMac) {
+        EndDevice endDevice = endDeviceRepository.findById(endDeviceMac)
+                .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + endDeviceMac));
+        endDevice.setGateway(gatewayService.getGateway(gatewayMac));
+        endDeviceRepository.save(endDevice);
+    }
+
+    private void validateEndDevice(EndDevice endDevice) {
+        IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
+        endDevice.setEndDeviceMac(MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac()));
+
+        if(endDevice.getGateway() != null)
+            gatewayService.verifyIfGatewayExists(endDevice.getGateway().getGatewayMac());
     }
 }
