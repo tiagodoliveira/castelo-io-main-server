@@ -48,9 +48,9 @@ public class EndDeviceController {
         endDeviceService.deleteEndDevice(endDevice);
     }
 
-    @PostMapping("/pair-with-gateway")
+    @PutMapping("/pair-with-gateway/{gatewayMac}")
     @ResponseStatus(HttpStatus.OK)
-    public void pairWithGateway(@RequestHeader String endDeviceMac, @RequestHeader String gatewayMac) {
-        endDeviceService.pairWithGateway(endDeviceMac, gatewayMac);
+    public EndDevice pairWithGateway(@RequestBody EndDevice endDevice, @PathVariable String gatewayMac) {
+        return endDeviceService.pairWithGateway(endDevice, gatewayMac);
     }
 }

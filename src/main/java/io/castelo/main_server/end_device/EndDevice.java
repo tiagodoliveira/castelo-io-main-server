@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,8 +52,8 @@ public class EndDevice{
         @Column(name = "working_mode", columnDefinition = "working_modes")
         private WorkingModes working_mode;
 
-        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
-        private List<EndDeviceComponent> endDeviceComponents;
+        @OneToMany(mappedBy = "endDevice", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+        private List<EndDeviceComponent> endDeviceComponents = new ArrayList<>();
 
 
         public EndDevice() {}
@@ -70,6 +71,7 @@ public class EndDevice{
                 this.gateway = gateway;
                 this.firmware = firmware;
                 this.working_mode = workingModes;
+                this.endDeviceComponents = new ArrayList<>();
         }
 
         public @NotBlank String getEndDeviceMac() {

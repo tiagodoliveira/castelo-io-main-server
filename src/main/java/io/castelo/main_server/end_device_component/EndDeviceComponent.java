@@ -19,6 +19,7 @@ public class EndDeviceComponent {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "end_device_mac", insertable = false, updatable = false)
+    @JsonIgnore
     private EndDevice endDevice;
 
     @Id
@@ -42,8 +43,14 @@ public class EndDeviceComponent {
         this.componentType = componentType;
     }
 
-    public EndDeviceComponent() {
+    public EndDeviceComponent() {}
 
+    public EndDevice getEndDevice() {
+        return endDevice;
+    }
+
+    public void setEndDevice(EndDevice endDevice) {
+        this.endDevice = endDevice;
     }
 
     public String getEndDeviceMac() {

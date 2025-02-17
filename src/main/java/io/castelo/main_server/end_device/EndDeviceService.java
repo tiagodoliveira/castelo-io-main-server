@@ -4,7 +4,9 @@ import io.castelo.main_server.data_validators.IpAddressValidator;
 import io.castelo.main_server.data_validators.MACAddressValidator;
 import io.castelo.main_server.end_device_component.EndDeviceComponent;
 import io.castelo.main_server.end_device_component.EndDeviceComponentService;
+import io.castelo.main_server.exception.ForbiddenException;
 import io.castelo.main_server.exception.ResourceNotFoundException;
+import io.castelo.main_server.gateway.Gateway;
 import io.castelo.main_server.gateway.GatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,23 +63,28 @@ public class EndDeviceService {
     }
 
     @Transactional
+    @PreAuthorize("#endDevice.getUser().userId == authentication.principal.userId or hasAuthority('ADMIN')")
     public EndDevice updateEndDevice(EndDevice endDevice) {
         validateEndDevice(endDevice);
         return endDeviceRepository.save(endDevice);
     }
 
     @Transactional
-    @PreAuthorize("#endDevice.getUser().getUsername() == authentication.name or hasAuthority('ADMIN')")
+    @PreAuthorize("#endDevice.getUser().userId == authentication.principal.userId or hasAuthority('ADMIN')")
     public void deleteEndDevice(EndDevice endDevice) {
         endDeviceRepository.delete(endDevice);
     }
 
     @Transactional
-    public void pairWithGateway(String endDeviceMac, String gatewayMac) {
-        EndDevice endDevice = endDeviceRepository.findById(endDeviceMac)
-                .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + endDeviceMac));
-        endDevice.setGateway(gatewayService.getGateway(gatewayMac));
-        endDeviceRepository.save(endDevice);
+    @PreAuthorize("#endDevice.getUser().userId == authentication.principal.userId or hasAuthority('ADMIN')")
+    public EndDevice pairWithGateway(EndDevice endDevice, String gatewayMac) {
+        Gateway gateway = gatewayService.getGateway(gatewayMac);
+        if(endDevice.getUser().equals(gateway.getUser())){
+            endDevice.setGateway(gateway);
+            return endDeviceRepository.save(endDevice);
+        } else {
+            throw new ForbiddenException("User mismatch between EndDevice and Gateway");
+        }
     }
 
     private void validateEndDevice(EndDevice endDevice) {

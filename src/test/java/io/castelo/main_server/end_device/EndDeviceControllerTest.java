@@ -145,7 +145,7 @@ class EndDeviceControllerTest {
         ResponseEntity<EndDevice> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, EndDevice.class);
         Assertions.assertEquals(HttpStatus.CREATED, endDeviceResponseEntity.getStatusCode());
         Assertions.assertNotNull(endDeviceResponseEntity.getBody());
-        Assertions.assertEquals(Objects.requireNonNull(endDeviceResponseEntity.getBody()).getEndDeviceName(), "New Device");
+        Assertions.assertEquals("New Device", Objects.requireNonNull(endDeviceResponseEntity.getBody()).getEndDeviceName());
     }
 
     @Test
@@ -180,11 +180,11 @@ class EndDeviceControllerTest {
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
-        Assertions.assertEquals(response.getBody().getEndDeviceIp(), "192.168.0.199");
-        Assertions.assertEquals(response.getBody().getEndDeviceName(), "Updated Device Name");
+        Assertions.assertEquals("192.168.0.199", response.getBody().getEndDeviceIp());
+        Assertions.assertEquals("Updated Device Name", response.getBody().getEndDeviceName());
         Assertions.assertTrue(response.getBody().isDebugMode());
-        Assertions.assertEquals(response.getBody().getFirmware(), "1.3.0");
-        Assertions.assertEquals(response.getBody().getWorkingMode(), WorkingModes.MANUAL);
+        Assertions.assertEquals("1.3.0", response.getBody().getFirmware());
+        Assertions.assertEquals(WorkingModes.MANUAL, response.getBody().getWorkingMode());
     }
 
     @Test
@@ -198,4 +198,13 @@ class EndDeviceControllerTest {
         Assertions.assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
     }
 
+    @Test
+    void shouldPairEndDeviceWithGateway() {
+        String path = "/end-devices/pair-with-gateway/" + validGateway.getGatewayMac();
+        HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
+
+        ResponseEntity<EndDevice> response = restTemplate.exchange(path, HttpMethod.PUT, request, EndDevice.class);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(newEndDevice.getGateway().getGatewayMac(), Objects.requireNonNull(response.getBody()).getGateway().getGatewayMac());
+    }
 }

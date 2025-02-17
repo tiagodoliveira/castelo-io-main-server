@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -27,6 +28,7 @@ public class User implements UserDetails{
 
     @NotBlank
     @Column(name = "password", nullable = false, columnDefinition = "text")
+    @JsonIgnore
     private String password;
 
     @NotBlank
@@ -139,5 +141,31 @@ public class User implements UserDetails{
                 ", email='" + email + '\'' +
                 ", displayName='" + displayName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final User other = (User) obj;
+        if (!Objects.equals(this.userId, other.userId)) {
+            return false;
+        }
+
+        return Objects.equals(this.email, other.email);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + (this.userId != null ? this.userId.hashCode() : 0);
+        hash = 53 * hash + this.email.hashCode();
+        return hash;
     }
 }
