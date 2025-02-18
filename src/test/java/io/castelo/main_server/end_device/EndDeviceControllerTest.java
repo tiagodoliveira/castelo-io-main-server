@@ -77,7 +77,7 @@ class EndDeviceControllerTest {
         invalidGateway = new Gateway(INVALID_GATEWAY_MAC, validUser, "1234", "Gateway");
 
         newEndDevice = new EndDevice(
-                "AA:BB:CC:DD:EE:FA",
+                VALID_END_DEVICE_MAC,
                 "192.168.0.1",
                 new EndDeviceModel(1, "v1.2.3"),
                 "New Device",
@@ -107,7 +107,7 @@ class EndDeviceControllerTest {
         ResponseEntity<EndDevice[]> response = restTemplate.exchange("/end-devices", HttpMethod.GET, request, EndDevice[].class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
-        Assertions.assertEquals(3, response.getBody().length);
+        Assertions.assertEquals(2, response.getBody().length);
     }
 
     @Test
@@ -118,7 +118,7 @@ class EndDeviceControllerTest {
 
         EndDevice endDevice = response.getBody();
         Assertions.assertNotNull(endDevice);
-        Assertions.assertEquals("Device 1", endDevice.getEndDeviceName()); // Assuming data loaded from JSON
+        Assertions.assertEquals("Device 1", endDevice.getEndDeviceName());
     }
 
     @Test
@@ -150,11 +150,11 @@ class EndDeviceControllerTest {
 
     @Test
     void shouldReturnNotFoundIfInvalidUserOnCreatingEndDevice() {
-        newEndDevice.setUser(invalidUser);
+        newEndDevice.setOwner(invalidUser);
         HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
 
         ResponseEntity<Void> endDeviceResponseEntity = restTemplate.exchange("/end-devices", HttpMethod.POST, request, Void.class);
-        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, endDeviceResponseEntity.getStatusCode());
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, endDeviceResponseEntity.getStatusCode());
     }
 
     @Test
@@ -189,8 +189,8 @@ class EndDeviceControllerTest {
 
     @Test
     void deleteEndDevice() {
-        HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
-        ResponseEntity<Void> response = restTemplate.exchange("/end-devices", HttpMethod.DELETE, request, Void.class);
+        HttpEntity<EndDevice> request = new HttpEntity<>(headers);
+        ResponseEntity<Void> response = restTemplate.exchange("/end-devices/" + VALID_END_DEVICE_MAC, HttpMethod.DELETE, request, Void.class);
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         HttpEntity<Void> requestVerify = new HttpEntity<>(headers);
@@ -200,8 +200,8 @@ class EndDeviceControllerTest {
 
     @Test
     void shouldPairEndDeviceWithGateway() {
-        String path = "/end-devices/pair-with-gateway/" + validGateway.getGatewayMac();
-        HttpEntity<EndDevice> request = new HttpEntity<>(newEndDevice, headers);
+        String path = "/end-devices/" + VALID_END_DEVICE_MAC + "/pair-with-gateway/" + VALID_GATEWAY_MAC;
+        HttpEntity<EndDevice> request = new HttpEntity<>(headers);
 
         ResponseEntity<EndDevice> response = restTemplate.exchange(path, HttpMethod.PUT, request, EndDevice.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

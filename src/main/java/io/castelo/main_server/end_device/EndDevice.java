@@ -10,7 +10,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "end_devices")
@@ -36,9 +38,18 @@ public class EndDevice{
         @Column(name = "debug_mode")
         private boolean debugMode;
 
+        @NotNull
         @ManyToOne
-        @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-        private User user;
+        @JoinColumn(name = "owner_id", referencedColumnName = "user_id", nullable = false)
+        private User owner;
+
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(
+                name = "end_device_users",
+                joinColumns = @JoinColumn(name = "end_device_mac"),
+                inverseJoinColumns = @JoinColumn(name = "user_id")
+        )
+        private Set<User> sharedUsers = new HashSet<>();
 
         @ManyToOne
         @JoinColumn(name = "gateway_mac", referencedColumnName = "gateway_mac")
@@ -67,11 +78,16 @@ public class EndDevice{
                 this.endDeviceModel = endDeviceModel;
                 this.endDeviceName = endDeviceName;
                 this.debugMode = debugMode;
-                this.user = user;
+                this.owner = user;
                 this.gateway = gateway;
                 this.firmware = firmware;
                 this.working_mode = workingModes;
                 this.endDeviceComponents = new ArrayList<>();
+                this.sharedUsers = new HashSet<>();
+        }
+
+        public boolean hasAccess(User user) {
+                return owner.equals(user) || sharedUsers.contains(user);
         }
 
         public @NotBlank String getEndDeviceMac() {
@@ -146,12 +162,28 @@ public class EndDevice{
                 this.endDeviceComponents = endDeviceComponents;
         }
 
-        public User getUser() {
-                return user;
+        public User getOwner() {
+                return owner;
         }
 
-        public void setUser(User user) {
-                this.user = user;
+        public void setOwner(User user) {
+                this.owner = user;
+        }
+
+        public Set<User> getSharedUsers() {
+                return sharedUsers;
+        }
+
+        public void setSharedUsers(Set<User> sharedUsers) {
+                this.sharedUsers = sharedUsers;
+        }
+
+        public void addSharedUser(User user) {
+                this.sharedUsers.add(user);
+        }
+
+        public void removeSharedUser(User user) {
+                this.sharedUsers.remove(user);
         }
 
 
@@ -163,7 +195,7 @@ public class EndDevice{
                         ", endDeviceModel=" + (endDeviceModel != null ? endDeviceModel.getModelId() : null) +
                         ", endDeviceName='" + endDeviceName + '\'' +
                         ", debugMode=" + debugMode +
-                        ", user=" + (user != null ? user.getUserId() : null) +
+                        ", user=" + (owner != null ? owner.getUserId() : null) +
                         ", gateway=" + (gateway != null ? gateway.getGatewayMac() : null) +
                         ", firmware='" + firmware + '\'' +
                         ", working_mode=" + working_mode +

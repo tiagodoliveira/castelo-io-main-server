@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS "end_devices" (
     gateway_mac VARCHAR(17) REFERENCES "gateways"(gateway_mac) ON DELETE CASCADE,
     firmware TEXT NOT NULL,
     working_mode working_modes DEFAULT 'MANUAL',
-    user_id uuid NOT NULL REFERENCES "users"(user_id)
+    owner_id uuid NOT NULL REFERENCES "users"(user_id)
 );
 
 -- Create the Sensor table
@@ -68,3 +68,14 @@ CREATE TABLE IF NOT EXISTS "end_device_components" (
     component_name TEXT NOT NULL,
     PRIMARY KEY (end_device_mac, component_number)
 );
+
+CREATE TABLE IF NOT EXISTS "end_device_users" (
+    end_device_mac VARCHAR(17) NOT NULL,
+    user_id UUID NOT NULL,
+    PRIMARY KEY (end_device_mac, user_id),
+    FOREIGN KEY (end_device_mac) REFERENCES end_devices(end_device_mac) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_end_device_users_user ON end_device_users(user_id);
+CREATE INDEX IF NOT EXISTS idx_end_device_users_device ON end_device_users(end_device_mac);

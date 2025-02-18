@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "gateways")
 public class Gateway{
@@ -70,6 +72,10 @@ public class Gateway{
 
     public void setGatewayName(@NotBlank String gatewayName) {
         this.gatewayName = gatewayName;
+    }
+
+    public boolean hasAccess(User authenticatedUser) {
+        return Objects.equals(this.user, authenticatedUser);
     }
 
     @Override

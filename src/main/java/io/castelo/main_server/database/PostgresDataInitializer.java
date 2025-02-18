@@ -108,16 +108,16 @@ public class PostgresDataInitializer {
             String endDeviceIp = endDevice.get("end_device_ip").asText();
             int modelId = endDevice.get("model_id").asInt();
             String endDeviceName = endDevice.get("end_device_name").asText();
-            UUID userId = UUID.fromString(endDevice.get("user_id").asText());
+            UUID owner_id = UUID.fromString(endDevice.get("owner_id").asText());
             boolean debugMode = endDevice.get("debug_mode").asBoolean();
             String gatewayMac = endDevice.get("gateway_mac").asText();
             String firmware = endDevice.get("firmware").asText();
             String workingMode = endDevice.get("working_mode").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO end_devices (end_device_mac, end_device_ip, model_id, end_device_name, debug_mode, gateway_mac, firmware, working_mode, user_id) " +
+                    "INSERT INTO end_devices (end_device_mac, end_device_ip, model_id, end_device_name, debug_mode, gateway_mac, firmware, working_mode, owner_id) " +
                             "VALUES (?, CAST(? AS inet), ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (end_device_mac) DO NOTHING",
-                    endDeviceMac, endDeviceIp, modelId, endDeviceName, debugMode, gatewayMac, firmware, workingMode, userId
+                    endDeviceMac, endDeviceIp, modelId, endDeviceName, debugMode, gatewayMac, firmware, workingMode, owner_id
             );
         }
     }

@@ -42,15 +42,15 @@ public class EndDeviceController {
         return endDeviceService.updateEndDevice(endDevice);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{endDeviceMac}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteEndDevice(@RequestBody EndDevice endDevice) {
-        endDeviceService.deleteEndDevice(endDevice);
+    public void deleteEndDevice(@PathVariable String endDeviceMac) {
+        endDeviceService.deleteEndDevice(endDeviceMac);
     }
 
-    @PutMapping("/pair-with-gateway/{gatewayMac}")
+    @PutMapping("/{endDeviceMac}/pair-with-gateway/{gatewayMac}")
     @ResponseStatus(HttpStatus.OK)
-    public EndDevice pairWithGateway(@RequestBody EndDevice endDevice, @PathVariable String gatewayMac) {
-        return endDeviceService.pairWithGateway(endDevice, gatewayMac);
+    public EndDevice pairWithGateway(@PathVariable String endDeviceMac, @PathVariable String gatewayMac) {
+        return endDeviceService.pairWithGateway(endDeviceMac, gatewayMac);
     }
 }

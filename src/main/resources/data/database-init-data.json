@@ -98,7 +98,7 @@
       "model_id": 1,
       "end_device_name": "Device 1",
       "debug_mode": false,
-      "user_id": "cfd3ce69-1f3d-43cc-87f1-a686373a25ca",
+      "owner_id": "cfd3ce69-1f3d-43cc-87f1-a686373a25ca",
       "gateway_mac": "00:11:22:33:44:55",
       "firmware": "v1.2.3",
       "working_mode": "AUTONOMOUS"
@@ -109,7 +109,7 @@
       "model_id": 2,
       "end_device_name": "Device 2",
       "debug_mode": true,
-      "user_id": "3f43b3e8-6bd8-48e8-99e4-7e31d2d97982",
+      "owner_id": "3f43b3e8-6bd8-48e8-99e4-7e31d2d97982",
       "gateway_mac": "66:77:88:99:AA:BB",
       "firmware": "v2.3.4",
       "working_mode": "MANUAL"
