@@ -45,7 +45,7 @@ public class EndDevice{
 
         @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(
-                name = "end_device_users",
+                name = "end_device_shared_users",
                 joinColumns = @JoinColumn(name = "end_device_mac"),
                 inverseJoinColumns = @JoinColumn(name = "user_id")
         )
@@ -195,7 +195,7 @@ public class EndDevice{
                         ", endDeviceModel=" + (endDeviceModel != null ? endDeviceModel.getModelId() : null) +
                         ", endDeviceName='" + endDeviceName + '\'' +
                         ", debugMode=" + debugMode +
-                        ", user=" + (owner != null ? owner.getUserId() : null) +
+                        ", owner=" + (owner != null ? owner.getUserId() : null) +
                         ", gateway=" + (gateway != null ? gateway.getGatewayMac() : null) +
                         ", firmware='" + firmware + '\'' +
                         ", working_mode=" + working_mode +

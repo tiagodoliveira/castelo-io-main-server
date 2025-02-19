@@ -29,7 +29,7 @@ public class EndDeviceComponentService {
 
     public List<EndDeviceComponent> createComponents(EndDevice endDevice) {
         List<EndDeviceComponentModel> endDeviceComponentModels = endDeviceComponentModelService
-                .getAllComponentModelsByModelId(endDevice.getEndDeviceModel().getModelId());
+                .getComponentModel(endDevice.getEndDeviceModel().getModelId());
 
         List<EndDeviceComponent> endDeviceComponents = endDeviceComponentModels.stream().map(componentModel ->
                 new EndDeviceComponent(endDevice.getEndDeviceMac(),

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -52,5 +53,17 @@ public class EndDeviceController {
     @ResponseStatus(HttpStatus.OK)
     public EndDevice pairWithGateway(@PathVariable String endDeviceMac, @PathVariable String gatewayMac) {
         return endDeviceService.pairWithGateway(endDeviceMac, gatewayMac);
+    }
+
+    @PutMapping("/{endDeviceMac}/share/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void shareEndDevice(@PathVariable String endDeviceMac, @PathVariable UUID userId) {
+        endDeviceService.shareEndDevice(endDeviceMac, userId);
+    }
+
+    @PutMapping("/{endDeviceMac}/revoke-sharing/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void revokeEndDevice(@PathVariable String endDeviceMac, @PathVariable UUID userId) {
+        endDeviceService.revokeEndDeviceSharing(endDeviceMac, userId);
     }
 }

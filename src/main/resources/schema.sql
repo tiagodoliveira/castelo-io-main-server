@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 -- Create the Gateway table
 CREATE TABLE IF NOT EXISTS "gateways" (
     gateway_mac VARCHAR(17) PRIMARY KEY,
-    gateway_user_id UUID NOT NULL REFERENCES "users"(user_id),
+    owner_id UUID NOT NULL REFERENCES "users"(user_id),
     gateway_ip inet,
     gateway_name TEXT
 );
@@ -69,7 +69,8 @@ CREATE TABLE IF NOT EXISTS "end_device_components" (
     PRIMARY KEY (end_device_mac, component_number)
 );
 
-CREATE TABLE IF NOT EXISTS "end_device_users" (
+-- Create the End Device shared users table
+CREATE TABLE IF NOT EXISTS "end_device_shared_users" (
     end_device_mac VARCHAR(17) NOT NULL,
     user_id UUID NOT NULL,
     PRIMARY KEY (end_device_mac, user_id),
@@ -77,5 +78,17 @@ CREATE TABLE IF NOT EXISTS "end_device_users" (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_end_device_users_user ON end_device_users(user_id);
-CREATE INDEX IF NOT EXISTS idx_end_device_users_device ON end_device_users(end_device_mac);
+-- Create the Gateway shared users table
+CREATE TABLE IF NOT EXISTS "gateway_shared_users" (
+    gateway_mac VARCHAR(17) NOT NULL,
+    user_id UUID NOT NULL,
+    PRIMARY KEY (gateway_mac, user_id),
+    FOREIGN KEY (gateway_mac) REFERENCES gateways(gateway_mac) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_end_device_users_user ON end_device_shared_users(user_id);
+CREATE INDEX IF NOT EXISTS idx_end_device_users_device ON end_device_shared_users(end_device_mac);
+
+CREATE INDEX IF NOT EXISTS idx_gateway_users_user ON gateway_shared_users(user_id);
+CREATE INDEX IF NOT EXISTS idx_gateway_users_device ON gateway_shared_users(gateway_mac);

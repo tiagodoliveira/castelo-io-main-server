@@ -89,15 +89,15 @@ public class PostgresDataInitializer {
     private void insertGateways(JsonNode gateways) {
         for (JsonNode gateway : gateways) {
             String gatewayMac = gateway.get("gateway_mac").asText();
-            UUID userId = UUID.fromString(gateway.get("user_id").asText());
+            UUID ownerId = UUID.fromString(gateway.get("owner_id").asText());
             String gatewayIp = gateway.get("gateway_ip").asText();
             String gatewayName = gateway.get("gateway_name").asText();
 
             jdbcTemplate.update(
-                    "INSERT INTO gateways (gateway_mac, gateway_user_id, gateway_ip, gateway_name) " +
+                    "INSERT INTO gateways (gateway_mac, owner_id, gateway_ip, gateway_name) " +
                             "VALUES (?, ?, CAST(? AS inet), ?) " +
                             "ON CONFLICT (gateway_mac) DO NOTHING",
-                    gatewayMac, userId, gatewayIp, gatewayName
+                    gatewayMac, ownerId, gatewayIp, gatewayName
             );
         }
     }

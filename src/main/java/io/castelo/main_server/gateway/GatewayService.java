@@ -4,6 +4,7 @@ import io.castelo.main_server.data_validators.IpAddressValidator;
 import io.castelo.main_server.data_validators.MACAddressValidator;
 import io.castelo.main_server.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class GatewayService {
         this.gatewayRepository = gatewayRepository;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<Gateway> getAllGateways() {
         return gatewayRepository.findAll();
     }

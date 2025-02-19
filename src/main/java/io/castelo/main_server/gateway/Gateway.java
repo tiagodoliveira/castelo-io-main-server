@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "gateways")
@@ -19,8 +20,16 @@ public class Gateway{
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "gateway_user_id", nullable = false, referencedColumnName = "user_id")
-    User user;
+    @JoinColumn(name = "owner_id", nullable = false, referencedColumnName = "user_id")
+    User owner;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "gateway_shared_users",
+            joinColumns = @JoinColumn(name = "gateway_mac"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> sharedUsers = new HashSet<>();
 
     @NotBlank
     @Column(name = "gateway_ip", columnDefinition = "inet")
@@ -32,13 +41,18 @@ public class Gateway{
 
     public Gateway(@NotBlank String gatewayMac, @NotNull User user, @NotBlank String gatewayIp, @NotBlank String gatewayName) {
         this.gatewayMac = gatewayMac;
-        this.user = user;
+        this.owner = user;
         this.gatewayIp = gatewayIp;
         this.gatewayName = gatewayName;
+        this.sharedUsers = new HashSet<>();
     }
 
     public Gateway() {
 
+    }
+
+    public boolean hasAccess(User user) {
+        return owner.equals(user) || sharedUsers.contains(user);
     }
 
     public String getGatewayMac() {
@@ -58,12 +72,28 @@ public class Gateway{
         this.gatewayIp = gatewayIp;
     }
 
-    public @NotNull User getUser() {
-        return user;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setUser(@NotNull User user) {
-        this.user = user;
+    public void setOwner(User user) {
+        this.owner = user;
+    }
+
+    public Set<User> getSharedUsers() {
+        return sharedUsers;
+    }
+
+    public void setSharedUsers(Set<User> sharedUsers) {
+        this.sharedUsers = sharedUsers;
+    }
+
+    public void addSharedUser(User user) {
+        this.sharedUsers.add(user);
+    }
+
+    public void removeSharedUser(User user) {
+        this.sharedUsers.remove(user);
     }
 
     public @NotBlank String getGatewayName() {
@@ -74,15 +104,11 @@ public class Gateway{
         this.gatewayName = gatewayName;
     }
 
-    public boolean hasAccess(User authenticatedUser) {
-        return Objects.equals(this.user, authenticatedUser);
-    }
-
     @Override
     public String toString() {
         return "Gateway{" +
                 "gatewayMac='" + gatewayMac + '\'' +
-                ", user=" + user +
+                ", owner=" + owner +
                 ", gatewayIp='" + gatewayIp + '\'' +
                 ", gatewayName='" + gatewayName + '\'' +
                 '}';

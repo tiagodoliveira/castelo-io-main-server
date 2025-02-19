@@ -12,8 +12,6 @@ import io.castelo.main_server.user.User;
 import io.castelo.main_server.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,6 +89,22 @@ public class EndDeviceService {
         return endDeviceRepository.save(endDevice);
     }
 
+    @Transactional
+    public void shareEndDevice(String endDeviceMac, UUID userId) {
+        EndDevice sharedEndDevice = verifyIfAuthenticatedUserOwnsEndDevice(endDeviceMac);
+        User userToShareDevice = userService.getUser(userId);
+        sharedEndDevice.addSharedUser(userToShareDevice);
+        endDeviceRepository.save(sharedEndDevice);
+    }
+
+    @Transactional
+    public void revokeEndDeviceSharing(String endDeviceMac, UUID userId) {
+        EndDevice endDevice = verifyIfAuthenticatedUserOwnsEndDevice(endDeviceMac);
+        User userToRevokeSharing = userService.getUser(userId);
+        endDevice.removeSharedUser(userToRevokeSharing);
+        endDeviceRepository.save(endDevice);
+    }
+
     private void validateEndDevice(EndDevice endDevice) {
         IpAddressValidator.validateIpAddress(endDevice.getEndDeviceIp());
         endDevice.setEndDeviceMac(MACAddressValidator.normalizeMACAddress(endDevice.getEndDeviceMac()));
@@ -100,7 +114,8 @@ public class EndDeviceService {
     }
 
     private void verifyIfAuthenticatedUserOwnsEndDevice(UUID userId) {
-        if (!userId.equals(getAuthenticatedUserId())) {
+        User authenticatedUser = userService.getAuthenticatedUser();
+        if (!userId.equals(authenticatedUser.getUserId())) {
             throw new ForbiddenException("You don't have access to this device!");
         }
     }
@@ -108,7 +123,7 @@ public class EndDeviceService {
     private EndDevice verifyIfAuthenticatedUserOwnsEndDevice(String existingDeviceMac) {
         EndDevice existingDevice = endDeviceRepository.findById(existingDeviceMac)
                 .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + existingDeviceMac));
-        User authenticatedUser = userService.getUser(getAuthenticatedUserId());
+        User authenticatedUser = userService.getAuthenticatedUser();
         if (!existingDevice.getOwner().equals(authenticatedUser)) {
             throw new ForbiddenException("You don't have access to this device!");
         }
@@ -118,26 +133,20 @@ public class EndDeviceService {
     private EndDevice verifyIfAuthenticatedUserHasAccessToEndDevice(String existingDeviceMac) {
         EndDevice existingDevice = endDeviceRepository.findById(existingDeviceMac)
                 .orElseThrow(() -> new ResourceNotFoundException("EndDevice not found with mac: " + existingDeviceMac));
-        User authenticatedUser = userService.getUser(getAuthenticatedUserId());
+        User authenticatedUser = userService.getAuthenticatedUser();
         if (!existingDevice.hasAccess(authenticatedUser)) {
-            throw new ForbiddenException("You do not have permission to modify this device!");
+            throw new ForbiddenException("You don't have access to this device!");
         }
         return existingDevice;
     }
 
     private Gateway verifyIfAuthenticatedUserHasAccessToGateway(String gatewayMac) {
         Gateway gateway = gatewayService.getGateway(gatewayMac);
-        User authenticatedUser = userService.getUser(getAuthenticatedUserId());
+        User authenticatedUser = userService.getAuthenticatedUser();
 
         if(gateway.hasAccess(authenticatedUser))
             return gateway;
         else
             throw new ForbiddenException("You don't have access to this gateway!");
-    }
-
-    private UUID getAuthenticatedUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User userDetails = (User) authentication.getPrincipal();
-        return userDetails.getUserId();
     }
 }
