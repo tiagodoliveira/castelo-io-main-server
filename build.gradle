@@ -46,15 +46,20 @@ dependencies {
 }
 
 
-test {
+tasks.named('test') {
 	useJUnitPlatform {
-		excludeTags("integration") // Run unit tests by default
+		excludeTags("integration")
 	}
 }
 
 tasks.register('integrationTest', Test) {
 	useJUnitPlatform {
-		includeTags("integration") // Run only integration tests
+		includeTags("integration")
 	}
 	shouldRunAfter test
+}
+
+// Make sure "build" does not trigger integration tests
+tasks.named("check") {
+	dependsOn test // Only depends on unit tests
 }
