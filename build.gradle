@@ -45,6 +45,16 @@ dependencies {
 
 }
 
-test() {
-	useJUnitPlatform()
+
+test {
+	useJUnitPlatform {
+		excludeTags("integration") // Run unit tests by default
+	}
+}
+
+tasks.register('integrationTest', Test) {
+	useJUnitPlatform {
+		includeTags("integration") // Run only integration tests
+	}
+	shouldRunAfter test
 }
