@@ -61,5 +61,5 @@ tasks.register('integrationTest', Test) {
 
 // Make sure "build" does not trigger integration tests
 tasks.named("check") {
-	dependsOn test // Only depends on unit tests
+	dependsOn test
 }
