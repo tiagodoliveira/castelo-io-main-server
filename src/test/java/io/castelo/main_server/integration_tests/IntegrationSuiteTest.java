@@ -7,5 +7,5 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectPackages("io.castelo.main_server.integration_tests.test_classes")
-public class IntegrationSuiteTests {
+public class IntegrationSuiteTest {
 }

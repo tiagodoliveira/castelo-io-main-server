@@ -50,12 +50,20 @@ jobs:
       run: ./gradlew build --no-daemon --scan
 
     # Test the application (will use Gradle's `test` task)
-    - name: Run Tests
+    # Run Unit Tests
+    - name: Run Unit Tests
       env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
-          SPRING_DATASOURCE_USERNAME: castelo-io
-          SPRING_DATASOURCE_PASSWORD: password
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
+        SPRING_DATASOURCE_USERNAME: castelo-io
+        SPRING_DATASOURCE_PASSWORD: password
       run: ./gradlew test --no-daemon --info
+
+    - name: Run Integration Tests
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
+        SPRING_DATASOURCE_USERNAME: castelo-io
+        SPRING_DATASOURCE_PASSWORD: password
+      run: ./gradlew integrationTest --no-daemon --info
 
   dependency-submission:
     runs-on: ubuntu-latest
