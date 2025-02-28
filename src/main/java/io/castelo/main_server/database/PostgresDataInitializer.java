@@ -10,8 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Service
@@ -29,7 +30,11 @@ public class PostgresDataInitializer {
     public void initializeData() throws IOException {
         logger.info("Initializing database data");
         try {
-            JsonNode rootNode = objectMapper.readTree(new File("src/main/resources/data/database-init-data.json"));
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data/database-init-data.json");
+            if (inputStream == null) {
+                throw new FileNotFoundException("database-init-data.json not found in classpath");
+            }
+            JsonNode rootNode = objectMapper.readTree(inputStream);
             insertEndDevicelModels(rootNode.get("EndDeviceModel"));
             insertEndDeviceComponentModel(rootNode.get("EndDeviceComponentModel"));
             insertUsers(rootNode.get("User"));
